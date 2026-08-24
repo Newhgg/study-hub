@@ -338,24 +338,48 @@ body.dark { background:linear-gradient(135deg,#0f0f23 0%,#1a0a2e 50%,#0a1628 100
 /* 页脚 */
 .footer { text-align:center; color:var(--text-3); font-size:12px; padding:24px 0; border-top:1px solid var(--border); margin-top:40px; }
 
-/* 面板风格布局 - iOS毛玻璃风格 */
-body { display:block; }
-.sidebar { width:100%; background:rgba(255,255,255,0.6); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.8); color:inherit; display:flex; align-items:center; justify-content:space-between; position:sticky; height:auto; left:0; top:0; z-index:100; padding:12px 28px; box-shadow:0 1px 20px rgba(0,0,0,0.05); }
-body.dark .sidebar { background:rgba(20,20,40,0.6); border-bottom:1px solid rgba(255,255,255,0.1); }
-.sidebar-brand { padding:0; border-bottom:none; display:flex; align-items:center; gap:10px; }
-.sidebar-brand .logo { font-size:24px; margin-bottom:0; }
-.sidebar-brand h1 { font-size:16px; font-weight:700; margin:0; }
-.sidebar-brand p { font-size:11px; opacity:0.6; margin:0; }
-.sidebar-nav { flex:1; padding:0 20px; overflow-y:visible; display:flex; gap:4px; justify-content:center; }
-.sidebar-link { display:flex; align-items:center; gap:6px; padding:8px 14px; border-radius:10px; color:inherit; opacity:0.7; text-decoration:none; font-size:13px; font-weight:500; margin-bottom:0; transition:all 0.2s; cursor:pointer; }
-.sidebar-link:hover { background:rgba(99,102,241,0.1); opacity:1; }
-.sidebar-link.active { background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.15)); color:#6366f1; opacity:1; font-weight:600; }
+/* 面板风格布局 - 学生Portal风格 */
+body { display:block; padding-bottom:70px; }
+.sidebar { width:72px; background:rgba(255,255,255,0.85); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-right:1px solid rgba(0,0,0,0.06); color:inherit; display:flex; flex-direction:column; align-items:center; position:fixed; height:100vh; left:0; top:0; z-index:100; padding:16px 0; box-shadow:2px 0 20px rgba(0,0,0,0.04); }
+body.dark .sidebar { background:rgba(20,20,40,0.85); border-right:1px solid rgba(255,255,255,0.08); }
+.sidebar-brand { padding:0; border-bottom:none; display:flex; flex-direction:column; align-items:center; gap:4px; margin-bottom:20px; }
+.sidebar-brand .logo { font-size:28px; margin-bottom:0; width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,#6366f1,#8b5cf6); display:flex; align-items:center; justify-content:center; }
+.sidebar-brand h1 { display:none; }
+.sidebar-brand p { display:none; }
+.sidebar-nav { flex:1; padding:0; overflow-y:visible; display:flex; flex-direction:column; gap:4px; width:100%; align-items:center; }
+.sidebar-link { display:flex; flex-direction:column; align-items:center; gap:3px; padding:10px 8px; border-radius:12px; color:inherit; opacity:0.5; text-decoration:none; font-size:10px; font-weight:500; margin-bottom:0; transition:all 0.2s; cursor:pointer; width:56px; justify-content:center; }
+.sidebar-link:hover { background:rgba(99,102,241,0.08); opacity:1; }
+.sidebar-link.active { background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(139,92,246,0.12)); color:#6366f1; opacity:1; font-weight:600; }
 body.dark .sidebar-link.active { color:#a5b4fc; }
-.sidebar-link .icon { font-size:15px; width:auto; }
+.sidebar-link .icon { font-size:20px; width:auto; }
+.sidebar-link span:not(.icon) { font-size:9px; }
 .sidebar-footer { display:none; }
-.main-content { flex:none; margin-left:0; display:block; min-height:calc(100vh - 60px); position:relative; z-index:1; }
+.main-content { flex:none; margin-left:72px; display:block; min-height:100vh; position:relative; z-index:1; }
 .topbar { display:none; }
-.wrap { padding:28px; max-width:1200px; margin:0 auto; }
+.wrap { padding:24px 28px 40px; max-width:1200px; margin:0 auto; }
+
+/* Dashboard首页 */
+.dashboard-welcome { background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%); border-radius:20px; padding:28px; color:white; margin-bottom:20px; position:relative; overflow:hidden; }
+.dashboard-welcome::after { content:''; position:absolute; top:-50%; right:-20%; width:300px; height:300px; background:rgba(255,255,255,0.1); border-radius:50%; }
+.dashboard-welcome h2 { font-size:24px; font-weight:700; margin-bottom:4px; position:relative; z-index:1; }
+.dashboard-welcome p { font-size:14px; opacity:0.9; position:relative; z-index:1; }
+.dashboard-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:20px; }
+.stat-card { background:rgba(255,255,255,0.7); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.8); border-radius:16px; padding:18px; text-align:center; transition:transform 0.2s; }
+.stat-card:hover { transform:translateY(-2px); }
+.stat-card .stat-num { font-size:28px; font-weight:700; background:linear-gradient(135deg,#6366f1,#8b5cf6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.stat-card .stat-label { font-size:12px; color:var(--text-2); margin-top:4px; }
+.dashboard-grid { display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:20px; }
+.dashboard-card { background:rgba(255,255,255,0.7); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.8); border-radius:16px; padding:20px; }
+.dashboard-card h4 { font-size:15px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.quick-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.quick-item { padding:14px; border-radius:12px; background:rgba(99,102,241,0.06); border:1px solid rgba(99,102,241,0.1); cursor:pointer; transition:all 0.15s; text-align:center; }
+.quick-item:hover { background:rgba(99,102,241,0.12); transform:translateY(-1px); }
+.quick-item .qi-icon { font-size:24px; margin-bottom:6px; }
+.quick-item .qi-label { font-size:12px; font-weight:600; }
+.notice-mini { display:flex; flex-direction:column; gap:10px; }
+.notice-mini-item { padding:10px 12px; border-radius:10px; background:rgba(0,0,0,0.02); font-size:12px; }
+.notice-mini-item .nm-title { font-weight:600; margin-bottom:2px; }
+.notice-mini-item .nm-time { color:var(--text-3); font-size:10px; }
 
 /* 毛玻璃卡片 */
 .hero, .search-bar, .lib-card, .tool-card, .countdown-card, .music-player, .schedule-toolbar, .schedule-tip, .filter-bar, .list-container, .music-import { background:rgba(255,255,255,0.6) !important; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.8) !important; box-shadow:0 4px 24px rgba(0,0,0,0.06) !important; }
@@ -365,13 +389,18 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
 
 /* 响应式 */
 @media(max-width:768px) {
-  .sidebar { padding:10px 14px; flex-wrap:wrap; }
-  .sidebar-brand p { display:none; }
-  .sidebar-brand h1 { font-size:14px; }
-  .sidebar-nav { order:3; width:100%; padding:8px 0 0; overflow-x:auto; justify-content:flex-start; }
-  .sidebar-link { padding:6px 10px; font-size:12px; white-space:nowrap; }
-  .sidebar-link span:not(.icon) { display:inline; }
+  body { padding-bottom:70px; }
+  .sidebar { width:100%; height:60px; top:auto; bottom:0; left:0; flex-direction:row; justify-content:space-around; padding:6px 0; border-right:none; border-top:1px solid rgba(0,0,0,0.06); box-shadow:0 -2px 20px rgba(0,0,0,0.05); }
+  .sidebar-brand { display:none; }
+  .sidebar-nav { flex-direction:row; width:auto; gap:0; }
+  .sidebar-link { width:auto; padding:6px 10px; font-size:9px; }
+  .sidebar-link .icon { font-size:18px; }
+  .main-content { margin-left:0; }
   .wrap { padding:16px; }
+  .dashboard-welcome { padding:20px; }
+  .dashboard-welcome h2 { font-size:20px; }
+  .dashboard-stats { grid-template-columns:repeat(2,1fr); }
+  .dashboard-grid { grid-template-columns:1fr; }
   .hero { padding:20px !important; }
   .hero h2 { font-size:20px; }
   .lib-grid { grid-template-columns:1fr; }
@@ -413,20 +442,42 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
 
   <!-- 首页 -->
   <div class="page active" id="page-home">
-    <div class="hero">
-      <h2>🎓 三班一站式学习资源中心</h2>
-      <p>整合政策资料库、学习资源库、计算机编程库。学习、备考、竞赛，一个平台全搞定。</p>
-      <div class="hero-stats">
-        <span class="hero-stat">📋 政策 50+ 条</span>
-        <span class="hero-stat">🎬 课程 7+ 套</span>
-        <span class="hero-stat">💻 编程资源 30+</span>
-      </div>
+    <div class="dashboard-welcome">
+      <h2 id="welcomeName">👋 你好，新同学</h2>
+      <p>欢迎来到三班学习平台 · 阳光学院计算机科学与技术</p>
+    </div>
+
+    <div class="dashboard-stats">
+      <div class="stat-card"><div class="stat-num">57</div><div class="stat-label">📚 学习资料</div></div>
+      <div class="stat-card"><div class="stat-num">22</div><div class="stat-label">🎬 课程资源</div></div>
+      <div class="stat-card"><div class="stat-num">8</div><div class="stat-label">⏰ 倒计时</div></div>
+      <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">📢 班级通知</div></div>
     </div>
 
     <div class="search-bar">
       <span class="icon">🔍</span>
       <input type="text" placeholder="全局搜索：政策 / 课程 / 编程资源 / 知识点..." oninput="globalSearch(this.value)">
       <span class="search-scope">全部</span>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="dashboard-card">
+        <h4>⚡ 快捷入口</h4>
+        <div class="quick-grid">
+          <div class="quick-item" onclick="switchPage('policy')"><div class="qi-icon">📋</div><div class="qi-label">政策库</div></div>
+          <div class="quick-item" onclick="switchPage('media')"><div class="qi-icon">🎬</div><div class="qi-label">课程库</div></div>
+          <div class="quick-item" onclick="switchPage('cs')"><div class="qi-icon">💻</div><div class="qi-label">编程库</div></div>
+          <div class="quick-item" onclick="switchPage('class')"><div class="qi-icon">🏫</div><div class="qi-label">班级服务</div></div>
+          <div class="quick-item" onclick="switchPage('schedule')"><div class="qi-icon">📅</div><div class="qi-label">我的课表</div></div>
+          <div class="quick-item" onclick="switchPage('tools')"><div class="qi-icon">⏱️</div><div class="qi-label">工具箱</div></div>
+          <div class="quick-item" onclick="switchPage('music')"><div class="qi-icon">🎵</div><div class="qi-label">音乐</div></div>
+          <div class="quick-item" onclick="switchPage('class');switchClassTab('guide')"><div class="qi-icon">🎓</div><div class="qi-label">新生指南</div></div>
+        </div>
+      </div>
+      <div class="dashboard-card">
+        <h4>📢 最新通知</h4>
+        <div class="notice-mini" id="homeNoticeMini"></div>
+      </div>
     </div>
 
     <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;">📂 三库直达</h3>
@@ -1644,6 +1695,30 @@ updatePomodoroDisplay();
 renderPlaylist();
 audio.volume = 0.7;
 renderSchedule();
+
+// 渲染首页最新通知
+function renderHomeNotice() {
+  const container = document.getElementById('homeNoticeMini');
+  if (!container) return;
+  const recent = notices.slice(0, 3);
+  if (recent.length === 0) {
+    container.innerHTML = '<div style="text-align:center;color:var(--text-3);font-size:12px;padding:20px;">暂无通知</div>';
+    return;
+  }
+  container.innerHTML = recent.map(n => `
+    <div class="notice-mini-item">
+      <div class="nm-title">${n.important?'🔴 ':''}${n.title}</div>
+      <div class="nm-time">${n.author||''} · ${n.time}</div>
+    </div>
+  `).join('');
+}
+renderHomeNotice();
+
+// 从localStorage读取个性化名片，更新欢迎语
+const profileData = JSON.parse(localStorage.getItem('study_profile') || '{}');
+if (profileData.name) {
+  document.getElementById('welcomeName').textContent = '👋 你好，' + profileData.name;
+}
 
 // 页面加载后自动弹出个性化名片（如果用户没填写过）
 setTimeout(() => {
