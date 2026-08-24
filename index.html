@@ -278,6 +278,51 @@ body.dark { background:linear-gradient(135deg,#0f0f23 0%,#1a0a2e 50%,#0a1628 100
 .form-group input:focus, .form-group select:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,0.1); }
 .form-row { display:flex; gap:10px; }
 .form-row .form-group { flex:1; }
+
+/* 班级服务 */
+.class-tabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+.class-tab { padding:10px 20px; border-radius:12px; border:1px solid rgba(255,255,255,0.6); background:rgba(255,255,255,0.5); backdrop-filter:blur(10px); font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; color:inherit; }
+.class-tab:hover { background:rgba(255,255,255,0.7); }
+.class-tab.active { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; border-color:transparent; box-shadow:0 4px 12px rgba(99,102,241,0.3); }
+.class-content { display:none; animation:fadeIn 0.3s ease; }
+.class-content.active { display:block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+/* 新生指南 */
+.guide-section { margin-bottom:28px; }
+.guide-title { font-size:16px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.guide-steps { display:flex; flex-direction:column; gap:12px; }
+.guide-step { display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:rgba(255,255,255,0.6); backdrop-filter:blur(10px); border-radius:12px; border:1px solid rgba(255,255,255,0.8); }
+.guide-step .step-num { width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0; }
+.guide-step strong { font-size:14px; display:block; margin-bottom:2px; }
+.guide-step p { font-size:12px; color:var(--text-2); margin:0; }
+.guide-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; }
+.guide-card { padding:16px; background:rgba(255,255,255,0.6); backdrop-filter:blur(10px); border-radius:12px; border:1px solid rgba(255,255,255,0.8); text-align:center; }
+.guide-card .guide-icon { font-size:28px; margin-bottom:8px; }
+.guide-card strong { font-size:14px; display:block; margin-bottom:4px; }
+.guide-card p { font-size:11px; color:var(--text-2); margin:0; line-height:1.5; }
+.guide-tips { padding:16px 18px; background:rgba(255,255,255,0.6); backdrop-filter:blur(10px); border-radius:12px; border:1px solid rgba(255,255,255,0.8); }
+.guide-tips p { font-size:13px; margin-bottom:8px; line-height:1.6; }
+.guide-tips p:last-child { margin-bottom:0; }
+.guide-checklist { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:8px; padding:16px 18px; background:rgba(255,255,255,0.6); backdrop-filter:blur(10px); border-radius:12px; border:1px solid rgba(255,255,255,0.8); }
+.guide-checklist label { display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer; }
+.guide-checklist input[type="checkbox"] { width:16px; height:16px; accent-color:#6366f1; }
+
+/* 班级通知 */
+.notice-toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px; }
+.notice-btn { padding:10px 18px; border-radius:10px; border:none; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s; }
+.notice-btn:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(99,102,241,0.3); }
+.notice-tip { font-size:11px; color:var(--text-3); }
+.notice-list { display:flex; flex-direction:column; gap:12px; }
+.notice-item { padding:16px 18px; background:rgba(255,255,255,0.6); backdrop-filter:blur(10px); border-radius:12px; border:1px solid rgba(255,255,255,0.8); position:relative; }
+.notice-item.important { border-left:4px solid #ef4444; }
+.notice-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
+.notice-title { font-size:15px; font-weight:700; }
+.notice-delete { background:none; border:none; color:var(--text-3); cursor:pointer; font-size:16px; padding:0 4px; }
+.notice-delete:hover { color:#ef4444; }
+.notice-content { font-size:13px; color:var(--text-2); line-height:1.6; margin-bottom:8px; }
+.notice-meta { font-size:11px; color:var(--text-3); display:flex; gap:12px; }
+.notice-empty { text-align:center; padding:40px; color:var(--text-3); font-size:13px; }
 .modal-actions { display:flex; justify-content:space-between; gap:12px; margin-top:24px; }
 .modal-btn { flex:1; padding:12px 20px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; border:none; transition:all 0.15s; }
 .modal-btn.primary { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; }
@@ -356,6 +401,7 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
     <a class="sidebar-link" data-page="cs" onclick="switchPage('cs');return false;"><span class="icon">💻</span><span>编程库</span></a>
     <a class="sidebar-link" data-page="tools" onclick="switchPage('tools');return false;"><span class="icon">⏱️</span><span>工具箱</span></a>
     <a class="sidebar-link" data-page="schedule" onclick="switchPage('schedule');return false;"><span class="icon">📅</span><span>课表</span></a>
+    <a class="sidebar-link" data-page="class" onclick="switchPage('class');return false;"><span class="icon">🏫</span><span>班级</span></a>
     <a class="sidebar-link" data-page="music" onclick="switchPage('music');return false;"><span class="icon">🎵</span><span>音乐</span></a>
   </nav>
   <button class="theme-btn-panel" onclick="toggleTheme()" id="themeBtn" style="width:36px;height:36px;border-radius:10px;border:1px solid rgba(0,0,0,0.1);background:rgba(255,255,255,0.5);cursor:pointer;font-size:16px;backdrop-filter:blur(10px;">🌙</button>
@@ -503,6 +549,109 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
 
     <h3 style="font-size:18px;font-weight:700;margin:28px 0 16px;">⏰ 重要日期倒计时</h3>
     <div class="countdown-grid" id="countdownGrid"></div>
+  </div>
+
+  <!-- 班级服务 -->
+  <div class="page" id="page-class">
+    <div class="class-tabs">
+      <button class="class-tab active" onclick="switchClassTab('guide')">🎓 新生指南</button>
+      <button class="class-tab" onclick="switchClassTab('notice')">📢 班级通知</button>
+      <button class="class-tab" onclick="switchClassTab('classSchedule')">📚 班级课表</button>
+    </div>
+
+    <!-- 新生指南 -->
+    <div class="class-content active" id="class-guide">
+      <div class="guide-section">
+        <h4 class="guide-title">📋 报到流程</h4>
+        <div class="guide-steps">
+          <div class="guide-step"><span class="step-num">1</span><div><strong>到达学校</strong><p>按录取通知书指定日期到校，从正门进入</p></div></div>
+          <div class="guide-step"><span class="step-num">2</span><div><strong>找到院系报到处</strong><p>计算机与信息工程学院报到处，出示录取通知书</p></div></div>
+          <div class="guide-step"><span class="step-num">3</span><div><strong>领取材料</strong><p>校园卡、宿舍钥匙、军训服装、教材清单</p></div></div>
+          <div class="guide-step"><span class="step-num">4</span><div><strong>入住宿舍</strong><p>到指定宿舍楼办理入住，整理床铺</p></div></div>
+          <div class="guide-step"><span class="step-num">5</span><div><strong>班会集合</strong><p>按通知时间参加第一次班会，认识同学和辅导员</p></div></div>
+        </div>
+      </div>
+
+      <div class="guide-section">
+        <h4 class="guide-title">🏫 校园生活指南</h4>
+        <div class="guide-grid">
+          <div class="guide-card"><div class="guide-icon">🍜</div><strong>食堂</strong><p>东区/西区食堂，支持校园卡和微信支付，人均10-15元</p></div>
+          <div class="guide-card"><div class="guide-icon">📚</div><strong>图书馆</strong><p>8:00-22:00开放，凭校园卡进入，有自习室和电子阅览室</p></div>
+          <div class="guide-card"><div class="guide-icon">📦</div><strong>快递点</strong><p>菜鸟驿站在生活区，取件码短信通知</p></div>
+          <div class="guide-card"><div class="guide-icon">🏥</div><strong>校医院</strong><p>在校内，小病可直接看，急诊打120</p></div>
+          <div class="guide-card"><div class="guide-icon">🏃</div><strong>运动</strong><p>田径场、篮球场、体育馆、健身房（部分收费）</p></div>
+          <div class="guide-card"><div class="guide-icon">🚌</div><strong>交通</strong><p>校门口有公交站，到市区约30分钟，地铁需换乘</p></div>
+        </div>
+      </div>
+
+      <div class="guide-section">
+        <h4 class="guide-title">🎽 军训须知</h4>
+        <div class="guide-tips">
+          <p><strong>时间：</strong>一般报到后一周开始，为期14天</p>
+          <p><strong>着装：</strong>统一发放军训服，穿运动鞋，戴帽子</p>
+          <p><strong>必备：</strong>防晒霜（SPF50+）、大容量水杯、藿香正气水、创可贴</p>
+          <p><strong>注意：</strong>身体不适立即报告，不要硬撑；多喝水，避免中暑</p>
+          <p><strong>评优：</strong>军训优秀个人会记入档案，对入党、评优有帮助</p>
+        </div>
+      </div>
+
+      <div class="guide-section">
+        <h4 class="guide-title">💰 新生必备清单</h4>
+        <div class="guide-checklist">
+          <label><input type="checkbox"> 录取通知书、身份证、户口本复印件</label>
+          <label><input type="checkbox"> 一寸/二寸证件照（蓝底/白底各10张）</label>
+          <label><input type="checkbox"> 银行卡（学校指定银行）</label>
+          <label><input type="checkbox"> 手机、充电器、充电宝、耳机</label>
+          <label><input type="checkbox"> 笔记本电脑（计算机专业必备）</label>
+          <label><input type="checkbox"> 换洗衣物、拖鞋、洗漱用品</label>
+          <label><input type="checkbox"> 床上用品（可到校购买）</label>
+          <label><input type="checkbox"> 常用药品（感冒药、肠胃药、创可贴）</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 班级通知 -->
+    <div class="class-content" id="class-notice">
+      <div class="notice-toolbar">
+        <button class="notice-btn" onclick="showAddNotice()">➕ 发布通知</button>
+        <span class="notice-tip">通知同步到班级群，重要通知请以群消息为准</span>
+      </div>
+      <div class="notice-list" id="noticeList"></div>
+    </div>
+
+    <!-- 班级课表 -->
+    <div class="class-content" id="class-classSchedule">
+      <div class="schedule-toolbar">
+        <h3 style="font-size:16px;font-weight:700;">📅 计算机三班 统一课表</h3>
+        <button class="schedule-btn" onclick="importClassSchedule()">📥 导入到我的课表</button>
+      </div>
+      <div class="schedule-tip">这是班级统一课表，点击上方按钮可导入到你个人课表中，支持自定义修改。</div>
+      <div class="schedule-container" id="classScheduleContainer"></div>
+    </div>
+  </div>
+
+  <!-- 添加通知弹窗 -->
+  <div class="modal-overlay" id="noticeModal">
+    <div class="modal-box" style="max-width:420px;">
+      <button class="modal-close" onclick="closeNoticeModal()">✕</button>
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;text-align:center;">发布班级通知</h3>
+      <div class="form-group">
+        <label>通知标题</label>
+        <input type="text" id="noticeTitle" placeholder="例如：周一班会通知">
+      </div>
+      <div class="form-group">
+        <label>通知内容</label>
+        <textarea id="noticeContent" rows="4" placeholder="请输入通知内容..." style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;resize:vertical;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>发布人</label>
+        <input type="text" id="noticeAuthor" placeholder="例如：学委 锦浩">
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn secondary" onclick="closeNoticeModal()">取消</button>
+        <button class="modal-btn primary" onclick="saveNotice()">发布</button>
+      </div>
+    </div>
   </div>
 
   <!-- 音乐 -->
@@ -1349,6 +1498,136 @@ function showScheduleTemplate() {
     ]
   };
   alert('课表导入格式示例（JSON）：\n\n' + JSON.stringify(template, null, 2));
+}
+
+// ===== 班级服务功能 =====
+function switchClassTab(name) {
+  document.querySelectorAll('.class-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.class-content').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('class-' + name).classList.add('active');
+  if (name === 'notice') renderNotices();
+  if (name === 'classSchedule') renderClassSchedule();
+}
+
+// 班级通知
+let notices = JSON.parse(localStorage.getItem('class_notices') || '[]');
+if (notices.length === 0) {
+  notices = [
+    {id:1, title:'🎉 欢迎加入计算机三班！', content:'欢迎各位新同学！本平台由班级技术委员维护，提供学习资料、课表、通知等服务。有问题随时在班级群反馈。', author:'辅导员', time:'2026-08-24', important:true},
+    {id:2, title:'📅 第一次班会通知', content:'时间：8月28日 晚7:00\n地点：教学楼A301\n请全体同学准时参加，带好笔记本。', author:'班长', time:'2026-08-24', important:false},
+    {id:3, title:'📚 教材领取通知', content:'请于8月27日下午2:00-4:00到教材科领取本学期教材，带校园卡。', author:'学习委员', time:'2026-08-23', important:false}
+  ];
+  localStorage.setItem('class_notices', JSON.stringify(notices));
+}
+
+function renderNotices() {
+  const list = document.getElementById('noticeList');
+  if (notices.length === 0) {
+    list.innerHTML = '<div class="notice-empty">📭 暂无通知</div>';
+    return;
+  }
+  list.innerHTML = notices.map(n => `
+    <div class="notice-item ${n.important?'important':''}">
+      <div class="notice-header">
+        <div class="notice-title">${n.important?'🔴 ':''}${n.title}</div>
+        <button class="notice-delete" onclick="deleteNotice(${n.id})">✕</button>
+      </div>
+      <div class="notice-content">${n.content.replace(/\n/g,'<br>')}</div>
+      <div class="notice-meta"><span>👤 ${n.author||'匿名'}</span><span>🕐 ${n.time}</span></div>
+    </div>
+  `).join('');
+}
+
+function showAddNotice() {
+  document.getElementById('noticeTitle').value = '';
+  document.getElementById('noticeContent').value = '';
+  document.getElementById('noticeAuthor').value = '';
+  document.getElementById('noticeModal').classList.add('show');
+}
+
+function closeNoticeModal() {
+  document.getElementById('noticeModal').classList.remove('show');
+}
+
+function saveNotice() {
+  const title = document.getElementById('noticeTitle').value.trim();
+  const content = document.getElementById('noticeContent').value.trim();
+  const author = document.getElementById('noticeAuthor').value.trim();
+  if (!title || !content) { alert('请填写标题和内容'); return; }
+  notices.unshift({
+    id: Date.now(),
+    title: title,
+    content: content,
+    author: author || '匿名',
+    time: new Date().toISOString().split('T')[0],
+    important: false
+  });
+  localStorage.setItem('class_notices', JSON.stringify(notices));
+  closeNoticeModal();
+  renderNotices();
+}
+
+function deleteNotice(id) {
+  if (confirm('确定删除这条通知吗？')) {
+    notices = notices.filter(n => n.id !== id);
+    localStorage.setItem('class_notices', JSON.stringify(notices));
+    renderNotices();
+  }
+}
+
+// 班级统一课表（示例：计科大一上学期）
+const classScheduleData = {
+  courses: [
+    {name:"高等数学", teacher:"张教授", location:"教A101", day:1, start:1, end:2, weeks:"1-16"},
+    {name:"C语言程序设计", teacher:"李老师", location:"实验楼C201", day:1, start:5, end:6, weeks:"1-16"},
+    {name:"大学英语", teacher:"王老师", location:"教B203", day:2, start:1, end:2, weeks:"1-16"},
+    {name:"计算机导论", teacher:"陈教授", location:"教A305", day:2, start:5, end:6, weeks:"1-8"},
+    {name:"高等数学", teacher:"张教授", location:"教A101", day:3, start:3, end:4, weeks:"1-16"},
+    {name:"C语言程序设计", teacher:"李老师", location:"实验楼C201", day:3, start:5, end:6, weeks:"1-16"},
+    {name:"思想道德与法治", teacher:"刘老师", location:"教D101", day:4, start:1, end:2, weeks:"1-16"},
+    {name:"大学英语", teacher:"王老师", location:"教B203", day:4, start:3, end:4, weeks:"1-16"},
+    {name:"体育", teacher:"赵教练", location:"田径场", day:5, start:3, end:4, weeks:"1-16"},
+    {name:"军事理论", teacher:"周教官", location:"教A201", day:5, start:5, end:6, weeks:"1-8"}
+  ]
+};
+
+function renderClassSchedule() {
+  const container = document.getElementById('classScheduleContainer');
+  let html = '<table class="schedule-table"><thead><tr><th class="time-col">节次</th>';
+  dayNames.forEach(d => html += `<th>${d}</th>`);
+  html += '</tr></thead><tbody>';
+  for (let i = 0; i < 10; i++) {
+    html += `<tr><td class="time-col">第${i+1}节<br>${timeSlots[i].start}</td>`;
+    for (let day = 1; day <= 7; day++) {
+      const course = classScheduleData.courses.find(c => c.day === day && c.start === i + 1);
+      if (course) {
+        const rowspan = course.end - course.start + 1;
+        const color = getCourseColor(course.name);
+        html += `<td rowspan="${rowspan}"><div class="course-block" style="background:${color}">
+          <div class="course-name">${course.name}</div>
+          <div class="course-info">${course.teacher || ''}</div>
+          <div class="course-info">${course.location || ''}</div>
+        </div></td>`;
+      } else {
+        const covered = classScheduleData.courses.find(c => c.day === day && i + 1 > c.start && i + 1 <= c.end);
+        if (!covered) html += '<td></td>';
+      }
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+function importClassSchedule() {
+  if (confirm('确定要把班级统一课表导入到你的个人课表吗？这会覆盖你现有的课表。')) {
+    scheduleData = JSON.parse(JSON.stringify(classScheduleData));
+    scheduleData.courses.forEach(c => c.id = Date.now() + Math.random());
+    localStorage.setItem('schedule_data', JSON.stringify(scheduleData));
+    renderSchedule();
+    alert('✅ 班级课表已导入到个人课表！你可以在「📅 课表」页面查看和修改。');
+  }
 }
 
 // ===== 初始化 =====
