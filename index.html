@@ -160,10 +160,10 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
     </div>
   </a>
   <div class="nav-links">
-    <a class="nav-link active" data-page="home" onclick="switchPage('home')">🏠 首页</a>
-    <a class="nav-link" data-page="policy" onclick="switchPage('policy')">📋 政策库</a>
-    <a class="nav-link" data-page="media" onclick="switchPage('media')">🎬 课程库</a>
-    <a class="nav-link" data-page="cs" onclick="switchPage('cs')">💻 编程库</a>
+    <a class="nav-link active" data-page="home" href="#" onclick="switchPage('home');return false;">🏠 首页</a>
+    <a class="nav-link" data-page="policy" href="#" onclick="switchPage('policy');return false;">📋 政策库</a>
+    <a class="nav-link" data-page="media" href="#" onclick="switchPage('media');return false;">🎬 课程库</a>
+    <a class="nav-link" data-page="cs" href="#" onclick="switchPage('cs');return false;">💻 编程库</a>
   </div>
   <div class="nav-actions">
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
@@ -193,7 +193,7 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
 
     <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;">📂 三库直达</h3>
     <div class="lib-grid">
-      <a class="lib-card policy" onclick="switchPage('policy')">
+      <a class="lib-card policy" href="#" onclick="switchPage('policy');return false;">
         <div class="lib-icon">📋</div>
         <h3>政策资料库</h3>
         <p class="lib-desc">阳光学院官方政策 · 考研/考公/竞赛/证书官方链接 · 本学年行动时间线 · 搜索即查</p>
@@ -204,7 +204,7 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
         </div>
         <div class="lib-go">进入政策库 →</div>
       </a>
-      <a class="lib-card media" onclick="switchPage('media')">
+      <a class="lib-card media" href="#" onclick="switchPage('media');return false;">
         <div class="lib-icon">🎬</div>
         <h3>学习资源库</h3>
         <p class="lib-desc">AI智能体课程 · 公考课程 · 个人成长课程 · 推荐学习路线 · 免费公开资源推荐</p>
@@ -215,7 +215,7 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
         </div>
         <div class="lib-go">进入课程库 →</div>
       </a>
-      <a class="lib-card cs" onclick="switchPage('cs')">
+      <a class="lib-card cs" href="#" onclick="switchPage('cs');return false;">
         <div class="lib-icon">💻</div>
         <h3>计算机编程库</h3>
         <p class="lib-desc">C语言/Python/算法/计组/计网学习资源 · B站免费课 · MOOC名校课 · LeetCode刷题</p>
