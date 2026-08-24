@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>阳光学院计算机 · 三库合一学习平台</title>
+<title>阳光学院计算机三班 · 学习平台</title>
 <style>
 :root {
   --bg: #f6f7f9;
@@ -202,6 +202,39 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
 .countdown-unit { font-size:12px; color:var(--text-3); margin-top:2px; }
 .countdown-card.urgent .countdown-num { color:#ef4444; }
 .countdown-card.soon .countdown-num { color:#f59e0b; }
+
+/* 音乐播放器 */
+.music-player { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:20px; }
+.music-now-playing { display:flex; align-items:center; gap:16px; margin-bottom:20px; }
+.music-cover { width:64px; height:64px; border-radius:12px; background:linear-gradient(135deg,#6366f1,#8b5cf6); display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0; }
+.music-info { flex:1; min-width:0; }
+.music-title { font-size:16px; font-weight:700; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.music-artist { font-size:12px; color:var(--text-3); }
+.music-progress { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+.music-progress span { font-size:11px; color:var(--text-3); min-width:40px; text-align:center; font-variant-numeric:tabular-nums; }
+.music-progress input[type="range"] { flex:1; accent-color:var(--primary); }
+.music-controls { display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:20px; }
+.music-btn { width:44px; height:44px; border-radius:50%; border:none; background:var(--bg); cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+.music-btn:hover { background:var(--border); transform:scale(1.1); }
+.music-btn.play { width:56px; height:56px; background:linear-gradient(135deg,#6366f1,#8b5cf6); font-size:20px; }
+.music-btn.play:hover { box-shadow:0 4px 16px rgba(99,102,241,0.4); }
+.music-volume { display:flex; align-items:center; gap:8px; margin-left:20px; }
+.music-volume input[type="range"] { width:80px; accent-color:var(--primary); }
+.music-import { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.import-btn { padding:10px 20px; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s; display:inline-block; }
+.import-btn:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(99,102,241,0.4); }
+.import-tip { font-size:12px; color:var(--text-3); }
+.music-playlist { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.playlist-item { display:flex; align-items:center; gap:12px; padding:12px 16px; border-bottom:1px solid var(--border); cursor:pointer; transition:all 0.15s; }
+.playlist-item:last-child { border-bottom:none; }
+.playlist-item:hover { background:var(--bg); }
+.playlist-item.active { background:rgba(99,102,241,0.1); border-left:3px solid var(--primary); }
+.playlist-num { width:24px; text-align:center; font-size:13px; color:var(--text-3); font-variant-numeric:tabular-nums; }
+.playlist-item.active .playlist-num { color:var(--primary); font-weight:700; }
+.playlist-info { flex:1; min-width:0; }
+.playlist-name { font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.playlist-duration { font-size:11px; color:var(--text-3); }
+.playlist-empty { padding:32px; text-align:center; color:var(--text-3); font-size:13px; }
 .modal-actions { display:flex; justify-content:space-between; gap:12px; margin-top:24px; }
 .modal-btn { flex:1; padding:12px 20px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; border:none; transition:all 0.15s; }
 .modal-btn.primary { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; }
@@ -238,8 +271,8 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
   <a class="nav-brand" href="#" onclick="switchPage('home');return false;">
     <div class="logo">📚</div>
     <div>
-      <h1>三库合一学习平台</h1>
-      <p>阳光学院计算机 · 政策 + 课程 + 编程</p>
+      <h1>三班学习平台</h1>
+      <p>阳光学院计算机三班 · 政策 + 课程 + 编程</p>
     </div>
   </a>
   <div class="nav-links">
@@ -248,6 +281,7 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
     <a class="nav-link" data-page="media" href="#" onclick="switchPage('media');return false;">🎬 课程库</a>
     <a class="nav-link" data-page="cs" href="#" onclick="switchPage('cs');return false;">💻 编程库</a>
     <a class="nav-link" data-page="tools" href="#" onclick="switchPage('tools');return false;">⏱️ 工具箱</a>
+    <a class="nav-link" data-page="music" href="#" onclick="switchPage('music');return false;">🎵 音乐</a>
   </div>
   <div class="nav-actions">
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
@@ -259,7 +293,7 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
   <!-- 首页 -->
   <div class="page active" id="page-home">
     <div class="hero">
-      <h2>🎓 你的一站式学习资源中心</h2>
+      <h2>🎓 三班一站式学习资源中心</h2>
       <p>整合政策资料库、学习资源库、计算机编程库。学习、备考、竞赛，一个平台全搞定。</p>
       <div class="hero-stats">
         <span class="hero-stat">📋 政策 50+ 条</span>
@@ -396,8 +430,47 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
     <div class="countdown-grid" id="countdownGrid"></div>
   </div>
 
+  <!-- 音乐 -->
+  <div class="page" id="page-music">
+    <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;">🎵 音乐播放器</h3>
+    <div class="music-player">
+      <div class="music-now-playing">
+        <div class="music-cover" id="musicCover">🎵</div>
+        <div class="music-info">
+          <div class="music-title" id="musicTitle">未选择音乐</div>
+          <div class="music-artist" id="musicArtist">导入本地音乐开始播放</div>
+        </div>
+      </div>
+      <div class="music-progress">
+        <span id="musicCurrent">00:00</span>
+        <input type="range" id="musicProgress" min="0" max="100" value="0" oninput="seekMusic(this.value)">
+        <span id="musicDuration">00:00</span>
+      </div>
+      <div class="music-controls">
+        <button class="music-btn" onclick="prevMusic()">⏮️</button>
+        <button class="music-btn play" id="musicPlayBtn" onclick="toggleMusic()">▶️</button>
+        <button class="music-btn" onclick="nextMusic()">⏭️</button>
+        <div class="music-volume">
+          🔊 <input type="range" id="musicVolume" min="0" max="100" value="70" oninput="setVolume(this.value)">
+        </div>
+      </div>
+      <div class="music-import">
+        <label class="import-btn">
+          📁 导入本地音乐
+          <input type="file" id="musicFileInput" accept="audio/*" multiple onchange="importMusic(this.files)" style="display:none;">
+        </label>
+        <span class="import-tip">支持 MP3 / WAV / OGG / M4A 等格式，多选导入</span>
+      </div>
+    </div>
+
+    <h3 style="font-size:16px;font-weight:700;margin:24px 0 12px;">📋 播放列表</h3>
+    <div class="music-playlist" id="musicPlaylist">
+      <div class="playlist-empty">暂无音乐，点击上方按钮导入</div>
+    </div>
+  </div>
+
   <div class="footer">
-    三库合一学习平台 · 阳光学院计算机专业 · 仅供学习交流 · 政策链接均来自官方渠道
+    三班学习平台 · 阳光学院计算机三班 · 仅供学习交流 · 政策链接均来自官方渠道
   </div>
 </div>
 
@@ -858,6 +931,115 @@ function renderCountdowns() {
   }).join('');
 }
 
+// ===== 音乐播放器 =====
+let audio = new Audio();
+let musicPlaylist = [
+  { name:'🎵 轻音乐1 - 学习专注', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', duration:'未知' },
+  { name:'🎵 轻音乐2 - 放松心情', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', duration:'未知' },
+  { name:'🎵 轻音乐3 - 编程背景', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', duration:'未知' },
+];
+let currentMusicIndex = -1;
+let musicPlaying = false;
+
+function importMusic(files) {
+  for (const file of files) {
+    const url = URL.createObjectURL(file);
+    musicPlaylist.push({ name: file.name, url: url, duration: '本地音乐' });
+  }
+  renderPlaylist();
+}
+
+function renderPlaylist() {
+  const list = document.getElementById('musicPlaylist');
+  if (musicPlaylist.length === 0) {
+    list.innerHTML = '<div class="playlist-empty">暂无音乐，点击上方按钮导入</div>';
+    return;
+  }
+  list.innerHTML = musicPlaylist.map((m, i) => `
+    <div class="playlist-item ${i === currentMusicIndex ? 'active' : ''}" onclick="playMusic(${i})">
+      <div class="playlist-num">${i === currentMusicIndex && musicPlaying ? '▶️' : i + 1}</div>
+      <div class="playlist-info">
+        <div class="playlist-name">${m.name}</div>
+        <div class="playlist-duration">${m.duration}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function playMusic(index) {
+  if (index < 0 || index >= musicPlaylist.length) return;
+  currentMusicIndex = index;
+  const m = musicPlaylist[index];
+  audio.src = m.url;
+  audio.play();
+  musicPlaying = true;
+  document.getElementById('musicTitle').textContent = m.name;
+  document.getElementById('musicArtist').textContent = '正在播放';
+  document.getElementById('musicPlayBtn').textContent = '⏸️';
+  renderPlaylist();
+}
+
+function toggleMusic() {
+  if (currentMusicIndex === -1) {
+    playMusic(0);
+    return;
+  }
+  if (musicPlaying) {
+    audio.pause();
+    musicPlaying = false;
+    document.getElementById('musicPlayBtn').textContent = '▶️';
+  } else {
+    audio.play();
+    musicPlaying = true;
+    document.getElementById('musicPlayBtn').textContent = '⏸️';
+  }
+  renderPlaylist();
+}
+
+function nextMusic() {
+  if (musicPlaylist.length === 0) return;
+  const next = (currentMusicIndex + 1) % musicPlaylist.length;
+  playMusic(next);
+}
+
+function prevMusic() {
+  if (musicPlaylist.length === 0) return;
+  const prev = (currentMusicIndex - 1 + musicPlaylist.length) % musicPlaylist.length;
+  playMusic(prev);
+}
+
+function seekMusic(value) {
+  if (audio.duration) {
+    audio.currentTime = (value / 100) * audio.duration;
+  }
+}
+
+function setVolume(value) {
+  audio.volume = value / 100;
+}
+
+function formatTime(seconds) {
+  if (isNaN(seconds)) return '00:00';
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+audio.addEventListener('timeupdate', () => {
+  if (audio.duration) {
+    document.getElementById('musicProgress').value = (audio.currentTime / audio.duration) * 100;
+    document.getElementById('musicCurrent').textContent = formatTime(audio.currentTime);
+  }
+});
+
+audio.addEventListener('loadedmetadata', () => {
+  document.getElementById('musicDuration').textContent = formatTime(audio.duration);
+});
+
+audio.addEventListener('ended', () => {
+  nextMusic();
+});
+
 // ===== 初始化 =====
 renderTimeline('homeTimeline');
 renderFilters('policyFilters', policyData, 'cat');
@@ -869,6 +1051,8 @@ renderList('cs');
 renderCountdowns();
 document.getElementById('pomoCount').textContent = pomodoroCount;
 updatePomodoroDisplay();
+renderPlaylist();
+audio.volume = 0.7;
 
 // 页面加载后自动弹出个性化名片（如果用户没填写过）
 setTimeout(() => {
