@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学习资源库 · 课程导航</title>
+<style>
+:root{--bg:#f6f7f9;--panel:#fff;--ink:#18181b;--ink2:#3f3f46;--muted:#71717a;--faint:#a1a1aa;--brand:#6366f1;--accent:#8b5cf6;--line:#e4e4e7}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+header{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;padding:36px 24px 28px;text-align:center}
+header h1{font-size:24px;font-weight:700;margin-bottom:6px}
+header p{font-size:13px;opacity:.85;max-width:600px;margin:0 auto}
+.stats{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.stat-item{background:rgba(255,255,255,.15);backdrop-filter:blur(4px);padding:6px 16px;border-radius:999px;font-size:12px;font-weight:600}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.tip-box{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 18px;margin:20px 0 0;font-size:13px;color:#92400e;line-height:1.6}
+.tip-box b{color:#b45309}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0 4px}
+.search{flex:1;min-width:200px;position:relative}
+.search input{width:100%;padding:10px 14px 10px 38px;border:1px solid var(--line);border-radius:8px;font-size:14px;outline:none;background:#fff}
+.search input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+.search::before{content:"⌕";position:absolute;left:14px;top:8px;font-size:16px;color:var(--faint)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.tab{padding:7px 15px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13px;cursor:pointer;transition:all .15s;color:var(--muted);font-weight:600}
+.tab:hover{border-color:var(--brand);color:var(--brand)}
+.tab.active{background:var(--brand);border-color:var(--brand);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin:8px 0 32px}
+.card{background:#fff;border-radius:12px;padding:18px;border:1px solid var(--line);transition:all .15s;display:flex;flex-direction:column;gap:8px}
+.card:hover{transform:translateY(-2px);border-color:rgba(99,102,241,.45);box-shadow:0 10px 30px rgba(24,24,27,.08)}
+.card h3{font-size:15px;font-weight:600;line-height:1.45}
+.card .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tag{font-size:11px;padding:2px 10px;border-radius:999px;background:rgba(99,102,241,.09);border:1px solid rgba(99,102,241,.2);color:var(--brand);font-weight:600}
+.tag.ai{background:#ede9fe;border-color:#c4b5fd;color:#6d28d9}
+.tag.gongkao{background:#fef3c7;border-color:#fde68a;color:#b45309}
+.tag.growth{background:#dcfce7;border-color:#bbf7d0;color:#16a34a}
+.card .desc{font-size:13px;color:var(--muted);line-height:1.55}
+.card .detail{font-size:12px;color:var(--faint);margin-top:auto;padding-top:8px;border-top:1px dashed var(--line);display:flex;justify-content:space-between}
+.card .tags-row{display:flex;gap:6px;flex-wrap:wrap}
+.points{font-size:12px;color:var(--ink2);background:#f9fafb;border-radius:8px;padding:8px 10px;margin-top:4px}
+.points b{display:block;font-size:11px;color:var(--muted);margin-bottom:4px}
+.points span{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:4px;padding:1px 8px;margin:2px 4px 2px 0;font-size:11px}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:60px 0;font-size:14px}
+.section{margin:28px 0 8px}
+.section h2{font-size:16px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+footer{text-align:center;color:var(--faint);font-size:12px;padding:20px 0 40px}
+@media(max-width:640px){header{padding:24px 16px}.wrap{padding:0 14px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>📚 学习资源库 · 课程导航</h1>
+  <p>AI智能体 · 公考 · 个人成长 — 精选课程学习指南，含学习路线和核心知识点</p>
+  <div class="stats">
+    <span class="stat-item" id="statTotal">0 套课程</span>
+    <span class="stat-item">AI智能体 4套</span>
+    <span class="stat-item">公考 2套</span>
+    <span class="stat-item">个人成长 1套</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="tip-box">
+    <b>📌 使用说明：</b>本页面为课程学习资源导航，提供课程简介、学习建议和核心知识点提炼。视频文件为个人学习资料，不在此公开传播。建议配合<b>免费公开资源</b>（B站、慕课网、Coze等）学习。
+  </div>
+
+  <div class="toolbar">
+    <div class="search"><input id="q" type="text" placeholder="搜索课程，如：Coze / 公考 / 减脂…" oninput="render()"></div>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="grid" id="grid"></div>
+
+  <div class="section">
+    <h2>🎯 推荐学习路线</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>大一上 · 基础打牢</h3>
+        <div class="tags-row"><span class="tag">C语言</span><span class="tag">高数</span><span class="tag">四级</span></div>
+        <div class="desc">重点搞定C语言编程基础、高等数学上册、英语四级词汇。课余可以了解AI智能体工具（Coze/扣子），用AI提高学习效率。</div>
+        <div class="detail"><span>优先级：⭐⭐⭐</span><span>周期：3-4个月</span></div>
+      </div>
+      <div class="card">
+        <h3>大一下 · 竞赛入门</h3>
+        <div class="tags-row"><span class="tag">蓝桥杯</span><span class="tag">数学建模</span><span class="tag">Python</span></div>
+        <div class="desc">参加蓝桥杯省赛（4月）、数学建模国赛（9月）。学习Python数据分析，开始接触AI智能体实战，尝试用Coze搭建简单应用。</div>
+        <div class="detail"><span>优先级：⭐⭐⭐</span><span>周期：3-4个月</span></div>
+      </div>
+      <div class="card">
+        <h3>大二 · 能力分化</h3>
+        <div class="tags-row"><span class="tag">考公/考研</span><span class="tag">AI副业</span><span class="tag">专业深化</span></div>
+        <div class="desc">确定方向：考公路线开始了解行测申论，考研路线开始数学英语基础。同时可以探索AI智能体接单（PPT制作、文案生成），培养副业能力。</div>
+        <div class="detail"><span>优先级：⭐⭐</span><span>周期：全年</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🔗 免费公开资源推荐</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>B站 · 免费编程课程</h3>
+        <div class="tags-row"><span class="tag">免费</span><span class="tag">C语言</span><span class="tag">Python</span></div>
+        <div class="desc">翁恺C语言、黑马程序员Python、哈工大计算机网络/组成原理，全部免费，质量高。</div>
+        <div class="detail"><span>平台：B站</span><span>费用：免费</span></div>
+      </div>
+      <div class="card">
+        <h3>中国大学MOOC</h3>
+        <div class="tags-row"><span class="tag">免费</span><span class="tag">高数</span><span class="tag">专业课</span></div>
+        <div class="desc">宋浩高数、哈工大计算机专业课、名校公开课，可免费学习，部分课程付费认证。</div>
+        <div class="detail"><span>平台：icourse163.org</span><span>费用：免费</span></div>
+      </div>
+      <div class="card">
+        <h3>Coze/扣子 · AI智能体平台</h3>
+        <div class="tags-row"><span class="tag">免费</span><span class="tag">AI智能体</span><span class="tag">实战</span></div>
+        <div class="desc">字节跳动推出的AI智能体搭建平台，免费使用，无需编程基础即可搭建智能体，适合入门实战。</div>
+        <div class="detail"><span>平台：coze.cn</span><span>费用：免费</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>学习资源库 · 仅供学习交流 · 视频资料不公开传播 · 最后更新 2026-08-20</footer>
+
+<script>
+const COURSES = [
+  {
+    name:"白先生AI流量体-老板的随身操盘手",
+    category:"AI智能体",catClass:"ai",episodes:13,size:"1.7GB",
+    desc:"GPT调教心流法 + 数字员工操作 + 短视频7天起号 + 爆款视频底层逻辑。适合想用AI做自媒体流量的同学。",
+    tags:["GPT","提示词","数字员工","短视频","起号"],
+    points:["结构化提示词构建","智能体工作流讲解","AI数字人应用","短视频选题技法","爆款流量密码"]
+  },
+  {
+    name:"秋叶AI智能体",
+    category:"AI智能体",catClass:"ai",episodes:1,size:"课件",
+    desc:"秋叶老师的AI智能体课程，侧重办公效率提升和智能体实战应用。",
+    tags:["AI智能体","办公效率"],
+    points:["AI智能体基础","办公场景应用"]
+  },
+  {
+    name:"猴帝-AI智能体线上课",
+    category:"AI智能体",catClass:"ai",episodes:19,size:"13GB",
+    desc:"从AI基础到Coze入门，再到工作流搭建和智能体变现。体系完整，适合从零开始学AI智能体的同学。",
+    tags:["Coze","工作流","智能体变现","AI基础"],
+    points:["人工智能基础","Coze从0到1搭建智能体","工作流基础用法","AI智能体落地认知","智能体变现路径"]
+  },
+  {
+    name:"陈厂长AI智能体实战创业营",
+    category:"AI智能体",catClass:"ai",episodes:10,size:"部分下载",
+    desc:"3天实战创业营，侧重AI智能体的商业落地和创业方向。部分文件未完成下载。",
+    tags:["AI智能体","创业","实战"],
+    points:["智能体商业落地","创业方向选择","实战案例分析"]
+  },
+  {
+    name:"王大锤26蓝图公考青云宏志班",
+    category:"公考",catClass:"gongkao",episodes:0,size:"待整理",
+    desc:"公考系统课程，覆盖行测、申论、面试全模块，适合立志考公/选调生的同学。",
+    tags:["公考","行测","申论","面试","选调生"],
+    points:["行测五大模块","申论写作技巧","面试结构化","选调生政策解读"]
+  },
+  {
+    name:"34省+国考真题合集",
+    category:"公考",catClass:"gongkao",episodes:0,size:"PDF",
+    desc:"全国各省公考真题及答案解析PDF，刷题必备。配合课程学习效果更佳。",
+    tags:["公考","真题","刷题"],
+    points:["国考真题","各省省考真题","答案解析"]
+  },
+  {
+    name:"大齐超级个体认知成长学习圈",
+    category:"个人成长",catClass:"growth",episodes:36,size:"30GB+",
+    desc:"全方位个人成长课程：形象穿搭、法律防御、营养食疗、立身处事、魅力蜕变、自媒体创业、亲密关系、财务管理、轻盈减脂、情感读心。适合想全面提升自己的同学。",
+    tags:["形象","法律","营养","自媒体","亲密关系","财务","减脂","情感"],
+    points:["形象穿搭提升","法律常识防御","营养食疗健康","自媒体创业入门","亲密关系经营","财务管理基础","科学减脂方法","情感读心技巧"]
+  }
+];
+
+const CATS=["全部","AI智能体","公考","个人成长"];
+function esc(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function render(){
+  const q=(document.getElementById("q").value||"").trim().toLowerCase();
+  const active=document.querySelector(".tab.active");
+  const cat=active?active.dataset.cat:"全部";
+  const items=COURSES.filter(c=>(cat==="全部"||c.category===cat)&&(!q||(c.name+" "+c.desc+" "+c.tags.join(" ")).toLowerCase().includes(q)));
+  document.getElementById("statTotal").textContent=COURSES.length+" 套课程";
+  const grid=document.getElementById("grid");
+  if(!items.length){grid.innerHTML='<div class="empty">没有找到匹配的课程</div>';return}
+  grid.innerHTML=items.map(c=>`
+    <div class="card">
+      <h3>${esc(c.name)}</h3>
+      <div class="meta"><span class="tag ${c.catClass}">${c.category}</span>${c.episodes>0?`<span class="tag">${c.episodes}集</span>`:""}</div>
+      <div class="desc">${esc(c.desc)}</div>
+      <div class="points"><b>核心知识点</b>${c.points.map(p=>`<span>${esc(p)}</span>`).join("")}</div>
+      <div class="tags-row">${c.tags.slice(0,4).map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
+      <div class="detail"><span>📺 ${c.size}</span><span>核心知识点 ${c.points.length}个</span></div>
+    </div>`).join("");
+}
+function renderTabs(){document.getElementById("tabs").innerHTML=CATS.map(c=>`<button class="tab${c==="全部"?" active":""}" data-cat="${c}" onclick="setTab(this)">${c}</button>`).join("")}
+function setTab(el){document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));el.classList.add("active");render()}
+renderTabs();render();
+</script>
+</body>
+</html>

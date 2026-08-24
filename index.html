@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>阳光学院计算机 · 三库合一学习平台</title>
+<style>
+:root {
+  --bg: #f6f7f9;
+  --bg-soft: #ffffff;
+  --card: #ffffff;
+  --text: #18181b;
+  --text-2: #52525b;
+  --text-3: #a1a1aa;
+  --border: #e4e4e7;
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --accent: #8b5cf6;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --shadow: 0 4px 24px rgba(0,0,0,0.06);
+  --shadow-hover: 0 8px 32px rgba(99,102,241,0.15);
+}
+[data-theme="dark"] {
+  --bg: #0f0f14;
+  --bg-soft: #181820;
+  --card: #1e1e28;
+  --text: #f4f4f5;
+  --text-2: #a1a1aa;
+  --text-3: #71717a;
+  --border: #27272a;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  --shadow-hover: 0 8px 32px rgba(99,102,241,0.3);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; transition:background 0.3s,color 0.3s; }
+
+/* 顶部导航 */
+.topbar { height:4px; background:linear-gradient(90deg,var(--primary),var(--accent),#ec4899); }
+.navbar { background:var(--card); border-bottom:1px solid var(--border); padding:0 24px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; backdrop-filter:blur(10px); }
+.nav-brand { display:flex; align-items:center; gap:10px; padding:14px 0; text-decoration:none; color:inherit; }
+.nav-brand .logo { width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,var(--primary),var(--accent)); display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; }
+.nav-brand h1 { font-size:17px; font-weight:700; }
+.nav-brand p { font-size:11px; color:var(--text-3); }
+.nav-links { display:flex; gap:4px; align-items:center; }
+.nav-link { padding:8px 14px; border-radius:8px; font-size:13px; color:var(--text-2); cursor:pointer; transition:all 0.15s; text-decoration:none; display:flex; align-items:center; gap:5px; font-weight:500; }
+.nav-link:hover { background:var(--bg); color:var(--primary); }
+.nav-link.active { background:rgba(99,102,241,0.1); color:var(--primary); font-weight:600; }
+.nav-actions { display:flex; gap:8px; align-items:center; }
+.theme-btn { width:36px; height:36px; border-radius:9px; border:1px solid var(--border); background:var(--bg-soft); cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; transition:all 0.15s; color:var(--text-2); }
+.theme-btn:hover { border-color:var(--primary); color:var(--primary); }
+
+/* 内容区 */
+.wrap { max-width:1200px; margin:0 auto; padding:28px 24px 60px; }
+.page { display:none; animation:fadeIn 0.3s; }
+.page.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+
+/* Hero */
+.hero { background:linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; border-radius:16px; padding:32px; margin-bottom:24px; position:relative; overflow:hidden; }
+.hero::before { content:""; position:absolute; top:-50%; right:-20%; width:400px; height:400px; background:radial-gradient(circle,rgba(255,255,255,0.1),transparent 70%); }
+.hero h2 { font-size:26px; font-weight:700; margin-bottom:8px; position:relative; }
+.hero p { font-size:14px; opacity:0.9; max-width:600px; position:relative; line-height:1.6; }
+.hero-stats { display:flex; gap:16px; margin-top:20px; flex-wrap:wrap; position:relative; }
+.hero-stat { background:rgba(255,255,255,0.15); backdrop-filter:blur(4px); padding:8px 16px; border-radius:999px; font-size:13px; font-weight:600; }
+
+/* 三库卡片 */
+.lib-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:16px; margin-bottom:28px; }
+.lib-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:24px; transition:all 0.2s; cursor:pointer; text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:12px; position:relative; overflow:hidden; }
+.lib-card:hover { transform:translateY(-4px); border-color:var(--primary); box-shadow:var(--shadow-hover); }
+.lib-card .lib-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:26px; }
+.lib-card.policy .lib-icon { background:linear-gradient(135deg,#dbeafe,#bfdbfe); }
+.lib-card.media .lib-icon { background:linear-gradient(135deg,#ede9fe,#ddd6fe); }
+.lib-card.cs .lib-icon { background:linear-gradient(135deg,#dcfce7,#bbf7d0); }
+.lib-card h3 { font-size:18px; font-weight:700; }
+.lib-card .lib-desc { font-size:13px; color:var(--text-2); line-height:1.6; }
+.lib-card .lib-meta { display:flex; gap:8px; flex-wrap:wrap; margin-top:auto; }
+.lib-tag { font-size:11px; padding:3px 10px; border-radius:999px; background:var(--bg); color:var(--text-2); font-weight:500; }
+.lib-card .lib-go { font-size:13px; color:var(--primary); font-weight:600; display:flex; align-items:center; gap:4px; }
+
+/* 搜索栏 */
+.search-bar { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:12px 16px; display:flex; align-items:center; gap:10px; margin-bottom:20px; transition:all 0.15s; }
+.search-bar:focus-within { border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,0.1); }
+.search-bar .icon { font-size:18px; color:var(--text-3); }
+.search-bar input { flex:1; border:none; outline:none; background:transparent; font-size:14px; color:var(--text); font-family:inherit; }
+.search-bar input::placeholder { color:var(--text-3); }
+.search-scope { font-size:12px; padding:4px 10px; border-radius:6px; background:var(--bg); color:var(--text-2); cursor:pointer; border:1px solid var(--border); }
+
+/* 标签筛选 */
+.filter-bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+.filter-chip { padding:6px 14px; border-radius:999px; background:var(--card); border:1px solid var(--border); font-size:13px; cursor:pointer; color:var(--text-2); transition:all 0.15s; font-weight:500; }
+.filter-chip:hover { border-color:var(--primary); color:var(--primary); }
+.filter-chip.active { background:var(--primary); border-color:var(--primary); color:#fff; }
+
+/* 内容卡片网格 */
+.card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px; }
+.item-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; transition:all 0.15s; display:flex; flex-direction:column; gap:8px; }
+.item-card:hover { border-color:var(--primary); box-shadow:var(--shadow-hover); transform:translateY(-2px); }
+.item-card .item-head { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+.item-card h4 { font-size:14px; font-weight:600; line-height:1.4; }
+.item-card .item-cat { font-size:11px; padding:2px 8px; border-radius:999px; background:rgba(99,102,241,0.1); color:var(--primary); white-space:nowrap; font-weight:600; }
+.item-card .item-desc { font-size:13px; color:var(--text-2); line-height:1.5; }
+.item-card .item-meta { display:flex; gap:10px; font-size:11px; color:var(--text-3); margin-top:auto; padding-top:8px; border-top:1px dashed var(--border); flex-wrap:wrap; }
+.item-card .item-tags { display:flex; gap:4px; flex-wrap:wrap; }
+.item-card .item-tag { font-size:10px; padding:1px 7px; border-radius:4px; background:var(--bg); color:var(--text-3); }
+
+/* 时间线 */
+.timeline { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:24px; }
+.timeline h3 { font-size:16px; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.tl-track { display:flex; gap:10px; overflow-x:auto; padding-bottom:8px; }
+.tl-card { flex:0 0 180px; background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:12px; }
+.tl-card.now { border-color:var(--primary); background:rgba(99,102,241,0.05); }
+.tl-card .tl-month { font-size:12px; font-weight:700; color:var(--primary); margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+.tl-card.now .tl-month::after { content:"本月"; font-size:10px; background:var(--primary); color:#fff; border-radius:999px; padding:1px 7px; }
+.tl-item { font-size:12px; line-height:1.45; margin-bottom:6px; }
+.tl-item b { display:block; font-weight:600; }
+.tl-item span { display:block; color:var(--text-3); font-size:11px; margin-top:1px; }
+
+/* 学习路线 */
+.route-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; }
+.route-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px; }
+.route-card h4 { font-size:15px; font-weight:700; margin-bottom:8px; }
+.route-card .route-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+.route-card .route-tag { font-size:11px; padding:2px 8px; border-radius:6px; background:rgba(99,102,241,0.1); color:var(--primary); font-weight:500; }
+.route-card p { font-size:13px; color:var(--text-2); line-height:1.6; }
+.route-card .route-meta { display:flex; justify-content:space-between; font-size:11px; color:var(--text-3); margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); }
+
+/* 空状态 */
+.empty { text-align:center; padding:48px 20px; color:var(--text-3); }
+.empty .icon { font-size:48px; margin-bottom:12px; opacity:0.5; }
+.empty p { font-size:14px; }
+
+/* 页脚 */
+.footer { text-align:center; color:var(--text-3); font-size:12px; padding:24px 0; border-top:1px solid var(--border); margin-top:40px; }
+
+/* 响应式 */
+@media(max-width:768px) {
+  .navbar { padding:0 16px; }
+  .nav-brand h1 { font-size:15px; }
+  .nav-brand p { display:none; }
+  .nav-link { padding:6px 10px; font-size:12px; }
+  .wrap { padding:20px 16px 40px; }
+  .hero { padding:24px; }
+  .hero h2 { font-size:22px; }
+  .lib-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar"></div>
+
+<nav class="navbar">
+  <a class="nav-brand" href="#" onclick="switchPage('home');return false;">
+    <div class="logo">📚</div>
+    <div>
+      <h1>三库合一学习平台</h1>
+      <p>阳光学院计算机 · 政策 + 课程 + 编程</p>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a class="nav-link active" data-page="home" onclick="switchPage('home')">🏠 首页</a>
+    <a class="nav-link" data-page="policy" onclick="switchPage('policy')">📋 政策库</a>
+    <a class="nav-link" data-page="media" onclick="switchPage('media')">🎬 课程库</a>
+    <a class="nav-link" data-page="cs" onclick="switchPage('cs')">💻 编程库</a>
+  </div>
+  <div class="nav-actions">
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- 首页 -->
+  <div class="page active" id="page-home">
+    <div class="hero">
+      <h2>🎓 你的一站式学习资源中心</h2>
+      <p>整合政策资料库、学习资源库、计算机编程库，外加班委工具箱。学习、备考、竞赛、班级管理，一个平台全搞定。</p>
+      <div class="hero-stats">
+        <span class="hero-stat">📋 政策 50+ 条</span>
+        <span class="hero-stat">🎬 课程 7+ 套</span>
+        <span class="hero-stat">💻 编程资源 30+</span>
+        <span class="hero-stat">🛠️ 班委工具箱</span>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <span class="icon">🔍</span>
+      <input type="text" placeholder="全局搜索：政策 / 课程 / 编程资源 / 知识点..." oninput="globalSearch(this.value)">
+      <span class="search-scope">全部</span>
+    </div>
+
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;">📂 三库直达</h3>
+    <div class="lib-grid">
+      <a class="lib-card policy" onclick="switchPage('policy')">
+        <div class="lib-icon">📋</div>
+        <h3>政策资料库</h3>
+        <p class="lib-desc">阳光学院官方政策 · 考研/考公/竞赛/证书官方链接 · 本学年行动时间线 · 搜索即查</p>
+        <div class="lib-meta">
+          <span class="lib-tag">入学资助</span>
+          <span class="lib-tag">考公考研</span>
+          <span class="lib-tag">竞赛证书</span>
+        </div>
+        <div class="lib-go">进入政策库 →</div>
+      </a>
+      <a class="lib-card media" onclick="switchPage('media')">
+        <div class="lib-icon">🎬</div>
+        <h3>学习资源库</h3>
+        <p class="lib-desc">AI智能体课程 · 公考课程 · 个人成长课程 · 推荐学习路线 · 免费公开资源推荐</p>
+        <div class="lib-meta">
+          <span class="lib-tag">AI智能体</span>
+          <span class="lib-tag">公考</span>
+          <span class="lib-tag">个人成长</span>
+        </div>
+        <div class="lib-go">进入课程库 →</div>
+      </a>
+      <a class="lib-card cs" onclick="switchPage('cs')">
+        <div class="lib-icon">💻</div>
+        <h3>计算机编程库</h3>
+        <p class="lib-desc">C语言/Python/算法/计组/计网学习资源 · B站免费课 · MOOC名校课 · LeetCode刷题</p>
+        <div class="lib-meta">
+          <span class="lib-tag">C语言</span>
+          <span class="lib-tag">Python</span>
+          <span class="lib-tag">算法</span>
+        </div>
+        <div class="lib-go">进入编程库 →</div>
+      </a>
+    </div>
+
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;">📅 本学年行动时间线</h3>
+    <div class="timeline">
+      <div class="tl-track" id="homeTimeline"></div>
+    </div>
+
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;">🎯 推荐学习路线</h3>
+    <div class="route-grid">
+      <div class="route-card">
+        <h4>大一上 · 基础打牢</h4>
+        <div class="route-tags"><span class="route-tag">C语言</span><span class="route-tag">高数</span><span class="route-tag">四级</span></div>
+        <p>重点搞定C语言编程基础、高等数学上册、英语四级词汇。课余了解AI智能体工具，用AI提高学习效率。</p>
+        <div class="route-meta"><span>优先级：⭐⭐⭐</span><span>周期：3-4个月</span></div>
+      </div>
+      <div class="route-card">
+        <h4>大一下 · 竞赛入门</h4>
+        <div class="route-tags"><span class="route-tag">蓝桥杯</span><span class="route-tag">数学建模</span><span class="route-tag">Python</span></div>
+        <p>参加蓝桥杯省赛（4月）、数学建模国赛（9月）。学习Python数据分析，开始接触AI智能体实战。</p>
+        <div class="route-meta"><span>优先级：⭐⭐⭐</span><span>周期：3-4个月</span></div>
+      </div>
+      <div class="route-card">
+        <h4>大二 · 能力分化</h4>
+        <div class="route-tags"><span class="route-tag">考公/考研</span><span class="route-tag">AI副业</span><span class="route-tag">专业深化</span></div>
+        <p>确定方向：考公路线开始了解行测申论，考研路线开始数学英语基础。探索AI智能体接单，培养副业能力。</p>
+        <div class="route-meta"><span>优先级：⭐⭐</span><span>周期：全年</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 政策库 -->
+  <div class="page" id="page-policy">
+    <div class="search-bar">
+      <span class="icon">🔍</span>
+      <input type="text" placeholder="搜索政策：助学贷款 / 蓝桥杯 / 考研 / 四六级..." oninput="filterPolicy(this.value)">
+      <span class="search-scope">政策库</span>
+    </div>
+    <div class="filter-bar" id="policyFilters"></div>
+    <div class="card-grid" id="policyList"></div>
+  </div>
+
+  <!-- 课程库 -->
+  <div class="page" id="page-media">
+    <div class="search-bar">
+      <span class="icon">🔍</span>
+      <input type="text" placeholder="搜索课程：Coze / 公考 / 减脂 / AI智能体..." oninput="filterMedia(this.value)">
+      <span class="search-scope">课程库</span>
+    </div>
+    <div class="filter-bar" id="mediaFilters"></div>
+    <div class="card-grid" id="mediaList"></div>
+  </div>
+
+  <!-- 编程库 -->
+  <div class="page" id="page-cs">
+    <div class="search-bar">
+      <span class="icon">🔍</span>
+      <input type="text" placeholder="搜索：C语言 / Python / 算法 / 数据结构 / 计组..." oninput="filterCS(this.value)">
+      <span class="search-scope">编程库</span>
+    </div>
+    <div class="filter-bar" id="csFilters"></div>
+    <div class="card-grid" id="csList"></div>
+  </div>
+
+  <div class="footer">
+    三库合一学习平台 · 阳光学院计算机专业 · 仅供学习交流 · 政策链接均来自官方渠道
+  </div>
+</div>
+
+<script>
+// ===== 数据 =====
+const policyData = [
+  {title:"2026-2027学年校历", cat:"校内", desc:"阳光学院2026-2027学年校历通知，含开学、放假、考试时间安排", source:"校内文件", date:"2026-08", tags:["校历","开学","放假"]},
+  {title:"福建省生源地信用助学贷款操作指南", cat:"资助", desc:"福建省生源地信用助学贷款申请流程、材料准备、还款说明", source:"校内文件", date:"2026-08", tags:["助学贷款","资助","大一新生"]},
+  {title:"国家资助福建省资助政策明白卡", cat:"资助", desc:"国家奖学金、国家励志奖学金、国家助学金、生源地贷款等资助政策汇总", source:"校内文件", date:"2026-08", tags:["奖学金","助学金","资助"]},
+  {title:"致在榕高校大学生医保的一封信", cat:"医保", desc:"福州市大学生医保参保指南、报销流程、定点医院说明", source:"校内文件", date:"2026-08", tags:["医保","报销","福州"]},
+  {title:"各专业辅修培养方案汇总", cat:"学业", desc:"阳光学院各专业辅修/双学位培养方案，申请条件和流程", source:"校内文件", date:"2026-08", tags:["辅修","双学位","学业"]},
+  {title:"大一新生开学必备清单", cat:"入学", desc:"大一新生入学必备物品清单、报到流程、注意事项", source:"校内文件", date:"2026-08", tags:["新生","入学","清单"]},
+  {title:"阳光学院图书馆资源指南", cat:"学业", desc:"图书馆馆藏查询、电子资源数据库、借阅规则、自习室预约", source:"校内文件", date:"2026-08", tags:["图书馆","数据库","自习"]},
+  {title:"阳光学院教务系统使用指南", cat:"学业", desc:"选课、查成绩、评教、培养方案查询、考试安排", source:"校内文件", date:"2026-08", tags:["教务系统","选课","成绩"]},
+  {title:"阳光学院校园网使用指南", cat:"生活", desc:"校园网连接方式、账号密码、流量套餐、故障排查", source:"校内文件", date:"2026-08", tags:["校园网","网络","故障"]},
+  {title:"阳光学院食堂/超市/快递指南", cat:"生活", desc:"各食堂楼层分布、超市位置、快递点地址、取件方式", source:"校内文件", date:"2026-08", tags:["食堂","快递","生活"]},
+  {title:"2026年学科竞赛分享会", cat:"竞赛", desc:"阳光学院学科竞赛分享会资料，含蓝桥杯、数学建模、互联网+等竞赛介绍", source:"校内文件", date:"2026-08", tags:["竞赛","蓝桥杯","数学建模"]},
+  {title:"研招网 - 国家政策", cat:"考研", desc:"教育部研究生招生考试官方政策、报名条件、考试安排", source:"官方链接", date:"持续更新", tags:["考研","政策","教育部"]},
+  {title:"国家公务员局", cat:"考公", desc:"国家公务员考试官方网站，招考公告、报名入口、成绩查询", source:"官方链接", date:"持续更新", tags:["国考","公务员","招考"]},
+  {title:"福建省公务员考试录用网", cat:"考公", desc:"福建省公务员考试/选调生官方网站，公告、职位表、成绩查询", source:"官方链接", date:"持续更新", tags:["福建省考","选调","职位表"]},
+  {title:"蓝桥杯大赛", cat:"竞赛", desc:"蓝桥杯全国软件和信息技术专业人才大赛官方网站，报名、赛程、真题", source:"官方链接", date:"每年10月报名", tags:["蓝桥杯","编程","算法"]},
+  {title:"ACM-ICPC国际大学生程序设计竞赛", cat:"竞赛", desc:"ACM国际大学生程序设计竞赛官方网站，亚洲区域赛、全球总决赛", source:"官方链接", date:"每年9月报名", tags:["ACM","算法","编程竞赛"]},
+  {title:"全国大学生数学建模竞赛", cat:"竞赛", desc:"全国大学生数学建模竞赛官方网站，报名、赛题、获奖名单", source:"官方链接", date:"每年9月比赛", tags:["数学建模","竞赛","数据分析"]},
+  {title:"中国国际大学生创新大赛（互联网+）", cat:"竞赛", desc:"原中国互联网+大学生创新创业大赛，高教主赛道、红旅赛道、产业赛道", source:"官方链接", date:"每年4-10月", tags:["互联网+","创新创业","大创"]},
+  {title:"挑战杯全国大学生课外学术科技作品竞赛", cat:"竞赛", desc:"挑战杯全国大学生课外学术科技作品竞赛和创业计划大赛", source:"官方链接", date:"奇数年举办", tags:["挑战杯","课外学术","创业"]},
+  {title:"CCPC中国大学生程序设计竞赛", cat:"竞赛", desc:"中国大学生程序设计竞赛官方网站，分站赛、总决赛", source:"官方链接", date:"每年5-11月", tags:["CCPC","编程","算法"]},
+  {title:"中国大学生计算机设计大赛", cat:"竞赛", desc:"中国大学生计算机设计大赛官方网站，软件应用、微课、数媒等类别", source:"官方链接", date:"每年3-8月", tags:["计算机设计","软件","数媒"]},
+  {title:"全国大学生英语竞赛（NECCS）", cat:"竞赛", desc:"全国大学生英语竞赛官方网站，初赛/决赛、获奖证书、真题", source:"官方链接", date:"每年4月初赛", tags:["英语竞赛","NECCS","四级"]},
+  {title:"全国计算机等级考试（NCRE）", cat:"证书", desc:"全国计算机等级考试官方网站，报名、成绩查询、证书查询", source:"官方链接", date:"每年3/9/12月", tags:["计算机二级","NCRE","证书"]},
+  {title:"大学英语四六级考试（CET）", cat:"证书", desc:"全国大学英语四、六级考试官方网站，报名、成绩查询", source:"官方链接", date:"每年6/12月", tags:["四级","六级","CET","英语"]},
+  {title:"软件专业技术资格（水平）考试", cat:"证书", desc:"计算机技术与软件专业技术资格（水平）考试，初级/中级/高级", source:"官方链接", date:"每年5/11月", tags:["软考","程序员","证书"]},
+  {title:"教师资格考试（NTCE）", cat:"证书", desc:"中小学教师资格考试官方网站，笔试/面试报名、成绩查询、认定", source:"官方链接", date:"每年3/11月笔试", tags:["教资","教师资格","证书"]},
+];
+
+const mediaData = [
+  {title:"宋浩高等数学全程教学视频2.0版", cat:"数学", desc:"B站宋浩老师高等数学全程教学视频，上册+下册，适合大一新生", source:"B站免费", tags:["高数","宋浩","B站","大一"]},
+  {title:"宋浩线性代数", cat:"数学", desc:"B站宋浩老师线性代数全程教学视频，适合大一下学期", source:"B站免费", tags:["线代","宋浩","B站","大一"]},
+  {title:"宋浩概率论与数理统计", cat:"数学", desc:"B站宋浩老师概率论与数理统计全程教学视频", source:"B站免费", tags:["概率论","宋浩","B站","大二"]},
+  {title:"翁恺C语言程序设计", cat:"编程基础", desc:"浙江大学翁恺老师C语言程序设计课程，MOOC国家级精品课", source:"中国大学MOOC", tags:["C语言","翁恺","浙大","入门"]},
+  {title:"黑马程序员Python入门教程", cat:"编程基础", desc:"黑马程序员Python零基础入门教程，含基础语法、项目实战", source:"B站免费", tags:["Python","黑马","入门","B站"]},
+  {title:"数据结构与算法（陈越）", cat:"核心课", desc:"浙江大学陈越、何钦铭老师数据结构课程，MOOC国家级精品课", source:"中国大学MOOC", tags:["数据结构","算法","浙大","考研408"]},
+  {title:"计算机组成原理（唐朔飞）", cat:"核心课", desc:"哈工大唐朔飞老师计算机组成原理课程，考研408核心科目", source:"中国大学MOOC", tags:["计组","唐朔飞","哈工大","考研408"]},
+  {title:"计算机网络（谢希仁）", cat:"核心课", desc:"计算机网络经典教材配套课程，TCP/IP、HTTP、网络安全等", source:"B站免费", tags:["计网","谢希仁","TCP/IP","考研408"]},
+  {title:"操作系统（汤小丹）", cat:"核心课", desc:"西安电子科技大学汤小丹老师操作系统课程，进程、内存、文件系统", source:"中国大学MOOC", tags:["操作系统","汤小丹","西电","考研408"]},
+  {title:"刘晓艳四级词汇课", cat:"英语", desc:"刘晓艳老师大学英语四级词汇课程，词根记忆法，适合四级备考", source:"B站免费", tags:["四级","英语","词汇","刘晓艳"]},
+  {title:"刘晓艳四级语法课", cat:"英语", desc:"刘晓艳老师大学英语四级语法课程，系统梳理语法体系", source:"B站免费", tags:["四级","英语","语法","刘晓艳"]},
+  {title:"考虫四级系统班", cat:"英语", desc:"考虫四级系统班，听力/阅读/写作/翻译全题型覆盖", source:"付费课程", tags:["四级","英语","考虫","系统班"]},
+  {title:"白先生AI流量体-老板的随身操盘手", cat:"AI智能体", desc:"AI智能体流量变现课程，含个人IP打造、内容生产、私域运营、变现路径", source:"付费课程", tags:["AI","流量","变现","IP"]},
+  {title:"秋叶AI智能体课程", cat:"AI智能体", desc:"秋叶团队AI智能体实战课程，Coze/扣子平台操作、智能体搭建、工作流设计", source:"付费课程", tags:["Coze","扣子","智能体","工作流"]},
+  {title:"猴帝AI智能体线上课", cat:"AI智能体", desc:"猴帝AI智能体线上课程，从入门到实战，含多个行业案例拆解", source:"付费课程", tags:["AI","智能体","案例"]},
+  {title:"陈厂长AI智能体实战创业营", cat:"AI智能体", desc:"陈厂长AI智能体实战创业营，从0到1搭建AI智能体，含创业落地指导", source:"付费课程", tags:["AI","创业","智能体","实战"]},
+  {title:"王大锤26蓝图公考青云宏志班", cat:"公考", desc:"王大锤公考全程班，行测+申论系统课程，含刷题、模考、答疑", source:"付费课程", tags:["公考","行测","申论","全程班"]},
+  {title:"34省+国考真题合集", cat:"公考", desc:"全国34个省份+国家公务员考试历年真题汇总，含答案解析", source:"资料合集", tags:["真题","国考","省考","答案解析"]},
+  {title:"大齐超级个体认知成长学习圈", cat:"个人成长", desc:"大齐超级个体认知成长学习圈，36集涵盖形象、法律、营养、自媒体、财务、减脂等", source:"付费课程", tags:["认知","成长","形象","法律","自媒体"]},
+  {title:"Coze扣子AI智能体平台", cat:"免费资源", desc:"字节跳动Coze扣子AI智能体搭建平台，免费使用，支持发布到多个平台", source:"官方平台", tags:["Coze","扣子","AI","免费"]},
+  {title:"B站免费编程课程合集", cat:"免费资源", desc:"B站免费编程课程汇总，C/Python/Java/前端/算法全覆盖", source:"B站免费", tags:["B站","编程","免费","合集"]},
+];
+
+const csData = [
+  {title:"C语言程序设计（翁恺）", cat:"基础课", desc:"浙江大学翁恺老师C语言程序设计课程，MOOC精品课，适合零基础入门", source:"中国大学MOOC", tags:["C语言","翁恺","浙大","入门"]},
+  {title:"Python编程从入门到实践", cat:"基础课", desc:"Python经典教材配套视频，基础语法+项目实战，适合初学者", source:"B站免费", tags:["Python","入门","实战"]},
+  {title:"数据结构与算法（陈越）", cat:"核心课", desc:"浙江大学陈越、何钦铭老师数据结构课程，MOOC国家级精品课", source:"中国大学MOOC", tags:["数据结构","算法","浙大","考研408"]},
+  {title:"计算机组成原理（唐朔飞）", cat:"核心课", desc:"哈工大唐朔飞老师计算机组成原理课程，考研408核心科目", source:"中国大学MOOC", tags:["计组","唐朔飞","哈工大","考研408"]},
+  {title:"计算机网络（谢希仁）", cat:"核心课", desc:"计算机网络经典教材配套课程，TCP/IP、HTTP、网络安全等", source:"B站免费", tags:["计网","谢希仁","TCP/IP","考研408"]},
+  {title:"操作系统（汤小丹）", cat:"核心课", desc:"西安电子科技大学汤小丹老师操作系统课程，进程、内存、文件系统", source:"中国大学MOOC", tags:["操作系统","汤小丹","西电","考研408"]},
+  {title:"LeetCode力扣刷题", cat:"刷题", desc:"LeetCode力扣算法刷题平台，1000+道算法题，支持多种语言，面试必备", source:"官方平台", tags:["LeetCode","算法","刷题","面试"]},
+  {title:"洛谷OJ", cat:"刷题", desc:"洛谷在线评测平台，适合算法竞赛入门，含题单、题解、讨论区", source:"官方平台", tags:["洛谷","OJ","算法竞赛","入门"]},
+  {title:"Codeforces", cat:"刷题", desc:"Codeforces国际算法竞赛平台，每周比赛，适合进阶算法训练", source:"官方平台", tags:["Codeforces","竞赛","算法","进阶"]},
+  {title:"GitHub开源项目", cat:"资源", desc:"GitHub全球最大开源社区，搜索优秀项目学习源码，参与开源贡献", source:"官方平台", tags:["GitHub","开源","源码","项目"]},
+  {title:"Gitee码云", cat:"资源", desc:"Gitee码云国内Git托管平台，访问速度快，适合国内开发者", source:"官方平台", tags:["Gitee","Git","国内","托管"]},
+  {title:"菜鸟教程", cat:"资源", desc:"菜鸟教程在线编程教程，涵盖HTML/CSS/JS/Python/Java/C等多种语言", source:"官方平台", tags:["菜鸟教程","在线","多语言","入门"]},
+  {title:"MDN Web Docs", cat:"资源", desc:"Mozilla开发者网络，Web前端开发权威文档，HTML/CSS/JS参考", source:"官方平台", tags:["MDN","前端","Web","文档"]},
+  {title:"Stack Overflow", cat:"资源", desc:"Stack Overflow全球最大程序员问答社区，编程问题搜索首选", source:"官方平台", tags:["StackOverflow","问答","社区","英文"]},
+  {title:"掘金", cat:"资源", desc:"掘金国内技术社区，前端/后端/AI/移动端技术文章，适合学习和分享", source:"官方平台", tags:["掘金","技术社区","文章","国内"]},
+  {title:"CSDN", cat:"资源", desc:"CSDN中国最大IT技术社区，博客、下载、问答、课程", source:"官方平台", tags:["CSDN","博客","IT","国内"]},
+  {title:"VS Code编辑器", cat:"工具", desc:"Visual Studio Code微软开源代码编辑器，插件丰富，轻量高效", source:"官方下载", tags:["VSCode","编辑器","微软","免费"]},
+  {title:"JetBrains全家桶", cat:"工具", desc:"JetBrains系列IDE，PyCharm/IDEA/CLion等，学生免费授权", source:"官方下载", tags:["JetBrains","IDE","学生免费","专业"]},
+  {title:"Git版本控制", cat:"工具", desc:"Git分布式版本控制系统，程序员必备技能，配合GitHub/Gitee使用", source:"官方文档", tags:["Git","版本控制","必备","协作"]},
+  {title:"Docker容器化", cat:"工具", desc:"Docker容器化部署工具，一次构建到处运行，适合项目部署", source:"官方文档", tags:["Docker","容器","部署","DevOps"]},
+  {title:"Postman接口测试", cat:"工具", desc:"Postman API接口测试工具，支持REST/GraphQL，调试后端必备", source:"官方下载", tags:["Postman","API","接口测试","后端"]},
+  {title:"Anaconda数据科学", cat:"工具", desc:"Anaconda Python数据科学发行版，含conda包管理，适合AI/数据分析", source:"官方下载", tags:["Anaconda","Python","数据科学","AI"]},
+  {title:"Ollama本地大模型", cat:"AI工具", desc:"Ollama本地大模型运行工具，支持Llama/Qwen/DeepSeek等，免费离线使用", source:"官方下载", tags:["Ollama","大模型","本地","免费"]},
+  {title:"Dify LLMOps平台", cat:"AI工具", desc:"Dify开源LLM应用开发平台，支持RAG、Agent、工作流，可私有化部署", source:"开源项目", tags:["Dify","LLM","RAG","Agent","开源"]},
+  {title:"Coze扣子AI平台", cat:"AI工具", desc:"字节跳动Coze扣子AI智能体搭建平台，零代码创建AI Bot，支持多平台发布", source:"官方平台", tags:["Coze","扣子","AI","零代码"]},
+  {title:"Hugging Face", cat:"AI资源", desc:"Hugging Face全球最大AI模型社区，模型、数据集、Spaces应用，免费使用", source:"官方平台", tags:["HuggingFace","模型","数据集","AI"]},
+  {title:"ModelScope魔搭", cat:"AI资源", desc:"阿里达摩院ModelScope魔搭社区，国内AI模型平台，中文模型丰富", source:"官方平台", tags:["ModelScope","魔搭","AI","国内"]},
+  {title:"AI绘画Midjourney", cat:"AI工具", desc:"Midjourney AI绘画工具，通过Discord使用，生成高质量图片", source:"付费平台", tags:["Midjourney","AI绘画","图片","付费"]},
+  {title:"Stable Diffusion", cat:"AI工具", desc:"Stable Diffusion开源AI绘画模型，可本地部署，免费使用", source:"开源项目", tags:["StableDiffusion","AI绘画","本地","开源"]},
+];
+
+const timelineData = [
+  {month:"8月", items:[{title:"新生报到",desc:"8月底开学报到"},{title:"助学贷款申请",desc:"生源地贷款办理"}]},
+  {month:"9月", items:[{title:"数学建模国赛",desc:"9月中旬比赛"},{title:"计算机二级报名",desc:"9月考试报名"}]},
+  {month:"10月", items:[{title:"蓝桥杯报名",desc:"10月开启报名"},{title:"互联网+报名",desc:"校级初赛启动"}]},
+  {month:"11月", items:[{title:"软考",desc:"11月上旬考试"},{title:"四六级报名",desc:"12月考试报名"}]},
+  {month:"12月", items:[{title:"英语四六级",desc:"12月中旬考试"},{title:"期末考试",desc:"12月底-1月初"}]},
+  {month:"1月", items:[{title:"寒假",desc:"1月中旬放假"},{title:"考研初试",desc:"12月底-1月初"}]},
+  {month:"2月", items:[{title:"寒假学习",desc:"利用假期充电"},{title:"考研成绩",desc:"2月中下旬出分"}]},
+  {month:"3月", items:[{title:"计算机等级考试",desc:"3月底考试"},{title:"互联网+省赛",desc:"3-4月省级复赛"}]},
+  {month:"4月", items:[{title:"蓝桥杯省赛",desc:"4月中旬比赛"},{title:"省考联考",desc:"多省公务员联考"}]},
+  {month:"5月", items:[{title:"软考",desc:"5月下旬考试"},{title:"挑战杯",desc:"奇数年5月决赛"}]},
+  {month:"6月", items:[{title:"英语四六级",desc:"6月中旬考试"},{title:"期末考试",desc:"6月底-7月初"}]},
+  {month:"7月", items:[{title:"暑假",desc:"7月中旬放假"},{title:"ACM暑期集训",desc:"算法竞赛集训"}]},
+];
+
+// ===== 主题切换 =====
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('theme', isDark ? 'light' : 'dark');
+}
+if (localStorage.getItem('theme') === 'dark') {
+  document.documentElement.setAttribute('data-theme', 'dark');
+  document.getElementById('themeBtn').textContent = '☀️';
+}
+
+// ===== 页面切换 =====
+function switchPage(name) {
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.nav-link[data-page="${name}"]`).classList.add('active');
+  document.getElementById('page-' + name).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ===== 渲染 =====
+function renderTimeline(containerId) {
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = timelineData.map((t,i) => {
+    const monthNum = parseInt(t.month);
+    const isNow = monthNum === currentMonth;
+    return `<div class="tl-card ${isNow?'now':''}">
+      <div class="tl-m">📅 ${t.month}</div>
+      ${t.items.map(item => `<div class="tl-item"><b>${item.title}</b><span>${item.desc}</span></div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+function renderFilters(containerId, data, key) {
+  const cats = ['全部', ...new Set(data.map(d => d[key]))];
+  document.getElementById(containerId).innerHTML = cats.map((c,i) =>
+    `<div class="filter-chip ${i===0?'active':''}" onclick="filterByCat('${containerId}','${key}','${c}',this)">${c}</div>`
+  ).join('');
+}
+
+let currentFilter = {policy:'全部', media:'全部', cs:'全部'};
+let currentSearch = {policy:'', media:'', cs:''};
+
+function filterByCat(containerId, key, cat, el) {
+  document.querySelectorAll(`#${containerId} .filter-chip`).forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const type = containerId.replace('Filters','');
+  currentFilter[type] = cat;
+  renderList(type);
+}
+
+function renderList(type) {
+  const dataMap = {policy:policyData, media:mediaData, cs:csData};
+  const listId = {policy:'policyList', media:'mediaList', cs:'csList'};
+  const data = dataMap[type];
+  const filter = currentFilter[type];
+  const search = currentSearch[type].toLowerCase();
+  const filtered = data.filter(d => {
+    const matchCat = filter === '全部' || d.cat === filter;
+    const matchSearch = !search || d.title.toLowerCase().includes(search) || d.desc.toLowerCase().includes(search) || d.tags.some(t => t.toLowerCase().includes(search));
+    return matchCat && matchSearch;
+  });
+  document.getElementById(listId[type]).innerHTML = filtered.length ? filtered.map(d => `
+    <div class="item-card">
+      <div class="item-head">
+        <h4>${d.title}</h4>
+        <span class="item-cat">${d.cat}</span>
+      </div>
+      <div class="item-desc">${d.desc}</div>
+      <div class="item-tags">${d.tags.map(t => `<span class="item-tag">${t}</span>`).join('')}</div>
+      <div class="item-meta"><span>📌 ${d.source}</span><span>📅 ${d.date}</span></div>
+    </div>
+  `).join('') : '<div class="empty"><div class="icon">🔍</div><p>没有找到匹配的内容</p></div>';
+}
+
+function filterPolicy(q) { currentSearch.policy = q; renderList('policy'); }
+function filterMedia(q) { currentSearch.media = q; renderList('media'); }
+function filterCS(q) { currentSearch.cs = q; renderList('cs'); }
+
+function globalSearch(q) {
+  if (!q) return;
+  switchPage('policy');
+  currentSearch.policy = q;
+  document.querySelector('#page-policy .search-bar input').value = q;
+  renderList('policy');
+}
+
+// ===== 初始化 =====
+renderTimeline('homeTimeline');
+renderFilters('policyFilters', policyData, 'cat');
+renderFilters('mediaFilters', mediaData, 'cat');
+renderFilters('csFilters', csData, 'cat');
+renderList('policy');
+renderList('media');
+renderList('cs');
+</script>
+</body>
+</html>

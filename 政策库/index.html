@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>政策资料库 · 阳光学院计算机专业</title>
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --surface:#ffffff; --surface2:#f3f4f5;
+  --ink:#18181b; --ink2:#3f3f46; --muted:#71717a; --faint:#a1a1aa;
+  --brand:#5e6ad2; --accent:#6366f1; --accent-hover:#4f46e5;
+  --line:#e4e4e7; --line-subtle:#ececf0;
+  --green:#059669; --amber:#b45309;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Inter","PingFang SC","Microsoft YaHei",system-ui,sans-serif;color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;background:
+  radial-gradient(1100px 480px at 50% -220px, rgba(99,102,241,.08), transparent 60%),
+  var(--bg)}
+header{background:var(--panel);border-bottom:1px solid var(--line);padding:30px 24px 24px;position:relative;overflow:hidden}
+header::after{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,.5),transparent)}
+header h1{font-size:22px;font-weight:700;letter-spacing:-.5px;display:flex;align-items:center;gap:10px}
+header h1::before{content:"▦";font-size:15px;background:linear-gradient(135deg,var(--brand),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+header p{font-size:13px;color:var(--muted);margin-top:6px}
+.stat{display:inline-block;background:rgba(99,102,241,.09);border:1px solid rgba(99,102,241,.22);border-radius:999px;padding:2px 12px;font-size:12px;color:var(--accent-hover);margin-left:8px;font-weight:600}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:22px 0 4px}
+.search{flex:1;min-width:220px;position:relative}
+.search input{width:100%;padding:10px 14px 10px 38px;border:1px solid var(--line);border-radius:8px;font-size:14px;outline:none;background:#fff;color:var(--ink);transition:border .15s,box-shadow .15s}
+.search input::placeholder{color:var(--faint)}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+.search::before{content:"⌕";position:absolute;left:14px;top:8px;font-size:16px;color:var(--faint)}
+.btn{padding:9px 16px;border:1px solid var(--line);border-radius:8px;font-size:13px;cursor:pointer;font-weight:600;transition:all .15s;background:#fff;color:var(--ink2)}
+.btn:hover{border-color:var(--accent);color:var(--accent-hover)}
+.btn-primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn-primary:hover{background:var(--accent-hover);border-color:var(--accent-hover);color:#fff}
+.btn-ghost{background:transparent}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.tab{padding:7px 15px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13px;cursor:pointer;transition:all .15s;color:var(--muted);font-weight:600}
+.tab:hover{border-color:var(--accent);color:var(--accent-hover)}
+.tab.active{background:var(--brand);border-color:var(--brand);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin:8px 0 40px}
+.card{background:#fff;border-radius:10px;padding:16px;border:1px solid var(--line);transition:transform .15s,border-color .15s,box-shadow .15s;display:flex;flex-direction:column;gap:8px}
+.card:hover{transform:translateY(-2px);border-color:rgba(99,102,241,.45);box-shadow:0 0 0 1px rgba(99,102,241,.1),0 10px 30px rgba(24,24,27,.08)}
+.card h3{font-size:15px;font-weight:600;line-height:1.45;letter-spacing:-.2px}
+.card h3 a{color:var(--ink);text-decoration:none}
+.card h3 a:hover{color:var(--accent-hover)}
+.card .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tag{font-size:11px;padding:2px 10px;border-radius:999px;background:rgba(99,102,241,.09);border:1px solid rgba(99,102,241,.2);color:var(--accent-hover);font-weight:600}
+.tag.local{background:#fffbeb;border-color:#fde68a;color:var(--amber)}
+.tag.src{background:#f4f4f5;color:var(--muted);font-weight:400;border-color:transparent}
+.badge-new{background:#ecfdf5;border-color:#a7f3d0;color:var(--green)}
+.card .desc{font-size:13px;color:var(--muted);line-height:1.55}
+.card .foot{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--faint);border-top:1px dashed var(--line);padding-top:8px;margin-top:auto}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:60px 0;font-size:14px}
+.modal{display:none;position:fixed;inset:0;background:rgba(24,24,27,.4);backdrop-filter:blur(4px);z-index:50;align-items:center;justify-content:center}
+.modal.show{display:flex}
+.modal-box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;width:92%;max-width:480px;max-height:88vh;overflow-y:auto;box-shadow:0 24px 60px rgba(24,24,27,.15)}
+.modal-box h2{font-size:17px;margin-bottom:16px;font-weight:700;letter-spacing:-.3px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px;outline:none;font-family:inherit;background:#fff;color:var(--ink)}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+.field textarea{resize:vertical;min-height:60px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+footer{text-align:center;color:var(--faint);font-size:12px;padding:20px 0 40px}
+/* ── 本学年行动时间线 ── */
+.tl{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0 2px}
+.tl-head{display:flex;align-items:baseline;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tl-head h2{font-size:15px;font-weight:700;letter-spacing:-.3px}
+.tl-head .tl-note{font-size:12px;color:var(--faint)}
+.tl-track{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
+.tl-card{flex:0 0 172px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
+.tl-card.now{border-color:var(--accent);background:rgba(99,102,241,.05);box-shadow:0 0 0 1px rgba(99,102,241,.15)}
+.tl-card .tl-m{font-size:12px;font-weight:700;color:var(--accent-hover);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.tl-card.now .tl-m::after{content:"本月";font-size:10px;background:var(--brand);color:#fff;border-radius:999px;padding:1px 7px;font-weight:600}
+.tl-item{font-size:12px;line-height:1.45;margin-bottom:7px}
+.tl-item b{display:block;font-size:12px;color:var(--ink);font-weight:600}
+.tl-item b a{color:var(--ink);text-decoration:none}
+.tl-item b a:hover{color:var(--accent-hover)}
+.tl-item span{display:block;color:var(--muted);font-size:11px;line-height:1.4;margin-top:1px}
+.tl-empty{color:var(--faint);font-size:12px}
+@media(max-width:640px){header{padding:22px 16px}.wrap{padding:0 14px}.tl-card{flex:0 0 152px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>📋 政策资料库 <span class="stat" id="statAll">0 条</span></h1>
+    <p>阳光学院 · 计算机专业 · 考公考研竞赛政策，随时查阅，可继续添加</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="toolbar">
+    <div class="search"><input id="q" type="text" placeholder="搜索政策关键词，如：助学贷款 / 蓝桥杯 / 考研…" oninput="render()"></div>
+    <button class="btn btn-primary" onclick="openAdd()">＋ 添加政策</button>
+    <button class="btn btn-ghost" onclick="exportData()">⬇ 导出</button>
+    <button class="btn btn-ghost" onclick="document.getElementById('importFile').click()">⬆ 导入</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    <button class="btn btn-ghost" onclick="window.open('政策解读汇编.pdf')">📄 解读汇编 PDF</button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <section class="tl" id="tl">
+    <div class="tl-head"><h2>📅 本学年行动时间线</h2><span class="tl-note">2026.08 – 2027.07 · 竞赛/考试节点，具体日期以官网当年通知为准</span></div>
+    <div class="tl-track" id="tlTrack"></div>
+  </section>
+  <div class="grid" id="grid"></div>
+</div>
+
+<div style="max-width:1100px;margin:0 auto;padding:0 20px 16px">
+  <div style="text-align:center;padding:16px 20px;background:#eef2ff;border-radius:10px;font-size:13px;color:#4f46e5;line-height:1.6">
+    📢 觉得有用？分享给同班同学吧！所有政策链接均来自官方渠道，可放心查阅。手动添加的政策可用「导出」备份，换设备后「导入」恢复。
+  </div>
+</div>
+<footer>数据保存在本地浏览器（localStorage）· 分享给同学时优先使用网页链接</footer>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h2>添加政策</h2>
+    <div class="field"><label>标题 *</label><input id="f-title" placeholder="如：2026年蓝桥杯大赛通知"></div>
+    <div class="field"><label>分类 *</label><select id="f-cat"></select></div>
+    <div class="field"><label>链接 / 文件路径</label><input id="f-url" placeholder="https:// 网页链接 或 本地文件路径"></div>
+    <div class="field"><label>备注</label><textarea id="f-desc" placeholder="重要时间、报考条件等备注…"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeAdd()">取消</button>
+      <button class="btn btn-primary" onclick="saveAdd()">保存</button>
+    </div>
+  </div>
+</div>
+
+<script src="auto-policies.js"></script>
+<script>
+// ===== 自动抓取的政策（auto-policies.js，由定时任务生成）=====
+const AUTO = (typeof window.AUTO_POLICIES !== "undefined") ? window.AUTO_POLICIES : [];
+
+// ===== 内置政策数据 =====
+const BUILTIN = [
+  // ── 阳光学院 ──
+  {t:"2026年新生入学指南（含入学须知）",c:"阳光学院",u:"政策文件/796752490-计算机新生群/2026-08/2026年新生入学指南.pdf",d:"报到要带什么、走什么流程、学费怎么交，看这一本就够了",local:true},
+  {t:"福建省生源地信用助学贷款操作指南",c:"阳光学院",u:"政策文件/796752490-计算机新生群/2026-08/福建省生源地信用助学贷款操作指南.pdf",d:"家里钱不够交学费？教你一步步申请国家助学贷款",local:true},
+  {t:"国家资助福建省资助政策明白卡",c:"阳光学院",u:"政策文件/796752490-计算机新生群/2026-08/国家资助福建省资助政策明白卡.pdf",d:"国家给大学生的钱（奖学金、助学金、贷款）一张卡说清楚",local:true},
+  {t:"福建省学生资助管理中心宣传册-圆梦之路",c:"阳光学院",u:"政策文件/796752490-计算机新生群/2026-08/福建省学生资助管理中心宣传册-圆梦之路.pdf",d:"国家资助全家桶：能领哪些钱、怎么领，都在这本册子里",local:true},
+  {t:"2026年各高校录取分数线表",c:"阳光学院",u:"政策文件/796752490-计算机新生群/2026-08/2026年各高校录取分数线表.xls",d:"全国各高校各专业要考多少分才够，一万八千多条数据随便查",local:true},
+  {t:"2026年学科竞赛分享会",c:"阳光学院",u:"政策文件/796752490-计算机新生群/2026-08/2026年学科竞赛分享会.pdf",d:"大学有什么比赛值得打、怎么拿奖，学长学姐的实战经验",local:true},
+  {t:"大一新生开学必备清单",c:"阳光学院",u:"政策文件/796752490-计算机新生群/2026-08/大一新生开学必备清单.docx",d:"开学该买什么该带什么，照着清单收拾就行",local:true},
+  {t:"阳校教〔2026〕7号 2026-2027学年校历",c:"阳光学院",u:"政策文件/796752490-计算机新生群/2026-08/阳校教〔2026〕7号 2026-2027学年校历通知.pdf",d:"哪天开学、哪天考试、哪天放假，一张表全知道",local:true},
+  {t:"各专业辅修培养方案汇总",c:"阳光学院",u:"政策文件/796752490-计算机新生群/2026-08/各专业辅修培养方案汇总.docx",d:"想多学一个专业？辅修怎么报、要学什么都在这里",local:true},
+  {t:"致在榕高校大学生医保的一封信",c:"阳光学院",u:"政策文件/796752490-计算机新生群/2026-08/致在榕高校大学生医保的一封信.pdf",d:"大学生医保怎么交、看病怎么报销，说清楚了",local:true},
+  {t:"阳光学院官网",c:"阳光学院",u:"https://www.ygu.edu.cn/",d:"学校官网（假期可能维护中）"},
+  {t:"阳光学院招生网 · 录取查询",c:"阳光学院",u:"https://zsb.ygu.edu.cn/lqcx.htm",d:"招生政策、录取结果查询"},
+  {t:"人工智能学院（计算机专业所在学院）",c:"阳光学院",u:"https://xxgc.ygu.edu.cn/index.htm",d:"AI学院（计科/大数据/人工智能/网络工程）通知公告与专业介绍"},
+  // ── 考研 ──
+  {t:"研招网 · 国家政策",c:"考研",u:"https://yz.chsi.com.cn/kyzx/zcdh/",d:"全国硕士研究生招生考试国家政策汇总"},
+  {t:"研招网 · 教育部政策",c:"考研",u:"https://yz.chsi.com.cn/kyzx/jybzc/",d:"教育部最新考研政策文件"},
+  {t:"研招网 · 招生简章",c:"考研",u:"https://yz.chsi.com.cn/kyzx/zsjz/",d:"各院校招生简章与专业目录"},
+  {t:"研招网 · 网报公告",c:"考研",u:"https://yz.chsi.com.cn/sswbgg/",d:"各省市报名安排与要求"},
+  {t:"研招网 · 退役大学生士兵专项计划",c:"考研",u:"https://yz.chsi.com.cn/kyzx/zt/tydxs.shtml",d:"退役大学生士兵考研政策解读"},
+  {t:"研招网 · 考研百科",c:"考研",u:"https://yz.chsi.com.cn/yzzt/kybk",d:"考研常识、流程、分数线解读"},
+  // ── 考公 ──
+  {t:"国家公务员局",c:"考公",u:"http://www.scs.gov.cn/",d:"国考政策、招录公告、职位表（政府网站，HTTP 正常访问）"},
+  {t:"中国人事考试网 · 考试政策",c:"考公",u:"http://www.cpta.com.cn/testrule.html",d:"各类人事考试政策规则（含软考，HTTPS 不可用，已改用 HTTP）"},
+  {t:"中国人事考试网 · 通知公告",c:"考公",u:"http://www.cpta.com.cn/notice.html",d:"2026年度考试计划、报名通知（HTTPS 不可用，已改用 HTTP）"},
+  {t:"2026年度专业技术人员职业资格考试计划",c:"考公",u:"http://www.cpta.com.cn/notice/2128.html",d:"人社部办公厅2026年考试工作计划通知（HTTPS 不可用，已改用 HTTP）"},
+  {t:"福建省公务员考试（福建省考）",c:"考公",u:"https://www.fujian.gov.cn/",d:"福建省考公告发布（关注省政府网站或当地人事考试网）"},
+  {t:"福建省教育考试院",c:"通用",u:"https://www.eeafj.cn/",d:"福建省高招、学考、成考、四六级等考试政策与报名入口"},
+  // ── 竞赛 ──
+  {t:"蓝桥杯全国软件和信息技术专业人才大赛",c:"竞赛",u:"https://dasai.lanqiao.cn/",d:"计算机类重点竞赛：C/C++/Java/Python组，省赛国赛"},
+  {t:"ACM-ICPC 国际大学生程序设计竞赛",c:"竞赛",u:"https://icpc.global/",d:"顶级算法竞赛，区域赛制，需组队"},
+  {t:"全国大学生数学建模竞赛",c:"竞赛",u:"https://www.mcm.edu.cn/",d:"数学建模国赛：每年9月，三人组队"},
+  {t:"中国大学生程序设计竞赛 CCPC",c:"竞赛",u:"https://ccpc.io/",d:"国内算法竞赛，与ACM并称两大算法赛"},
+  {t:"全国大学生计算机设计大赛",c:"竞赛",u:"https://jsjds.blcu.edu.cn/",d:"计算机设计类综合竞赛"},
+  {t:"中国国际大学生创新大赛（互联网+）",c:"竞赛",u:"https://cy.ncss.cn/",d:"国家级创新创业大赛，报名与政策（每年4-6月）"},
+  {t:"全国大学生服务外包创新创业大赛",c:"竞赛",u:"https://www.fwwb.org.cn/",d:"服务外包与创新创业类国家级竞赛"},
+  {t:"中国软件杯大学生软件设计大赛",c:"竞赛",u:"https://www.cnsoftbei.com/",d:"软件设计类国家级竞赛，企业出题"},
+  {t:"全国大学生信息安全竞赛",c:"竞赛",u:"http://www.ciscn.cn/",d:"网络安全方向竞赛（CTF/创新实践，官网使用 HTTP）"},
+  {t:"挑战杯（全国大学生课外学术科技作品竞赛）",c:"竞赛",u:"https://www.tiaozhanbei.net/",d:"顶级综合性竞赛：学术科技作品竞赛与创业计划竞赛"},
+  // ── 证书 ──
+  {t:"软考（计算机技术与软件专业技术资格）",c:"证书",u:"https://www.ruankao.org.cn/",d:"国家级IT证书：程序员/软件设计师/系统架构师等，评职称可用（工信部官方入口）"},
+  {t:"计算机等级考试 NCRE · 报名",c:"证书",u:"https://ncre-bm.neea.cn",d:"全国计算机等级考试在线报名"},
+  {t:"计算机等级考试 NCRE · 成绩查询",c:"证书",u:"https://ncre.neea.edu.cn/results/",d:"NCRE 成绩查询"},
+  {t:"计算机等级考试 NCRE · 证书查询",c:"证书",u:"https://ncre.neea.edu.cn/cert/",d:"NCRE 证书查询"},
+  {t:"中国教育考试网",c:"证书",u:"https://www.neea.edu.cn/",d:"四六级、计算机等级等全国考试官方入口"},
+  // ── 通用 ──
+  {t:"大学英语四六级 CET",c:"通用",u:"https://cet.neea.edu.cn/",d:"四六级报名、准考证、成绩查询（大一目标）"},
+  {t:"学信网",c:"通用",u:"https://www.chsi.com.cn/",d:"学籍学历查询、考研报名入口"}
+];
+
+const CATS = ["全部","计算机专业","阳光学院","考研","考公","竞赛","证书","通用"];
+const STORE_KEY = "policy_extra_v1";
+
+function loadExtra(){try{return JSON.parse(localStorage.getItem(STORE_KEY)||"[]")}catch(e){return[]}}
+function saveExtra(a){localStorage.setItem(STORE_KEY,JSON.stringify(a))}
+function allItems(){
+  // 排序：自动抓取的最新在前（主要区域放新政策），其次内置，其次手动添加
+  const auto = AUTO.map(x=>({t:x.t,c:x.c,u:x.u,d:x.d,auto:true,ts:x.ts||""}))
+    .sort((a,b)=>(b.ts||"").localeCompare(a.ts||""));
+  return auto.concat(BUILTIN).concat(loadExtra().map(x=>({t:x.title,c:x.cat,u:x.url,d:x.desc,user:true})));
+}
+function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function isLocal(u){return u&&!u.startsWith("http")}
+function render(){
+  const q=(document.getElementById("q").value||"").trim().toLowerCase();
+  const active=document.querySelector(".tab.active");
+  const cat=active?active.dataset.cat:"全部";
+  const items=allItems().filter(i=>
+    (cat==="全部" || (cat==="计算机专业" ? i.c.includes("计算机") : i.c.includes(cat))) &&
+    (!q|| (i.t+" "+(i.d||"")+" "+i.c).toLowerCase().includes(q))
+  );
+  document.getElementById("statAll").textContent=allItems().length+" 条";
+  const grid=document.getElementById("grid");
+  if(!items.length){grid.innerHTML='<div class="empty">没有找到匹配的政策 — 试试其他关键词，或点击「添加政策」</div>';return}
+  grid.innerHTML=items.map(i=>{
+    const tag=i.user?'<span class="tag badge-new">自添加</span>':(i.auto?'<span class="tag badge-new">自动抓取</span>':"");
+    const lo=isLocal(i.u)?'<span class="tag local">本地文件</span>':"";
+    const link=i.u?`<a href="${esc(i.u)}" ${isLocal(i.u)?"":'target="_blank" rel="noopener"'}>${esc(i.t)}</a>`:esc(i.t);
+    return `<div class="card"><h3>${link}</h3>
+      <div class="meta"><span class="tag">${esc(i.c)}</span>${lo}${tag}</div>
+      <div class="desc">${esc(i.d||"")}</div>
+      <div class="foot"><span>${i.user?"我添加的":"内置"}</span><span>${isLocal(i.u)?"📁 本机文件":"🔗 网页链接"}</span></div>
+    </div>`;
+  }).join("");
+}
+
+// ===== 本学年行动时间线（2026.08 – 2027.07，具体日期以官网当年通知为准）=====
+const TIMELINE = [
+  {m:"2026-08", items:[
+    {t:"开学准备", d:"报到材料、宿舍物品按清单备齐；盯紧班级群通知"},
+    {t:"数学建模国赛·报名冲刺", u:"https://www.mcm.edu.cn/", d:"9月10日开赛，现在找队友组队、抓紧报名"}
+  ]},
+  {m:"2026-09", items:[
+    {t:"开学报到+军训", d:"新生周、入学教育、熟悉校园"},
+    {t:"数学建模国赛", u:"https://www.mcm.edu.cn/", d:"9月10日18:00开赛，三人一组连赛三天"},
+    {t:"NCRE 计算机等级考试", u:"https://ncre-bm.neea.cn", d:"9月下旬考试，报了名的记得打准考证"},
+    {t:"CCPC 网络赛", u:"https://ccpc.io/", d:"算法方向可组队参与，练手好机会"}
+  ]},
+  {m:"2026-10", items:[
+    {t:"蓝桥杯报名开始", u:"https://dasai.lanqiao.cn/", d:"第18届，C/C++/Java/Python组，报名窗口到12月"},
+    {t:"四六级·12月笔试报名", u:"https://cet.neea.edu.cn/", d:"9月底-10月报名；新生关注学校是否放开报考"},
+    {t:"软考·11月考试报名", u:"https://www.cpta.com.cn/", d:"8-9月报名已开，想考的别错过"},
+    {t:"ACM/CCPC 区域赛", u:"https://icpc.global/", d:"10-11月区域赛，算法竞赛黄金期"}
+  ]},
+  {m:"2026-11", items:[
+    {t:"软考", u:"https://www.cpta.com.cn/", d:"11月上旬考试，以准考证为准"},
+    {t:"四六级口语", u:"https://cet.neea.edu.cn/", d:"11月下旬口试，需先报笔试"},
+    {t:"蓝桥杯报名持续", u:"https://dasai.lanqiao.cn/", d:"窗口期内尽早报，别拖"}
+  ]},
+  {m:"2026-12", items:[
+    {t:"四六级笔试", u:"https://cet.neea.edu.cn/", d:"12月中旬考试，大一目标第一站"},
+    {t:"蓝桥杯报名收尾", u:"https://dasai.lanqiao.cn/", d:"一般12月底截止，错过等一年"},
+    {t:"期末备考", d:"高数、C语言冲刺；绩点是转专业/评优的基础"}
+  ]},
+  {m:"2027-01", items:[
+    {t:"期末考试", d:"稳住绩点，假期才安心"},
+    {t:"寒假备赛", d:"蓝桥杯备赛黄金期：洛谷/力扣刷题走起"}
+  ]},
+  {m:"2027-02", items:[
+    {t:"寒假", d:"休息+刷题；关注开学后竞赛安排"}
+  ]},
+  {m:"2027-03", items:[
+    {t:"NCRE 3月考试", u:"https://ncre-bm.neea.cn", d:"3月下旬考试（1-2月报名）"},
+    {t:"四六级·6月笔试报名", u:"https://cet.neea.edu.cn/", d:"3月报名，12月没报上这次抓住"},
+    {t:"软考·5月考试报名", u:"https://www.cpta.com.cn/", d:"3月报名，5月考试"}
+  ]},
+  {m:"2027-04", items:[
+    {t:"蓝桥杯省赛", u:"https://dasai.lanqiao.cn/", d:"4月中旬省赛，冲省一拿国赛门票"},
+    {t:"计算机设计大赛校赛", u:"https://jsjds.blcu.edu.cn/", d:"3-5月校赛选拔，可组队报名"}
+  ]},
+  {m:"2027-05", items:[
+    {t:"软考", u:"https://www.cpta.com.cn/", d:"5月下旬考试，以准考证为准"},
+    {t:"互联网+大赛报名", u:"https://cy.ncss.cn/", d:"4-6月报名/校赛，创新创业赛道"}
+  ]},
+  {m:"2027-06", items:[
+    {t:"四六级笔试", u:"https://cet.neea.edu.cn/", d:"6月中旬考试（参考上一年6/13）"},
+    {t:"蓝桥杯国赛", u:"https://dasai.lanqiao.cn/", d:"6月国赛，省一晋级"},
+    {t:"期末备考", d:"大一下收尾；考公/考研路线评估窗口"}
+  ]},
+  {m:"2027-07", items:[
+    {t:"暑假", d:"社会实践/竞赛备赛/开始了解考公基础"}
+  ]}
+];
+
+function renderTimeline(){
+  const now=new Date();
+  const ym=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
+  document.getElementById("tlTrack").innerHTML=TIMELINE.map(g=>{
+    const items=(g.items||[]).map(it=>
+      `<div class="tl-item">${it.u?`<b><a href="${esc(it.u)}" target="_blank" rel="noopener">${esc(it.t)}</a></b>`:`<b>${esc(it.t)}</b>`}<span>${esc(it.d||"")}</span></div>`).join("");
+    return `<div class="tl-card${g.m===ym?" now":""}"><div class="tl-m">${g.m}</div>${items||'<div class="tl-empty">本月暂无安排</div>'}</div>`;
+  }).join("");
+}
+
+function renderTabs(){
+  const tabs=document.getElementById("tabs");
+  tabs.innerHTML=CATS.map(c=>`<button class="tab${c==="全部"?" active":""}" data-cat="${c}" onclick="setTab(this)">${c}</button>`).join("");
+}
+function setTab(el){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  el.classList.add("active");render();
+}
+
+function openAdd(){
+  const sel=document.getElementById("f-cat");
+  sel.innerHTML=CATS.filter(c=>c!=="全部").map(c=>`<option>${c}</option>`).join("");
+  document.getElementById("modal").classList.add("show");
+}
+function closeAdd(){document.getElementById("modal").classList.remove("show")}
+function saveAdd(){
+  const title=document.getElementById("f-title").value.trim();
+  const cat=document.getElementById("f-cat").value;
+  const url=document.getElementById("f-url").value.trim();
+  const desc=document.getElementById("f-desc").value.trim();
+  if(!title){alert("标题不能为空");return}
+  const extra=loadExtra();
+  extra.push({title,cat,url,desc,ts:new Date().toISOString().slice(0,10)});
+  saveExtra(extra);
+  closeAdd();
+  ["f-title","f-url","f-desc"].forEach(id=>document.getElementById(id).value="");
+  render();
+}
+function exportData(){
+  const data = {
+    version: "1.0",
+    exportDate: new Date().toISOString(),
+    userPolicies: loadExtra(),
+    autoPolicies: AUTO
+  };
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "政策库备份_"+new Date().toISOString().slice(0,10)+".json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+function importData(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    try{
+      const data = JSON.parse(ev.target.result);
+      if(data.userPolicies && Array.isArray(data.userPolicies)){
+        if(confirm("导入将合并到现有手动政策（共"+data.userPolicies.length+"条），是否继续？")){
+          const existing = loadExtra();
+          const merged = existing.concat(data.userPolicies);
+          saveExtra(merged);
+          render();
+          alert("导入成功！当前手动政策共"+merged.length+"条");
+        }
+      } else {
+        alert("文件格式不正确：缺少 userPolicies 字段");
+      }
+    } catch(err){
+      alert("导入失败："+err.message);
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+}
+document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeAdd()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeAdd()});
+
+renderTabs();render();renderTimeline();
+</script>
+</body>
+</html>
+
