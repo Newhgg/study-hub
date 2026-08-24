@@ -132,6 +132,18 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
 .route-card p { font-size:13px; color:var(--text-2); line-height:1.6; }
 .route-card .route-meta { display:flex; justify-content:space-between; font-size:11px; color:var(--text-3); margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); }
 
+/* 个性化名片 */
+.profile-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:28px; }
+.profile-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:8px; transition:all 0.15s; }
+.profile-card:hover { border-color:var(--primary); box-shadow:var(--shadow-hover); }
+.profile-card.welcome-card { background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(139,92,246,0.08)); border-color:rgba(99,102,241,0.3); }
+.profile-icon { font-size:28px; }
+.profile-label { font-size:13px; font-weight:700; color:var(--text); }
+.profile-input { width:100%; min-height:80px; border:1px solid var(--border); border-radius:8px; padding:10px; font-size:12px; font-family:inherit; resize:vertical; background:var(--bg); color:var(--text); line-height:1.5; }
+.profile-input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,0.1); }
+.profile-input::placeholder { color:var(--text-3); }
+.profile-save-tip { font-size:11px; color:var(--primary); font-weight:500; text-align:center; }
+
 /* 空状态 */
 .empty { text-align:center; padding:48px 20px; color:var(--text-3); }
 .empty .icon { font-size:48px; margin-bottom:12px; opacity:0.5; }
@@ -194,6 +206,36 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
       <span class="icon">🔍</span>
       <input type="text" placeholder="全局搜索：政策 / 课程 / 编程资源 / 知识点..." oninput="globalSearch(this.value)">
       <span class="search-scope">全部</span>
+    </div>
+
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;">✨ 我的学习名片</h3>
+    <div class="profile-grid">
+      <div class="profile-card" data-key="name">
+        <div class="profile-icon">👤</div>
+        <div class="profile-label">我是谁</div>
+        <textarea class="profile-input" placeholder="姓名 / 专业 / 年级&#10;例如：张三 / 计算机科学与技术 / 大一" oninput="saveProfile(this)"></textarea>
+      </div>
+      <div class="profile-card" data-key="goal">
+        <div class="profile-icon">🎯</div>
+        <div class="profile-label">我的目标</div>
+        <textarea class="profile-input" placeholder="本学期目标&#10;例如：C语言期末90+ / 四级500+" oninput="saveProfile(this)"></textarea>
+      </div>
+      <div class="profile-card" data-key="learn">
+        <div class="profile-icon">📚</div>
+        <div class="profile-label">我要学</div>
+        <textarea class="profile-input" placeholder="重点学习内容&#10;例如：数据结构 / Python / 高数下册" oninput="saveProfile(this)"></textarea>
+      </div>
+      <div class="profile-card" data-key="exam">
+        <div class="profile-icon">🏆</div>
+        <div class="profile-label">我要考</div>
+        <textarea class="profile-input" placeholder="证书 / 竞赛计划&#10;例如：蓝桥杯省赛 / 计算机二级 / 四级" oninput="saveProfile(this)"></textarea>
+      </div>
+      <div class="profile-card welcome-card" data-key="welcome">
+        <div class="profile-icon">✨</div>
+        <div class="profile-label">我的欢迎词</div>
+        <textarea class="profile-input" placeholder="一句话欢迎词&#10;例如：星光不问赶路人，时光不负有心人！" oninput="saveProfile(this)"></textarea>
+        <div class="profile-save-tip">💾 自动保存到本地</div>
+      </div>
     </div>
 
     <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;">📂 三库直达</h3>
@@ -583,6 +625,24 @@ function globalSearch(q) {
   renderList('policy');
 }
 
+// ===== 个性化名片 =====
+function saveProfile(el) {
+  const card = el.closest('.profile-card');
+  const key = card.dataset.key;
+  const data = JSON.parse(localStorage.getItem('study_profile') || '{}');
+  data[key] = el.value;
+  localStorage.setItem('study_profile', JSON.stringify(data));
+}
+
+function loadProfile() {
+  const data = JSON.parse(localStorage.getItem('study_profile') || '{}');
+  document.querySelectorAll('.profile-card').forEach(card => {
+    const key = card.dataset.key;
+    const input = card.querySelector('.profile-input');
+    if (data[key]) input.value = data[key];
+  });
+}
+
 // ===== 初始化 =====
 renderTimeline('homeTimeline');
 renderFilters('policyFilters', policyData, 'cat');
@@ -591,6 +651,7 @@ renderFilters('csFilters', csData, 'cat');
 renderList('policy');
 renderList('media');
 renderList('cs');
+loadProfile();
 </script>
 </body>
 </html>
