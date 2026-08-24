@@ -34,7 +34,16 @@
   --shadow-hover: 0 8px 32px rgba(99,102,241,0.3);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; transition:background 0.3s,color 0.3s; }
+body { font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Microsoft YaHei',sans-serif; background:linear-gradient(135deg,#eef2ff 0%,#fdf4ff 50%,#f0f9ff 100%); color:#1a1a2e; min-height:100vh; transition:background 0.3s,color 0.3s; position:relative; }
+body.dark { background:linear-gradient(135deg,#0f0f23 0%,#1a0a2e 50%,#0a1628 100%); color:#e8e8f0; }
+
+/* 渐变背景浮动圆形 */
+.bg-shapes { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; overflow:hidden; pointer-events:none; }
+.bg-shape { position:absolute; border-radius:50%; filter:blur(80px); opacity:0.4; animation:floatBg 25s infinite ease-in-out; }
+.bg-shape:nth-child(1) { width:500px; height:500px; background:linear-gradient(135deg,#6366f1,#8b5cf6); top:-150px; right:-100px; }
+.bg-shape:nth-child(2) { width:400px; height:400px; background:linear-gradient(135deg,#ec4899,#f472b6); bottom:-100px; left:-100px; animation-delay:-8s; }
+.bg-shape:nth-child(3) { width:350px; height:350px; background:linear-gradient(135deg,#06b6d4,#3b82f6); top:50%; left:50%; animation-delay:-16s; }
+@keyframes floatBg { 0%,100% { transform:translate(0,0) scale(1); } 33% { transform:translate(40px,-30px) scale(1.1); } 66% { transform:translate(-30px,40px) scale(0.9); } }
 
 /* 顶部导航 */
 .topbar { height:4px; background:linear-gradient(90deg,var(--primary),var(--accent),#ec4899); }
@@ -284,53 +293,61 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
 /* 页脚 */
 .footer { text-align:center; color:var(--text-3); font-size:12px; padding:24px 0; border-top:1px solid var(--border); margin-top:40px; }
 
-/* 面板风格布局 */
-body { display:flex; min-height:100vh; }
-.sidebar { width:220px; background:linear-gradient(180deg,#1e1b4b 0%,#312e81 100%); color:white; display:flex; flex-direction:column; position:fixed; height:100vh; left:0; top:0; z-index:100; }
-.sidebar-brand { padding:20px 16px; border-bottom:1px solid rgba(255,255,255,0.1); }
-.sidebar-brand .logo { font-size:28px; margin-bottom:6px; }
+/* 面板风格布局 - iOS毛玻璃风格 */
+body { display:block; }
+.sidebar { width:100%; background:rgba(255,255,255,0.6); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.8); color:inherit; display:flex; align-items:center; justify-content:space-between; position:sticky; height:auto; left:0; top:0; z-index:100; padding:12px 28px; box-shadow:0 1px 20px rgba(0,0,0,0.05); }
+body.dark .sidebar { background:rgba(20,20,40,0.6); border-bottom:1px solid rgba(255,255,255,0.1); }
+.sidebar-brand { padding:0; border-bottom:none; display:flex; align-items:center; gap:10px; }
+.sidebar-brand .logo { font-size:24px; margin-bottom:0; }
 .sidebar-brand h1 { font-size:16px; font-weight:700; margin:0; }
-.sidebar-brand p { font-size:11px; opacity:0.7; margin:2px 0 0; }
-.sidebar-nav { flex:1; padding:12px 8px; overflow-y:auto; }
-.sidebar-link { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; color:rgba(255,255,255,0.7); text-decoration:none; font-size:13px; font-weight:500; margin-bottom:2px; transition:all 0.15s; cursor:pointer; }
-.sidebar-link:hover { background:rgba(255,255,255,0.1); color:white; }
-.sidebar-link.active { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; box-shadow:0 4px 12px rgba(99,102,241,0.4); }
-.sidebar-link .icon { font-size:16px; width:20px; text-align:center; }
-.sidebar-footer { padding:12px 16px; border-top:1px solid rgba(255,255,255,0.1); font-size:10px; opacity:0.5; }
-.main-content { flex:1; margin-left:220px; display:flex; flex-direction:column; min-height:100vh; }
-.topbar { background:var(--card); border-bottom:1px solid var(--border); padding:14px 28px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:50; backdrop-filter:blur(10px); }
-.topbar-title { font-size:18px; font-weight:700; }
-.topbar-actions { display:flex; gap:10px; align-items:center; }
-.theme-btn-panel { width:36px; height:36px; border-radius:8px; border:1px solid var(--border); background:var(--bg); cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
-.theme-btn-panel:hover { border-color:var(--primary); }
-.wrap { padding:24px 28px 40px; flex:1; }
-.navbar { display:none; }
-.topbar { display:flex; }
+.sidebar-brand p { font-size:11px; opacity:0.6; margin:0; }
+.sidebar-nav { flex:1; padding:0 20px; overflow-y:visible; display:flex; gap:4px; justify-content:center; }
+.sidebar-link { display:flex; align-items:center; gap:6px; padding:8px 14px; border-radius:10px; color:inherit; opacity:0.7; text-decoration:none; font-size:13px; font-weight:500; margin-bottom:0; transition:all 0.2s; cursor:pointer; }
+.sidebar-link:hover { background:rgba(99,102,241,0.1); opacity:1; }
+.sidebar-link.active { background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.15)); color:#6366f1; opacity:1; font-weight:600; }
+body.dark .sidebar-link.active { color:#a5b4fc; }
+.sidebar-link .icon { font-size:15px; width:auto; }
+.sidebar-footer { display:none; }
+.main-content { flex:none; margin-left:0; display:block; min-height:calc(100vh - 60px); position:relative; z-index:1; }
+.topbar { display:none; }
+.wrap { padding:28px; max-width:1200px; margin:0 auto; }
+
+/* 毛玻璃卡片 */
+.hero, .search-bar, .lib-card, .tool-card, .countdown-card, .music-player, .schedule-toolbar, .schedule-tip, .filter-bar, .list-container, .music-import { background:rgba(255,255,255,0.6) !important; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.8) !important; box-shadow:0 4px 24px rgba(0,0,0,0.06) !important; }
+body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-card, body.dark .countdown-card, body.dark .music-player, body.dark .schedule-toolbar, body.dark .schedule-tip, body.dark .filter-bar, body.dark .list-container, body.dark .music-import { background:rgba(30,30,50,0.5) !important; border:1px solid rgba(255,255,255,0.1) !important; }
+.hero { border-radius:20px !important; padding:32px !important; }
+.lib-card, .tool-card, .countdown-card { border-radius:16px !important; }
 
 /* 响应式 */
 @media(max-width:768px) {
-  .sidebar { width:60px; }
-  .sidebar-brand p, .sidebar-link span { display:none; }
-  .sidebar-brand h1 { font-size:12px; }
-  .main-content { margin-left:60px; }
+  .sidebar { padding:10px 14px; flex-wrap:wrap; }
+  .sidebar-brand p { display:none; }
+  .sidebar-brand h1 { font-size:14px; }
+  .sidebar-nav { order:3; width:100%; padding:8px 0 0; overflow-x:auto; justify-content:flex-start; }
+  .sidebar-link { padding:6px 10px; font-size:12px; white-space:nowrap; }
+  .sidebar-link span:not(.icon) { display:inline; }
   .wrap { padding:16px; }
-  .hero { padding:20px; }
+  .hero { padding:20px !important; }
   .hero h2 { font-size:20px; }
   .lib-grid { grid-template-columns:1fr; }
-  .topbar { padding:10px 16px; }
-  .topbar-title { font-size:15px; }
 }
 </style>
 </head>
 <body>
 
-<div class="topbar"></div>
+<div class="bg-shapes">
+  <div class="bg-shape"></div>
+  <div class="bg-shape"></div>
+  <div class="bg-shape"></div>
+</div>
 
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="logo">📚</div>
-    <h1>三班学习平台</h1>
-    <p>阳光学院计算机三班</p>
+    <div>
+      <h1>三班学习平台</h1>
+      <p>阳光学院计算机三班</p>
+    </div>
   </div>
   <nav class="sidebar-nav">
     <a class="sidebar-link active" data-page="home" onclick="switchPage('home');return false;"><span class="icon">🏠</span><span>首页</span></a>
@@ -341,16 +358,10 @@ body { display:flex; min-height:100vh; }
     <a class="sidebar-link" data-page="schedule" onclick="switchPage('schedule');return false;"><span class="icon">📅</span><span>课表</span></a>
     <a class="sidebar-link" data-page="music" onclick="switchPage('music');return false;"><span class="icon">🎵</span><span>音乐</span></a>
   </nav>
-  <div class="sidebar-footer">v1.0 · 免费使用</div>
+  <button class="theme-btn-panel" onclick="toggleTheme()" id="themeBtn" style="width:36px;height:36px;border-radius:10px;border:1px solid rgba(0,0,0,0.1);background:rgba(255,255,255,0.5);cursor:pointer;font-size:16px;backdrop-filter:blur(10px;">🌙</button>
 </aside>
 
 <div class="main-content">
-  <header class="topbar">
-    <div class="topbar-title" id="topbarTitle">🏠 首页</div>
-    <div class="topbar-actions">
-      <button class="theme-btn-panel" onclick="toggleTheme()" id="themeBtn">🌙</button>
-    </div>
-  </header>
 
 <div class="wrap">
 
@@ -741,13 +752,11 @@ if (localStorage.getItem('theme') === 'dark') {
 }
 
 // ===== 页面切换 =====
-const pageTitles = {home:'🏠 首页', policy:'📋 政策库', media:'🎬 课程库', cs:'💻 编程库', tools:'⏱️ 工具箱', schedule:'📅 课表', music:'🎵 音乐'};
 function switchPage(name) {
   document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelector(`.sidebar-link[data-page="${name}"]`).classList.add('active');
   document.getElementById('page-' + name).classList.add('active');
-  document.getElementById('topbarTitle').textContent = pageTitles[name] || name;
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
