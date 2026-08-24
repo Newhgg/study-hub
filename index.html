@@ -175,6 +175,33 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
 .welcome-option { padding:10px; border:1px solid var(--border); border-radius:8px; background:var(--bg); color:var(--text-2); font-size:12px; cursor:pointer; transition:all 0.15s; text-align:left; }
 .welcome-option:hover { border-color:var(--primary); background:rgba(99,102,241,0.05); }
 .welcome-option.selected { border-color:var(--primary); background:rgba(99,102,241,0.1); color:var(--primary); font-weight:600; }
+
+/* 工具箱 - 番茄钟 */
+.pomodoro-box { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:32px; text-align:center; margin-bottom:20px; }
+.pomodoro-timer { font-size:64px; font-weight:700; color:var(--primary); font-variant-numeric:tabular-nums; margin-bottom:8px; letter-spacing:2px; }
+.pomodoro-mode { font-size:14px; color:var(--text-3); margin-bottom:20px; }
+.pomodoro-controls { display:flex; gap:12px; justify-content:center; margin-bottom:20px; }
+.pomo-btn { padding:10px 32px; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; border:none; transition:all 0.15s; }
+.pomo-btn.primary { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; }
+.pomo-btn.primary:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(99,102,241,0.4); }
+.pomo-btn.secondary { background:var(--bg); color:var(--text-2); border:1px solid var(--border); }
+.pomo-btn.secondary:hover { background:var(--border); }
+.pomodoro-settings { display:flex; gap:20px; justify-content:center; margin-bottom:16px; }
+.pomodoro-settings label { font-size:13px; color:var(--text-2); display:flex; align-items:center; gap:8px; }
+.pomodoro-settings input { width:60px; padding:6px 8px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); font-size:13px; text-align:center; }
+.pomodoro-count { font-size:13px; color:var(--text-3); }
+
+/* 工具箱 - 倒计时 */
+.countdown-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+.countdown-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px; text-align:center; transition:all 0.15s; }
+.countdown-card:hover { border-color:var(--primary); box-shadow:var(--shadow-hover); transform:translateY(-2px); }
+.countdown-icon { font-size:28px; margin-bottom:8px; }
+.countdown-title { font-size:14px; font-weight:700; margin-bottom:4px; }
+.countdown-date { font-size:11px; color:var(--text-3); margin-bottom:12px; }
+.countdown-num { font-size:32px; font-weight:700; color:var(--primary); font-variant-numeric:tabular-nums; }
+.countdown-unit { font-size:12px; color:var(--text-3); margin-top:2px; }
+.countdown-card.urgent .countdown-num { color:#ef4444; }
+.countdown-card.soon .countdown-num { color:#f59e0b; }
 .modal-actions { display:flex; justify-content:space-between; gap:12px; margin-top:24px; }
 .modal-btn { flex:1; padding:12px 20px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; border:none; transition:all 0.15s; }
 .modal-btn.primary { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; }
@@ -220,6 +247,7 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
     <a class="nav-link" data-page="policy" href="#" onclick="switchPage('policy');return false;">📋 政策库</a>
     <a class="nav-link" data-page="media" href="#" onclick="switchPage('media');return false;">🎬 课程库</a>
     <a class="nav-link" data-page="cs" href="#" onclick="switchPage('cs');return false;">💻 编程库</a>
+    <a class="nav-link" data-page="tools" href="#" onclick="switchPage('tools');return false;">⏱️ 工具箱</a>
   </div>
   <div class="nav-actions">
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
@@ -345,6 +373,27 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
     </div>
     <div class="filter-bar" id="csFilters"></div>
     <div class="card-grid" id="csList"></div>
+  </div>
+
+  <!-- 工具箱 -->
+  <div class="page" id="page-tools">
+    <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;">🍅 番茄钟</h3>
+    <div class="pomodoro-box">
+      <div class="pomodoro-timer" id="pomodoroDisplay">25:00</div>
+      <div class="pomodoro-mode" id="pomodoroMode">专注时间</div>
+      <div class="pomodoro-controls">
+        <button class="pomo-btn primary" id="pomoStartBtn" onclick="togglePomodoro()">开始</button>
+        <button class="pomo-btn secondary" onclick="resetPomodoro()">重置</button>
+      </div>
+      <div class="pomodoro-settings">
+        <label>专注(分) <input type="number" id="pomoWork" value="25" min="1" max="60" onchange="updatePomoSettings()"></label>
+        <label>休息(分) <input type="number" id="pomoBreak" value="5" min="1" max="30" onchange="updatePomoSettings()"></label>
+      </div>
+      <div class="pomodoro-count">今日完成：<span id="pomoCount">0</span> 个番茄</div>
+    </div>
+
+    <h3 style="font-size:18px;font-weight:700;margin:28px 0 16px;">⏰ 重要日期倒计时</h3>
+    <div class="countdown-grid" id="countdownGrid"></div>
   </div>
 
   <div class="footer">
@@ -708,6 +757,107 @@ function selectWelcome(btn, text) {
   saveProfileData();
 }
 
+// ===== 番茄钟 =====
+let pomodoroInterval = null;
+let pomodoroSeconds = 25 * 60;
+let pomodoroRunning = false;
+let pomodoroIsWork = true;
+let pomodoroCount = parseInt(localStorage.getItem('pomo_count') || '0');
+
+function togglePomodoro() {
+  if (pomodoroRunning) {
+    clearInterval(pomodoroInterval);
+    pomodoroRunning = false;
+    document.getElementById('pomoStartBtn').textContent = '继续';
+  } else {
+    pomodoroRunning = true;
+    document.getElementById('pomoStartBtn').textContent = '暂停';
+    pomodoroInterval = setInterval(() => {
+      pomodoroSeconds--;
+      if (pomodoroSeconds <= 0) {
+        clearInterval(pomodoroInterval);
+        pomodoroRunning = false;
+        if (pomodoroIsWork) {
+          pomodoroCount++;
+          localStorage.setItem('pomo_count', pomodoroCount);
+          document.getElementById('pomoCount').textContent = pomodoroCount;
+          pomodoroIsWork = false;
+          pomodoroSeconds = parseInt(document.getElementById('pomoBreak').value) * 60;
+          document.getElementById('pomodoroMode').textContent = '休息时间';
+          alert('🍅 专注完成！休息一下吧~');
+        } else {
+          pomodoroIsWork = true;
+          pomodoroSeconds = parseInt(document.getElementById('pomoWork').value) * 60;
+          document.getElementById('pomodoroMode').textContent = '专注时间';
+          alert('☕ 休息结束，继续加油！');
+        }
+        document.getElementById('pomoStartBtn').textContent = '开始';
+      }
+      updatePomodoroDisplay();
+    }, 1000);
+  }
+}
+
+function resetPomodoro() {
+  clearInterval(pomodoroInterval);
+  pomodoroRunning = false;
+  pomodoroIsWork = true;
+  pomodoroSeconds = parseInt(document.getElementById('pomoWork').value) * 60;
+  document.getElementById('pomodoroMode').textContent = '专注时间';
+  document.getElementById('pomoStartBtn').textContent = '开始';
+  updatePomodoroDisplay();
+}
+
+function updatePomoSettings() {
+  if (!pomodoroRunning) {
+    if (pomodoroIsWork) {
+      pomodoroSeconds = parseInt(document.getElementById('pomoWork').value) * 60;
+    } else {
+      pomodoroSeconds = parseInt(document.getElementById('pomoBreak').value) * 60;
+    }
+    updatePomodoroDisplay();
+  }
+}
+
+function updatePomodoroDisplay() {
+  const m = Math.floor(pomodoroSeconds / 60);
+  const s = pomodoroSeconds % 60;
+  document.getElementById('pomodoroDisplay').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+// ===== 倒计时 =====
+const countdownEvents = [
+  { icon:'📝', title:'2027国考', date:'2026-11-29' },
+  { icon:'📚', title:'2027考研', date:'2026-12-20' },
+  { icon:'🎓', title:'2026年12月四六级', date:'2026-12-14' },
+  { icon:'💻', title:'2027蓝桥杯省赛', date:'2027-04-12' },
+  { icon:'📊', title:'2027数学建模国赛', date:'2027-09-10' },
+  { icon:'🏛️', title:'2027福建省考', date:'2027-02-25' },
+  { icon:'📖', title:'本学期期末', date:'2027-01-10' },
+  { icon:'🎯', title:'2027计算机二级', date:'2027-03-28' },
+];
+
+function renderCountdowns() {
+  const grid = document.getElementById('countdownGrid');
+  const now = new Date();
+  grid.innerHTML = countdownEvents.map(e => {
+    const target = new Date(e.date);
+    const diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+    let cls = '';
+    if (diff <= 30) cls = 'urgent';
+    else if (diff <= 90) cls = 'soon';
+    return `
+      <div class="countdown-card ${cls}">
+        <div class="countdown-icon">${e.icon}</div>
+        <div class="countdown-title">${e.title}</div>
+        <div class="countdown-date">${e.date}</div>
+        <div class="countdown-num">${diff > 0 ? diff : '已过'}</div>
+        <div class="countdown-unit">${diff > 0 ? '天' : ''}</div>
+      </div>
+    `;
+  }).join('');
+}
+
 // ===== 初始化 =====
 renderTimeline('homeTimeline');
 renderFilters('policyFilters', policyData, 'cat');
@@ -716,6 +866,9 @@ renderFilters('csFilters', csData, 'cat');
 renderList('policy');
 renderList('media');
 renderList('cs');
+renderCountdowns();
+document.getElementById('pomoCount').textContent = pomodoroCount;
+updatePomodoroDisplay();
 
 // 页面加载后自动弹出个性化名片（如果用户没填写过）
 setTimeout(() => {
