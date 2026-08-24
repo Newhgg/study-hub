@@ -34,15 +34,15 @@
   --shadow-hover: 0 8px 32px rgba(99,102,241,0.3);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Microsoft YaHei',sans-serif; background:linear-gradient(135deg,#eef2ff 0%,#fdf4ff 50%,#f0f9ff 100%); color:#1a1a2e; min-height:100vh; transition:background 0.3s,color 0.3s; position:relative; }
-body.dark { background:linear-gradient(135deg,#0f0f23 0%,#1a0a2e 50%,#0a1628 100%); color:#e8e8f0; }
+body { font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Microsoft YaHei',sans-serif; background:linear-gradient(135deg,#f5f3ff 0%,#ede9fe 50%,#f0f4ff 100%); color:#1a1a2e; min-height:100vh; transition:background 0.3s,color 0.3s; position:relative; }
+body.dark { background:linear-gradient(135deg,#1a1625 0%,#1e1b3a 50%,#161829 100%); color:#e8e8f0; }
 
 /* 渐变背景浮动圆形 */
 .bg-shapes { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; overflow:hidden; pointer-events:none; }
 .bg-shape { position:absolute; border-radius:50%; filter:blur(80px); opacity:0.4; animation:floatBg 25s infinite ease-in-out; }
-.bg-shape:nth-child(1) { width:500px; height:500px; background:linear-gradient(135deg,#6366f1,#8b5cf6); top:-150px; right:-100px; }
-.bg-shape:nth-child(2) { width:400px; height:400px; background:linear-gradient(135deg,#ec4899,#f472b6); bottom:-100px; left:-100px; animation-delay:-8s; }
-.bg-shape:nth-child(3) { width:350px; height:350px; background:linear-gradient(135deg,#06b6d4,#3b82f6); top:50%; left:50%; animation-delay:-16s; }
+.bg-shape:nth-child(1) { width:500px; height:500px; background:linear-gradient(135deg,#a78bfa,#c4b5fd); top:-150px; right:-100px; }
+.bg-shape:nth-child(2) { width:400px; height:400px; background:linear-gradient(135deg,#f9a8d4,#fbcfe8); bottom:-100px; left:-100px; animation-delay:-8s; }
+.bg-shape:nth-child(3) { width:350px; height:350px; background:linear-gradient(135deg,#93c5fd,#bfdbfe); top:50%; left:50%; animation-delay:-16s; }
 @keyframes floatBg { 0%,100% { transform:translate(0,0) scale(1); } 33% { transform:translate(40px,-30px) scale(1.1); } 66% { transform:translate(-30px,40px) scale(0.9); } }
 
 /* 顶部导航 */
@@ -359,33 +359,34 @@ body.dark .sidebar-link.active { color:#a5b4fc; }
 .wrap { padding:24px 28px 40px; max-width:1200px; margin:0 auto; }
 
 /* Dashboard首页 */
-.dashboard-welcome { background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%); border-radius:20px; padding:28px; color:white; margin-bottom:20px; position:relative; overflow:hidden; }
-.dashboard-welcome::after { content:''; position:absolute; top:-50%; right:-20%; width:300px; height:300px; background:rgba(255,255,255,0.1); border-radius:50%; }
-.dashboard-welcome h2 { font-size:24px; font-weight:700; margin-bottom:4px; position:relative; z-index:1; }
-.dashboard-welcome p { font-size:14px; opacity:0.9; position:relative; z-index:1; }
-.dashboard-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:20px; }
-.stat-card { background:rgba(255,255,255,0.7); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.8); border-radius:16px; padding:18px; text-align:center; transition:transform 0.2s; }
-.stat-card:hover { transform:translateY(-2px); }
-.stat-card .stat-num { font-size:28px; font-weight:700; background:linear-gradient(135deg,#6366f1,#8b5cf6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.stat-card .stat-label { font-size:12px; color:var(--text-2); margin-top:4px; }
-.dashboard-grid { display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:20px; }
-.dashboard-card { background:rgba(255,255,255,0.7); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.8); border-radius:16px; padding:20px; }
-.dashboard-card h4 { font-size:15px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
-.quick-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
-.quick-item { padding:14px; border-radius:12px; background:rgba(99,102,241,0.06); border:1px solid rgba(99,102,241,0.1); cursor:pointer; transition:all 0.15s; text-align:center; }
-.quick-item:hover { background:rgba(99,102,241,0.12); transform:translateY(-1px); }
-.quick-item .qi-icon { font-size:24px; margin-bottom:6px; }
-.quick-item .qi-label { font-size:12px; font-weight:600; }
+.dashboard-welcome { background:linear-gradient(135deg,#8b5cf6 0%,#a78bfa 100%); border-radius:20px; padding:24px 28px; color:white; margin-bottom:16px; position:relative; overflow:hidden; }
+.dashboard-welcome::after { content:''; position:absolute; top:-50%; right:-10%; width:200px; height:200px; background:rgba(255,255,255,0.15); border-radius:50%; }
+.dashboard-welcome h2 { font-size:22px; font-weight:700; margin-bottom:4px; position:relative; z-index:1; }
+.dashboard-welcome p { font-size:13px; opacity:0.9; position:relative; z-index:1; }
+.dashboard-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.stat-card { background:rgba(255,255,255,0.85); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.9); border-radius:14px; padding:16px; text-align:left; transition:transform 0.2s; display:flex; align-items:center; gap:12px; }
+.stat-card:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(139,92,246,0.15); }
+.stat-card .stat-num { font-size:24px; font-weight:700; color:#8b5cf6; line-height:1; }
+.stat-card .stat-label { font-size:11px; color:#6b7280; margin-top:4px; }
+.stat-card .stat-icon { font-size:24px; opacity:0.8; }
+.dashboard-grid { display:grid; grid-template-columns:2fr 1fr; gap:12px; margin-bottom:16px; }
+.dashboard-card { background:rgba(255,255,255,0.85); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.9); border-radius:14px; padding:18px; }
+.dashboard-card h4 { font-size:14px; font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:6px; color:#374151; }
+.quick-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.quick-item { padding:12px 8px; border-radius:10px; background:#f9fafb; border:1px solid #f3f4f6; cursor:pointer; transition:all 0.15s; text-align:center; }
+.quick-item:hover { background:#ede9fe; border-color:#c4b5fd; transform:translateY(-1px); }
+.quick-item .qi-icon { font-size:20px; margin-bottom:4px; }
+.quick-item .qi-label { font-size:11px; font-weight:600; color:#4b5563; }
 .notice-mini { display:flex; flex-direction:column; gap:10px; }
 .notice-mini-item { padding:10px 12px; border-radius:10px; background:rgba(0,0,0,0.02); font-size:12px; }
 .notice-mini-item .nm-title { font-weight:600; margin-bottom:2px; }
 .notice-mini-item .nm-time { color:var(--text-3); font-size:10px; }
 
 /* 毛玻璃卡片 */
-.hero, .search-bar, .lib-card, .tool-card, .countdown-card, .music-player, .schedule-toolbar, .schedule-tip, .filter-bar, .list-container, .music-import { background:rgba(255,255,255,0.6) !important; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.8) !important; box-shadow:0 4px 24px rgba(0,0,0,0.06) !important; }
-body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-card, body.dark .countdown-card, body.dark .music-player, body.dark .schedule-toolbar, body.dark .schedule-tip, body.dark .filter-bar, body.dark .list-container, body.dark .music-import { background:rgba(30,30,50,0.5) !important; border:1px solid rgba(255,255,255,0.1) !important; }
-.hero { border-radius:20px !important; padding:32px !important; }
-.lib-card, .tool-card, .countdown-card { border-radius:16px !important; }
+.hero, .search-bar, .lib-card, .tool-card, .countdown-card, .music-player, .schedule-toolbar, .schedule-tip, .filter-bar, .list-container, .music-import { background:rgba(255,255,255,0.85) !important; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.9) !important; box-shadow:0 2px 12px rgba(139,92,246,0.08) !important; }
+body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-card, body.dark .countdown-card, body.dark .music-player, body.dark .schedule-toolbar, body.dark .schedule-tip, body.dark .filter-bar, body.dark .list-container, body.dark .music-import { background:rgba(30,30,50,0.7) !important; border:1px solid rgba(255,255,255,0.08) !important; }
+.hero { border-radius:16px !important; padding:24px !important; }
+.lib-card, .tool-card, .countdown-card { border-radius:14px !important; }
 
 /* 响应式 */
 @media(max-width:768px) {
@@ -397,10 +398,11 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
   .sidebar-link .icon { font-size:18px; }
   .main-content { margin-left:0; }
   .wrap { padding:16px; }
-  .dashboard-welcome { padding:20px; }
-  .dashboard-welcome h2 { font-size:20px; }
+  .dashboard-welcome { padding:18px 20px; }
+  .dashboard-welcome h2 { font-size:18px; }
   .dashboard-stats { grid-template-columns:repeat(2,1fr); }
   .dashboard-grid { grid-template-columns:1fr; }
+  .quick-grid { grid-template-columns:repeat(4,1fr); }
   .hero { padding:20px !important; }
   .hero h2 { font-size:20px; }
   .lib-grid { grid-template-columns:1fr; }
@@ -448,10 +450,10 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
     </div>
 
     <div class="dashboard-stats">
-      <div class="stat-card"><div class="stat-num">57</div><div class="stat-label">📚 学习资料</div></div>
-      <div class="stat-card"><div class="stat-num">22</div><div class="stat-label">🎬 课程资源</div></div>
-      <div class="stat-card"><div class="stat-num">8</div><div class="stat-label">⏰ 倒计时</div></div>
-      <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">📢 班级通知</div></div>
+      <div class="stat-card"><div class="stat-icon">📚</div><div><div class="stat-num">57</div><div class="stat-label">学习资料</div></div></div>
+      <div class="stat-card"><div class="stat-icon">🎬</div><div><div class="stat-num">22</div><div class="stat-label">课程资源</div></div></div>
+      <div class="stat-card"><div class="stat-icon">⏰</div><div><div class="stat-num">8</div><div class="stat-label">倒计时</div></div></div>
+      <div class="stat-card"><div class="stat-icon">📢</div><div><div class="stat-num">3</div><div class="stat-label">班级通知</div></div></div>
     </div>
 
     <div class="search-bar">
