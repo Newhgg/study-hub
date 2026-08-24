@@ -171,6 +171,10 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
 .modal-textarea:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,0.1); }
 .modal-textarea::placeholder { color:var(--text-3); }
 .modal-welcome-tip { font-size:12px; color:var(--primary); text-align:center; font-weight:500; }
+.welcome-options { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
+.welcome-option { padding:10px; border:1px solid var(--border); border-radius:8px; background:var(--bg); color:var(--text-2); font-size:12px; cursor:pointer; transition:all 0.15s; text-align:left; }
+.welcome-option:hover { border-color:var(--primary); background:rgba(99,102,241,0.05); }
+.welcome-option.selected { border-color:var(--primary); background:rgba(99,102,241,0.1); color:var(--primary); font-weight:600; }
 .modal-actions { display:flex; justify-content:space-between; gap:12px; margin-top:24px; }
 .modal-btn { flex:1; padding:12px 20px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; border:none; transition:all 0.15s; }
 .modal-btn.primary { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; }
@@ -697,6 +701,13 @@ function loadProfileData() {
   });
 }
 
+function selectWelcome(btn, text) {
+  document.querySelectorAll('.welcome-option').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.querySelector('.modal-textarea[data-key="welcome"]').value = text;
+  saveProfileData();
+}
+
 // ===== 初始化 =====
 renderTimeline('homeTimeline');
 renderFilters('policyFilters', policyData, 'cat');
@@ -758,8 +769,14 @@ setTimeout(() => {
       <div class="modal-card welcome-modal-card" data-step="5">
         <div class="modal-card-icon">✨</div>
         <div class="modal-card-title">我的欢迎词</div>
-        <textarea class="modal-textarea" data-key="welcome" placeholder="一句话欢迎词&#10;例如：星光不问赶路人，时光不负有心人！"></textarea>
-        <div class="modal-welcome-tip">💾 填写完成后自动保存到本地</div>
+        <div class="welcome-options">
+          <button class="welcome-option" onclick="selectWelcome(this, '星光不问赶路人，时光不负有心人。愿你学有所成，梦想成真！')">🌟 星光不问赶路人</button>
+          <button class="welcome-option" onclick="selectWelcome(this, '代码改变世界，学习成就未来。愿你在计算机的世界里，找到属于自己的星辰大海！')">💻 代码改变世界</button>
+          <button class="welcome-option" onclick="selectWelcome(this, '大学四年，转瞬即逝。愿你珍惜时光，不负韶华，以梦为马，未来可期！')">🎓 以梦为马</button>
+          <button class="welcome-option" onclick="selectWelcome(this, '今天的努力，是明天的底气。愿你在阳光学院，遇见更好的自己！')">☀️ 遇见更好的自己</button>
+        </div>
+        <textarea class="modal-textarea" data-key="welcome" placeholder="或自己写一句欢迎词">星光不问赶路人，时光不负有心人。愿你学有所成，梦想成真！</textarea>
+        <div class="modal-welcome-tip">💾 点击上方选项或自己编辑，完成后自动保存</div>
       </div>
     </div>
     <div class="modal-actions">
