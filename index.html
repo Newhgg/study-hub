@@ -95,7 +95,11 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
 
 /* 内容卡片网格 */
 .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px; }
-.item-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; transition:all 0.15s; display:flex; flex-direction:column; gap:8px; }
+.item-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; transition:all 0.15s; display:flex; flex-direction:column; gap:8px; text-decoration:none; color:inherit; }
+.item-card:hover { border-color:var(--primary); box-shadow:var(--shadow-hover); transform:translateY(-2px); }
+.item-card.has-link { cursor:pointer; }
+.item-card.has-link:hover { border-color:var(--primary); }
+.item-go { font-size:12px; color:var(--primary); font-weight:600; margin-top:4px; padding-top:8px; border-top:1px dashed var(--border); }
 .item-card:hover { border-color:var(--primary); box-shadow:var(--shadow-hover); transform:translateY(-2px); }
 .item-card .item-head { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
 .item-card h4 { font-size:14px; font-weight:600; line-height:1.4; }
@@ -452,6 +456,78 @@ function filterByCat(containerId, key, cat, el) {
   renderList(type);
 }
 
+// ===== 链接映射 =====
+function getItemUrl(d, type) {
+  const title = d.title;
+  // 政策库官方链接
+  if (type === 'policy') {
+    if (title.includes('研招网')) return 'https://yz.chsi.com.cn/';
+    if (title.includes('国家公务员局')) return 'http://www.scs.gov.cn/';
+    if (title.includes('福建省公务员')) return 'http://gwykl.fujian.gov.cn/';
+    if (title.includes('蓝桥杯')) return 'https://dasai.lanqiao.cn/';
+    if (title.includes('ACM')) return 'https://icpc.global/';
+    if (title.includes('数学建模')) return 'http://www.mcm.edu.cn/';
+    if (title.includes('互联网+') || title.includes('创新大赛')) return 'https://cy.ncss.cn/';
+    if (title.includes('挑战杯')) return 'http://www.tiaozhanbei.net/';
+    if (title.includes('CCPC')) return 'https://ccpc.io/';
+    if (title.includes('计算机设计大赛')) return 'https://jsjds.blcu.edu.cn/';
+    if (title.includes('英语竞赛') || title.includes('NECCS')) return 'http://www.chinaneccs.cn/';
+    if (title.includes('计算机等级') || title.includes('NCRE')) return 'https://ncre.neea.edu.cn/';
+    if (title.includes('四六级') || title.includes('CET')) return 'https://cet.neea.edu.cn/';
+    if (title.includes('软考') || title.includes('专业技术资格')) return 'https://www.ruankao.org.cn/';
+    if (title.includes('教师资格') || title.includes('NTCE')) return 'https://ntce.neea.edu.cn/';
+    if (title.includes('阳光学院') && title.includes('教务')) return 'https://jwxt.ygu.edu.cn/';
+    if (title.includes('阳光学院') && title.includes('图书馆')) return 'https://lib.ygu.edu.cn/';
+    return '';
+  }
+  // 课程库链接
+  if (type === 'media') {
+    if (d.source === 'B站免费' || title.includes('宋浩') || title.includes('黑马') || title.includes('刘晓艳') || title.includes('谢希仁')) {
+      return 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(title);
+    }
+    if (d.source === '中国大学MOOC' || title.includes('翁恺') || title.includes('陈越') || title.includes('唐朔飞') || title.includes('汤小丹')) {
+      return 'https://www.icourse163.org/search.htm?search=' + encodeURIComponent(title);
+    }
+    if (title.includes('Coze') || title.includes('扣子')) return 'https://www.coze.cn/';
+    if (title.includes('考虫')) return 'https://www.kaochong.com/';
+    return '';
+  }
+  // 编程库链接
+  if (type === 'cs') {
+    if (title.includes('LeetCode') || title.includes('力扣')) return 'https://leetcode.cn/';
+    if (title.includes('洛谷')) return 'https://www.luogu.com.cn/';
+    if (title.includes('Codeforces')) return 'https://codeforces.com/';
+    if (title.includes('PTA') || title.includes('拼题')) return 'https://pintia.cn/';
+    if (title.includes('牛客')) return 'https://www.nowcoder.com/';
+    if (title.includes('AcWing')) return 'https://www.acwing.com/';
+    if (title.includes('GitHub')) return 'https://github.com/';
+    if (title.includes('Gitee') || title.includes('码云')) return 'https://gitee.com/';
+    if (title.includes('菜鸟教程')) return 'https://www.runoob.com/';
+    if (title.includes('MDN')) return 'https://developer.mozilla.org/';
+    if (title.includes('Stack Overflow')) return 'https://stackoverflow.com/';
+    if (title.includes('掘金')) return 'https://juejin.cn/';
+    if (title.includes('CSDN')) return 'https://www.csdn.net/';
+    if (title.includes('VS Code') || title.includes('Visual Studio')) return 'https://code.visualstudio.com/';
+    if (title.includes('JetBrains')) return 'https://www.jetbrains.com/';
+    if (title === 'Git版本控制' || title.includes('Git')) return 'https://git-scm.com/';
+    if (title.includes('Docker')) return 'https://www.docker.com/';
+    if (title.includes('Postman')) return 'https://www.postman.com/';
+    if (title.includes('Anaconda')) return 'https://www.anaconda.com/';
+    if (title.includes('Ollama')) return 'https://ollama.com/';
+    if (title.includes('Dify')) return 'https://dify.ai/';
+    if (title.includes('Coze') || title.includes('扣子')) return 'https://www.coze.cn/';
+    if (title.includes('Hugging Face')) return 'https://huggingface.co/';
+    if (title.includes('ModelScope') || title.includes('魔搭')) return 'https://modelscope.cn/';
+    if (title.includes('Midjourney')) return 'https://www.midjourney.com/';
+    if (title.includes('Stable Diffusion')) return 'https://stability.ai/';
+    if (title.includes('翁恺') || title.includes('C语言程序设计')) return 'https://www.icourse163.org/search.htm?search=' + encodeURIComponent(title);
+    if (d.source === 'B站免费') return 'https://search.bilibili.com/all?keyword=' + encodeURIComponent(title);
+    if (d.source === '中国大学MOOC') return 'https://www.icourse163.org/search.htm?search=' + encodeURIComponent(title);
+    return '';
+  }
+  return '';
+}
+
 function renderList(type) {
   const dataMap = {policy:policyData, media:mediaData, cs:csData};
   const listId = {policy:'policyList', media:'mediaList', cs:'csList'};
@@ -463,8 +539,13 @@ function renderList(type) {
     const matchSearch = !search || d.title.toLowerCase().includes(search) || d.desc.toLowerCase().includes(search) || d.tags.some(t => t.toLowerCase().includes(search));
     return matchCat && matchSearch;
   });
-  document.getElementById(listId[type]).innerHTML = filtered.length ? filtered.map(d => `
-    <div class="item-card">
+  document.getElementById(listId[type]).innerHTML = filtered.length ? filtered.map(d => {
+    const url = getItemUrl(d, type);
+    const cardTag = url ? 'a' : 'div';
+    const hrefAttr = url ? `href="${url}" target="_blank" rel="noopener noreferrer"` : '';
+    const clickHint = url ? '<div class="item-go">🔗 点击访问官网 →</div>' : '';
+    return `
+    <${cardTag} class="item-card ${url?'has-link':''}" ${hrefAttr}>
       <div class="item-head">
         <h4>${d.title}</h4>
         <span class="item-cat">${d.cat}</span>
@@ -472,8 +553,9 @@ function renderList(type) {
       <div class="item-desc">${d.desc}</div>
       <div class="item-tags">${d.tags.map(t => `<span class="item-tag">${t}</span>`).join('')}</div>
       <div class="item-meta"><span>📌 ${d.source}</span><span>📅 ${d.date}</span></div>
-    </div>
-  `).join('') : '<div class="empty"><div class="icon">🔍</div><p>没有找到匹配的内容</p></div>';
+      ${clickHint}
+    </${cardTag}>`;
+  }).join('') : '<div class="empty"><div class="icon">🔍</div><p>没有找到匹配的内容</p></div>';
 }
 
 function filterPolicy(q) { currentSearch.policy = q; renderList('policy'); }
