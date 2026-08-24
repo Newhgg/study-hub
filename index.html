@@ -382,6 +382,34 @@ body.dark .sidebar-link.active { color:#a5b4fc; }
 .notice-mini-item .nm-title { font-weight:600; margin-bottom:2px; }
 .notice-mini-item .nm-time { color:var(--text-3); font-size:10px; }
 
+/* 本周课表预览 */
+.week-schedule { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; }
+.day-col { flex:1; min-width:80px; text-align:center; }
+.day-col .day-name { font-size:11px; font-weight:600; color:#6b7280; margin-bottom:6px; padding:4px; border-radius:6px; }
+.day-col.today .day-name { background:#ede9fe; color:#8b5cf6; }
+.day-course { font-size:10px; padding:6px 4px; border-radius:6px; margin-bottom:4px; color:white; line-height:1.3; }
+.day-course.empty { background:transparent; color:#d1d5db; border:1px dashed #e5e7eb; }
+
+/* 作业收集进度 */
+.homework-progress { display:flex; flex-direction:column; gap:12px; }
+.hw-item { }
+.hw-header { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
+.hw-name { font-weight:600; color:#374151; }
+.hw-count { color:#6b7280; }
+.hw-bar { height:8px; background:#f3f4f6; border-radius:4px; overflow:hidden; }
+.hw-bar-fill { height:100%; border-radius:4px; transition:width 0.5s ease; }
+
+/* 班委工作进度 */
+.committee-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; }
+.committee-card { padding:14px; border-radius:12px; background:#f9fafb; border:1px solid #f3f4f6; }
+.committee-role { font-size:13px; font-weight:700; color:#374151; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.committee-name { font-size:11px; color:#9ca3af; margin-bottom:10px; }
+.committee-task { margin-bottom:8px; }
+.committee-task:last-child { margin-bottom:0; }
+.ct-name { font-size:11px; color:#4b5563; margin-bottom:3px; display:flex; justify-content:space-between; }
+.ct-bar { height:6px; background:#e5e7eb; border-radius:3px; overflow:hidden; }
+.ct-bar-fill { height:100%; border-radius:3px; transition:width 0.5s ease; }
+
 /* 毛玻璃卡片 */
 .hero, .search-bar, .lib-card, .tool-card, .countdown-card, .music-player, .schedule-toolbar, .schedule-tip, .filter-bar, .list-container, .music-import { background:rgba(255,255,255,0.85) !important; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.9) !important; box-shadow:0 2px 12px rgba(139,92,246,0.08) !important; }
 body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-card, body.dark .countdown-card, body.dark .music-player, body.dark .schedule-toolbar, body.dark .schedule-tip, body.dark .filter-bar, body.dark .list-container, body.dark .music-import { background:rgba(30,30,50,0.7) !important; border:1px solid rgba(255,255,255,0.08) !important; }
@@ -480,6 +508,26 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
         <h4>📢 最新通知</h4>
         <div class="notice-mini" id="homeNoticeMini"></div>
       </div>
+    </div>
+
+    <!-- 可视化区域：课表+作业进度+班委工作 -->
+    <div class="dashboard-grid">
+      <div class="dashboard-card">
+        <h4>📅 本周课表预览</h4>
+        <div class="week-schedule" id="weekSchedulePreview"></div>
+      </div>
+      <div class="dashboard-card">
+        <h4>📝 作业收集进度</h4>
+        <div class="homework-progress" id="homeworkProgress"></div>
+      </div>
+    </div>
+
+    <div class="dashboard-card" style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <h4 style="margin:0;">👥 班委工作进度（公开透明）</h4>
+        <button class="notice-btn" style="padding:6px 12px;font-size:12px;" onclick="showCommitteeManage()">⚙️ 管理</button>
+      </div>
+      <div class="committee-grid" id="committeeGrid"></div>
     </div>
 
     <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;">📂 三库直达</h3>
@@ -1720,6 +1768,94 @@ renderHomeNotice();
 const profileData = JSON.parse(localStorage.getItem('study_profile') || '{}');
 if (profileData.name) {
   document.getElementById('welcomeName').textContent = '👋 你好，' + profileData.name;
+}
+
+// 本周课表预览
+function renderWeekSchedule() {
+  const container = document.getElementById('weekSchedulePreview');
+  if (!container) return;
+  const today = new Date().getDay();
+  const dayMap = [0,1,2,3,4,5,6]; // 周日=0
+  let html = '';
+  for (let d = 1; d <= 7; d++) {
+    const dayCourses = classScheduleData.courses.filter(c => c.day === d);
+    const isToday = dayMap[today] === d;
+    html += `<div class="day-col ${isToday?'today':''}">
+      <div class="day-name">${dayNames[d-1]}</div>`;
+    if (dayCourses.length > 0) {
+      dayCourses.slice(0,2).forEach(c => {
+        const color = getCourseColor(c.name);
+        html += `<div class="day-course" style="background:${color}">${c.name.substring(0,4)}</div>`;
+      });
+      if (dayCourses.length > 2) html += `<div style="font-size:9px;color:#9ca3af;">+${dayCourses.length-2}门</div>`;
+    } else {
+      html += `<div class="day-course empty">无课</div>`;
+    }
+    html += '</div>';
+  }
+  container.innerHTML = html;
+}
+renderWeekSchedule();
+
+// 作业收集进度（示例数据）
+const homeworkData = [
+  {name: '高数第一章作业', done: 32, total: 45, color: '#8b5cf6'},
+  {name: 'C语言实验报告', done: 28, total: 45, color: '#06b6d4'},
+  {name: '英语四级单词打卡', done: 41, total: 45, color: '#10b981'},
+];
+function renderHomeworkProgress() {
+  const container = document.getElementById('homeworkProgress');
+  if (!container) return;
+  container.innerHTML = homeworkData.map(h => `
+    <div class="hw-item">
+      <div class="hw-header"><span class="hw-name">${h.name}</span><span class="hw-count">${h.done}/${h.total}人</span></div>
+      <div class="hw-bar"><div class="hw-bar-fill" style="width:${Math.round(h.done/h.total*100)}%;background:${h.color}"></div></div>
+    </div>
+  `).join('');
+}
+renderHomeworkProgress();
+
+// 班委工作进度（示例数据，开学后按实际班委替换）
+const committeeData = JSON.parse(localStorage.getItem('committee_data') || 'null') || [
+  {role: '📚 学习委员', name: '待定', tasks: [
+    {name: '作业收集', progress: 70},
+    {name: '学习资料整理', progress: 50},
+  ]},
+  {role: '👑 班长', name: '待定', tasks: [
+    {name: '班级信息统计', progress: 80},
+    {name: '迎新活动筹备', progress: 30},
+  ]},
+  {role: '🚩 团支书', name: '待定', tasks: [
+    {name: '团籍转接', progress: 60},
+    {name: '团日活动策划', progress: 20},
+  ]},
+  {role: '💰 生活委员', name: '待定', tasks: [
+    {name: '班费收缴', progress: 90},
+    {name: '宿舍卫生检查', progress: 40},
+  ]},
+];
+function renderCommittee() {
+  const container = document.getElementById('committeeGrid');
+  if (!container) return;
+  const colors = ['#8b5cf6','#06b6d4','#10b981','#f59e0b','#ef4444','#ec4899'];
+  container.innerHTML = committeeData.map((c,i) => `
+    <div class="committee-card">
+      <div class="committee-role">${c.role}</div>
+      <div class="committee-name">${c.name}</div>
+      ${c.tasks.map(t => `
+        <div class="committee-task">
+          <div class="ct-name"><span>${t.name}</span><span>${t.progress}%</span></div>
+          <div class="ct-bar"><div class="ct-bar-fill" style="width:${t.progress}%;background:${colors[i%colors.length]}"></div></div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+renderCommittee();
+
+// 班委管理（占位，开学后实现）
+function showCommitteeManage() {
+  alert('⚙️ 班委管理功能\n\n开学后根据实际班委名单启用，支持：\n• 各班委更新工作进度\n• 同学查看公开事务\n• 班级监督反馈\n\n当前为示例数据，敬请期待。');
 }
 
 // 页面加载后自动弹出个性化名片（如果用户没填写过）
