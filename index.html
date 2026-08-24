@@ -284,16 +284,41 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
 /* 页脚 */
 .footer { text-align:center; color:var(--text-3); font-size:12px; padding:24px 0; border-top:1px solid var(--border); margin-top:40px; }
 
+/* 面板风格布局 */
+body { display:flex; min-height:100vh; }
+.sidebar { width:220px; background:linear-gradient(180deg,#1e1b4b 0%,#312e81 100%); color:white; display:flex; flex-direction:column; position:fixed; height:100vh; left:0; top:0; z-index:100; }
+.sidebar-brand { padding:20px 16px; border-bottom:1px solid rgba(255,255,255,0.1); }
+.sidebar-brand .logo { font-size:28px; margin-bottom:6px; }
+.sidebar-brand h1 { font-size:16px; font-weight:700; margin:0; }
+.sidebar-brand p { font-size:11px; opacity:0.7; margin:2px 0 0; }
+.sidebar-nav { flex:1; padding:12px 8px; overflow-y:auto; }
+.sidebar-link { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; color:rgba(255,255,255,0.7); text-decoration:none; font-size:13px; font-weight:500; margin-bottom:2px; transition:all 0.15s; cursor:pointer; }
+.sidebar-link:hover { background:rgba(255,255,255,0.1); color:white; }
+.sidebar-link.active { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; box-shadow:0 4px 12px rgba(99,102,241,0.4); }
+.sidebar-link .icon { font-size:16px; width:20px; text-align:center; }
+.sidebar-footer { padding:12px 16px; border-top:1px solid rgba(255,255,255,0.1); font-size:10px; opacity:0.5; }
+.main-content { flex:1; margin-left:220px; display:flex; flex-direction:column; min-height:100vh; }
+.topbar { background:var(--card); border-bottom:1px solid var(--border); padding:14px 28px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:50; backdrop-filter:blur(10px); }
+.topbar-title { font-size:18px; font-weight:700; }
+.topbar-actions { display:flex; gap:10px; align-items:center; }
+.theme-btn-panel { width:36px; height:36px; border-radius:8px; border:1px solid var(--border); background:var(--bg); cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+.theme-btn-panel:hover { border-color:var(--primary); }
+.wrap { padding:24px 28px 40px; flex:1; }
+.navbar { display:none; }
+.topbar { display:flex; }
+
 /* 响应式 */
 @media(max-width:768px) {
-  .navbar { padding:0 16px; }
-  .nav-brand h1 { font-size:15px; }
-  .nav-brand p { display:none; }
-  .nav-link { padding:6px 10px; font-size:12px; }
-  .wrap { padding:20px 16px 40px; }
-  .hero { padding:24px; }
-  .hero h2 { font-size:22px; }
+  .sidebar { width:60px; }
+  .sidebar-brand p, .sidebar-link span { display:none; }
+  .sidebar-brand h1 { font-size:12px; }
+  .main-content { margin-left:60px; }
+  .wrap { padding:16px; }
+  .hero { padding:20px; }
+  .hero h2 { font-size:20px; }
   .lib-grid { grid-template-columns:1fr; }
+  .topbar { padding:10px 16px; }
+  .topbar-title { font-size:15px; }
 }
 </style>
 </head>
@@ -301,27 +326,31 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
 
 <div class="topbar"></div>
 
-<nav class="navbar">
-  <a class="nav-brand" href="#" onclick="switchPage('home');return false;">
+<aside class="sidebar">
+  <div class="sidebar-brand">
     <div class="logo">📚</div>
-    <div>
-      <h1>三班学习平台</h1>
-      <p>阳光学院计算机三班 · 政策 + 课程 + 编程</p>
+    <h1>三班学习平台</h1>
+    <p>阳光学院计算机三班</p>
+  </div>
+  <nav class="sidebar-nav">
+    <a class="sidebar-link active" data-page="home" onclick="switchPage('home');return false;"><span class="icon">🏠</span><span>首页</span></a>
+    <a class="sidebar-link" data-page="policy" onclick="switchPage('policy');return false;"><span class="icon">📋</span><span>政策库</span></a>
+    <a class="sidebar-link" data-page="media" onclick="switchPage('media');return false;"><span class="icon">🎬</span><span>课程库</span></a>
+    <a class="sidebar-link" data-page="cs" onclick="switchPage('cs');return false;"><span class="icon">💻</span><span>编程库</span></a>
+    <a class="sidebar-link" data-page="tools" onclick="switchPage('tools');return false;"><span class="icon">⏱️</span><span>工具箱</span></a>
+    <a class="sidebar-link" data-page="schedule" onclick="switchPage('schedule');return false;"><span class="icon">📅</span><span>课表</span></a>
+    <a class="sidebar-link" data-page="music" onclick="switchPage('music');return false;"><span class="icon">🎵</span><span>音乐</span></a>
+  </nav>
+  <div class="sidebar-footer">v1.0 · 免费使用</div>
+</aside>
+
+<div class="main-content">
+  <header class="topbar">
+    <div class="topbar-title" id="topbarTitle">🏠 首页</div>
+    <div class="topbar-actions">
+      <button class="theme-btn-panel" onclick="toggleTheme()" id="themeBtn">🌙</button>
     </div>
-  </a>
-  <div class="nav-links">
-    <a class="nav-link active" data-page="home" href="#" onclick="switchPage('home');return false;">🏠 首页</a>
-    <a class="nav-link" data-page="policy" href="#" onclick="switchPage('policy');return false;">📋 政策库</a>
-    <a class="nav-link" data-page="media" href="#" onclick="switchPage('media');return false;">🎬 课程库</a>
-    <a class="nav-link" data-page="cs" href="#" onclick="switchPage('cs');return false;">💻 编程库</a>
-    <a class="nav-link" data-page="tools" href="#" onclick="switchPage('tools');return false;">⏱️ 工具箱</a>
-    <a class="nav-link" data-page="schedule" href="#" onclick="switchPage('schedule');return false;">📅 课表</a>
-    <a class="nav-link" data-page="music" href="#" onclick="switchPage('music');return false;">🎵 音乐</a>
-  </div>
-  <div class="nav-actions">
-    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
-  </div>
-</nav>
+  </header>
 
 <div class="wrap">
 
@@ -594,6 +623,7 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
     三班学习平台 · 阳光学院计算机三班 · 仅供学习交流 · 政策链接均来自官方渠道
   </div>
 </div>
+</div>
 
 <script>
 // ===== 数据 =====
@@ -711,11 +741,13 @@ if (localStorage.getItem('theme') === 'dark') {
 }
 
 // ===== 页面切换 =====
+const pageTitles = {home:'🏠 首页', policy:'📋 政策库', media:'🎬 课程库', cs:'💻 编程库', tools:'⏱️ 工具箱', schedule:'📅 课表', music:'🎵 音乐'};
 function switchPage(name) {
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelector(`.nav-link[data-page="${name}"]`).classList.add('active');
+  document.querySelector(`.sidebar-link[data-page="${name}"]`).classList.add('active');
   document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('topbarTitle').textContent = pageTitles[name] || name;
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
