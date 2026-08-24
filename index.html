@@ -1858,6 +1858,73 @@ function showCommitteeManage() {
   alert('⚙️ 班委管理功能\n\n开学后根据实际班委名单启用，支持：\n• 各班委更新工作进度\n• 同学查看公开事务\n• 班级监督反馈\n\n当前为示例数据，敬请期待。');
 }
 
+// 飞书数据读取与渲染
+let feishuData = null;
+function loadFeishuData() {
+  fetch('feishu_data.json?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      feishuData = data;
+      renderFeishuNotices();
+      renderFeishuHomework();
+      renderFeishuMaterials();
+      console.log('飞书数据已加载:', data.update_time);
+    })
+    .catch(e => console.log('飞书数据加载失败:', e));
+}
+
+function renderFeishuNotices() {
+  const container = document.getElementById('homeNoticeMini');
+  if (!container || !feishuData || !feishuData.notices) return;
+  const notices = feishuData.notices.slice(0, 5);
+  if (notices.length === 0) {
+    container.innerHTML = '<div style="color:#9ca3af;font-size:12px;text-align:center;padding:20px;">暂无通知，班委可在飞书添加</div>';
+    return;
+  }
+  container.innerHTML = notices.map(n => `
+    <div class="notice-mini-item" style="${n['是否重要'] === '是' ? 'border-left:3px solid #ef4444;padding-left:8px;' : ''}">
+      <div class="nm-title" style="font-weight:600;font-size:13px;color:#374151;">${n['标题'] || '无标题'}</div>
+      <div class="nm-desc" style="font-size:11px;color:#6b7280;margin-top:2px;">${n['内容'] || ''}</div>
+      <div class="nm-time" style="font-size:10px;color:#9ca3af;margin-top:2px;">${n['发布人'] || ''}</div>
+    </div>
+  `).join('');
+}
+
+function renderFeishuHomework() {
+  const container = document.getElementById('homeworkProgress');
+  if (!container || !feishuData || !feishuData.homework) return;
+  const hw = feishuData.homework;
+  if (hw.length === 0) {
+    container.innerHTML = '<div style="color:#9ca3af;font-size:12px;text-align:center;padding:20px;">暂无作业，学习委员可在飞书添加</div>';
+    return;
+  }
+  const colors = ['#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
+  container.innerHTML = hw.map((h, i) => {
+    const done = h['已交人数'] || 0;
+    const total = h['总人数'] || 45;
+    const percent = Math.round(done / total * 100);
+    return `
+      <div class="hw-item">
+        <div class="hw-header">
+          <span class="hw-name">${h['作业名'] || '作业'}</span>
+          <span class="hw-count">${done}/${total}人 (${percent}%)</span>
+        </div>
+        <div class="hw-bar"><div class="hw-bar-fill" style="width:${percent}%;background:${colors[i % colors.length]}"></div></div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderFeishuMaterials() {
+  // 学习资料可以在课程库或编程库页面展示，这里先存到全局
+  window.feishuMaterials = feishuData ? feishuData.materials : [];
+}
+
+// 页面加载后读取飞书数据
+setTimeout(loadFeishuData, 1000);
+// 每5分钟刷新一次飞书数据
+setInterval(loadFeishuData, 300000);
+
 // 页面加载后自动弹出个性化名片（如果用户没填写过）
 setTimeout(() => {
   const data = JSON.parse(localStorage.getItem('study_profile') || '{}');
