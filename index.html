@@ -235,6 +235,9 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
 .playlist-name { font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .playlist-duration { font-size:11px; color:var(--text-3); }
 .playlist-empty { padding:32px; text-align:center; color:var(--text-3); font-size:13px; }
+.free-music-tip { margin-top:16px; padding:12px; background:rgba(99,102,241,0.05); border-radius:8px; font-size:12px; color:var(--text-2); line-height:1.6; }
+.free-music-tip a { color:var(--primary); text-decoration:none; }
+.free-music-tip a:hover { text-decoration:underline; }
 .modal-actions { display:flex; justify-content:space-between; gap:12px; margin-top:24px; }
 .modal-btn { flex:1; padding:12px 20px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; border:none; transition:all 0.15s; }
 .modal-btn.primary { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; }
@@ -459,7 +462,14 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
           📁 导入本地音乐
           <input type="file" id="musicFileInput" accept="audio/*" multiple onchange="importMusic(this.files)" style="display:none;">
         </label>
-        <span class="import-tip">支持 MP3 / WAV / OGG / M4A 等格式，多选导入</span>
+        <span class="import-tip">支持 MP3 / WAV / OGG / M4A，多选导入</span>
+      </div>
+      <div class="free-music-tip">
+        💡 <b>免费音乐下载网站</b>（可下载后导入）：
+        <a href="https://www.soundhelix.com/" target="_blank">SoundHelix</a> · 
+        <a href="https://incompetech.com/" target="_blank">Incompetech(CC BY)</a> · 
+        <a href="https://www.bensound.com/" target="_blank">Bensound</a> · 
+        <a href="https://freemusicarchive.org/" target="_blank">Free Music Archive</a>
       </div>
     </div>
 
@@ -934,9 +944,22 @@ function renderCountdowns() {
 // ===== 音乐播放器 =====
 let audio = new Audio();
 let musicPlaylist = [
-  { name:'🎵 轻音乐1 - 学习专注', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', duration:'未知' },
-  { name:'🎵 轻音乐2 - 放松心情', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', duration:'未知' },
-  { name:'🎵 轻音乐3 - 编程背景', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', duration:'未知' },
+  { name:'🎵 轻音乐1 - 学习专注', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', duration:'在线音乐' },
+  { name:'🎵 轻音乐2 - 放松心情', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', duration:'在线音乐' },
+  { name:'🎵 轻音乐3 - 编程背景', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', duration:'在线音乐' },
+  { name:'🎵 轻音乐4 - 深度思考', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3', duration:'在线音乐' },
+  { name:'🎵 轻音乐5 - 午后时光', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3', duration:'在线音乐' },
+  { name:'🎵 轻音乐6 - 夜晚静谧', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3', duration:'在线音乐' },
+  { name:'🎵 轻音乐7 - 清晨活力', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3', duration:'在线音乐' },
+  { name:'🎵 轻音乐8 - 漫步校园', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3', duration:'在线音乐' },
+  { name:'🎵 轻音乐9 - 代码人生', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3', duration:'在线音乐' },
+  { name:'🎵 轻音乐10 - 梦想起航', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3', duration:'在线音乐' },
+  { name:'🎵 轻音乐11 - 青春记忆', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3', duration:'在线音乐' },
+  { name:'🎵 轻音乐12 - 阳光明媚', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3', duration:'在线音乐' },
+  { name:'🎵 轻音乐13 - 星空下', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3', duration:'在线音乐' },
+  { name:'🎵 轻音乐14 - 海浪声', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3', duration:'在线音乐' },
+  { name:'🎵 轻音乐15 - 森林漫步', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3', duration:'在线音乐' },
+  { name:'🎵 轻音乐16 - 未来可期', url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3', duration:'在线音乐' },
 ];
 let currentMusicIndex = -1;
 let musicPlaying = false;
