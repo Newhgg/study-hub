@@ -459,10 +459,10 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
       </div>
       <div class="music-import">
         <label class="import-btn">
-          📁 导入本地音乐
+          📁 导入我的流行歌
           <input type="file" id="musicFileInput" accept="audio/*" multiple onchange="importMusic(this.files)" style="display:none;">
         </label>
-        <span class="import-tip">把你喜欢的流行歌导入进来，支持多选</span>
+        <span class="import-tip">已预设7首免费流行风格音乐，也可导入自己的歌</span>
       </div>
       <div class="free-music-tip">
         💡 <b>免费音乐下载网站</b>（可下载后导入）：
@@ -946,7 +946,15 @@ function renderCountdowns() {
 
 // ===== 音乐播放器 =====
 let audio = new Audio();
-let musicPlaylist = [];
+let musicPlaylist = [
+  { name:'🎵 Carefree - 轻快流行', url:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Carefree.mp3', duration:'免费流行' },
+  { name:'🎵 Funkorama - 放克流行', url:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Funkorama.mp3', duration:'免费流行' },
+  { name:'🎵 Sneaky Snitch - 俏皮流行', url:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Sneaky%20Snitch.mp3', duration:'免费流行' },
+  { name:'🎵 Plucky Daisy - 清新流行', url:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Plucky%20Daisy.mp3', duration:'免费流行' },
+  { name:'🎵 Supernatural - 电子流行', url:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Supernatural.mp3', duration:'免费流行' },
+  { name:'🎵 Wallpaper - 背景流行', url:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Wallpaper.mp3', duration:'免费流行' },
+  { name:'🎵 Comfortable Mystery - 氛围流行', url:'https://incompetech.com/music/royalty-free/mp3-royaltyfree/Comfortable%20Mystery%202.mp3', duration:'免费流行' },
+];
 let currentMusicIndex = -1;
 let musicPlaying = false;
 
