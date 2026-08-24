@@ -123,7 +123,9 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
 
 /* 学习路线 */
 .route-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; }
-.route-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px; }
+.route-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px; text-decoration:none; color:inherit; transition:all 0.15s; }
+.route-card:hover { border-color:var(--primary); box-shadow:var(--shadow-hover); transform:translateY(-2px); }
+.route-card.has-link { cursor:pointer; }
 .route-card h4 { font-size:15px; font-weight:700; margin-bottom:8px; }
 .route-card .route-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
 .route-card .route-tag { font-size:11px; padding:2px 8px; border-radius:6px; background:rgba(99,102,241,0.1); color:var(--primary); font-weight:500; }
@@ -239,24 +241,27 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
 
     <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;">🎯 推荐学习路线</h3>
     <div class="route-grid">
-      <div class="route-card">
+      <a class="route-card has-link" href="#" onclick="switchPage('cs');currentSearch.cs='C语言';document.querySelector('#page-cs .search-bar input').value='C语言';renderList('cs');return false;">
         <h4>大一上 · 基础打牢</h4>
         <div class="route-tags"><span class="route-tag">C语言</span><span class="route-tag">高数</span><span class="route-tag">四级</span></div>
         <p>重点搞定C语言编程基础、高等数学上册、英语四级词汇。课余了解AI智能体工具，用AI提高学习效率。</p>
         <div class="route-meta"><span>优先级：⭐⭐⭐</span><span>周期：3-4个月</span></div>
-      </div>
-      <div class="route-card">
+        <div class="item-go">🔗 点击查看C语言课程 →</div>
+      </a>
+      <a class="route-card has-link" href="#" onclick="switchPage('policy');currentFilter.policy='竞赛';renderFilters('policyFilters',policyData,'cat');renderList('policy');return false;">
         <h4>大一下 · 竞赛入门</h4>
         <div class="route-tags"><span class="route-tag">蓝桥杯</span><span class="route-tag">数学建模</span><span class="route-tag">Python</span></div>
         <p>参加蓝桥杯省赛（4月）、数学建模国赛（9月）。学习Python数据分析，开始接触AI智能体实战。</p>
         <div class="route-meta"><span>优先级：⭐⭐⭐</span><span>周期：3-4个月</span></div>
-      </div>
-      <div class="route-card">
+        <div class="item-go">🔗 点击查看竞赛信息 →</div>
+      </a>
+      <a class="route-card has-link" href="#" onclick="switchPage('media');return false;">
         <h4>大二 · 能力分化</h4>
         <div class="route-tags"><span class="route-tag">考公/考研</span><span class="route-tag">AI副业</span><span class="route-tag">专业深化</span></div>
         <p>确定方向：考公路线开始了解行测申论，考研路线开始数学英语基础。探索AI智能体接单，培养副业能力。</p>
         <div class="route-meta"><span>优先级：⭐⭐</span><span>周期：全年</span></div>
-      </div>
+        <div class="item-go">🔗 点击查看课程资源 →</div>
+      </a>
     </div>
   </div>
 
@@ -476,9 +481,18 @@ function getItemUrl(d, type) {
     if (title.includes('四六级') || title.includes('CET')) return 'https://cet.neea.edu.cn/';
     if (title.includes('软考') || title.includes('专业技术资格')) return 'https://www.ruankao.org.cn/';
     if (title.includes('教师资格') || title.includes('NTCE')) return 'https://ntce.neea.edu.cn/';
-    if (title.includes('阳光学院') && title.includes('教务')) return 'https://jwxt.ygu.edu.cn/';
-    if (title.includes('阳光学院') && title.includes('图书馆')) return 'https://lib.ygu.edu.cn/';
-    return '';
+    // 校内文件也加链接
+    if (title.includes('校历')) return 'https://www.ygu.edu.cn/';
+    if (title.includes('助学贷款') || title.includes('资助')) return 'http://www.xszz.edu.cn/';
+    if (title.includes('医保')) return 'http://ybj.fuzhou.gov.cn/';
+    if (title.includes('辅修')) return 'https://jwxt.ygu.edu.cn/';
+    if (title.includes('新生') || title.includes('入学')) return 'https://zsb.ygu.edu.cn/';
+    if (title.includes('图书馆')) return 'https://lib.ygu.edu.cn/';
+    if (title.includes('教务系统')) return 'https://jwxt.ygu.edu.cn/';
+    if (title.includes('校园网')) return 'https://www.ygu.edu.cn/xxfw/wlfw.htm';
+    if (title.includes('食堂') || title.includes('快递') || title.includes('超市')) return 'https://www.ygu.edu.cn/';
+    if (title.includes('竞赛分享会')) return 'https://www.ygu.edu.cn/cxcy/';
+    return 'https://www.ygu.edu.cn/';
   }
   // 课程库链接
   if (type === 'media') {
