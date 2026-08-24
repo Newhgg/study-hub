@@ -238,6 +238,37 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
 .free-music-tip { margin-top:16px; padding:12px; background:rgba(99,102,241,0.05); border-radius:8px; font-size:12px; color:var(--text-2); line-height:1.6; }
 .free-music-tip a { color:var(--primary); text-decoration:none; }
 .free-music-tip a:hover { text-decoration:underline; }
+
+/* 课表 */
+.schedule-toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px; }
+.schedule-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.schedule-btn { padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; border:none; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; transition:all 0.15s; }
+.schedule-btn:hover { transform:translateY(-1px); box-shadow:0 4px 10px rgba(99,102,241,0.3); }
+.schedule-btn.secondary { background:var(--bg); color:var(--text-2); border:1px solid var(--border); }
+.schedule-btn.danger { background:#ef4444; }
+.import-btn.small { padding:8px 14px; font-size:13px; }
+.schedule-tip { background:rgba(99,102,241,0.05); border-radius:8px; padding:10px 14px; font-size:12px; color:var(--text-2); margin-bottom:16px; }
+.schedule-tip a { color:var(--primary); text-decoration:none; font-weight:600; }
+.schedule-tip a:hover { text-decoration:underline; }
+.schedule-container { overflow-x:auto; }
+.schedule-empty { text-align:center; padding:60px 20px; color:var(--text-3); font-size:14px; background:var(--card); border:1px dashed var(--border); border-radius:12px; }
+.schedule-table { width:100%; border-collapse:collapse; min-width:700px; }
+.schedule-table th, .schedule-table td { border:1px solid var(--border); padding:0; text-align:center; vertical-align:middle; }
+.schedule-table th { background:var(--bg); padding:10px 8px; font-size:12px; font-weight:600; color:var(--text-2); position:sticky; top:0; }
+.schedule-table td { height:50px; font-size:11px; color:var(--text-3); }
+.schedule-table .time-col { width:60px; background:var(--bg); font-size:10px; }
+.course-block { margin:2px; padding:6px 8px; border-radius:6px; font-size:11px; color:white; cursor:pointer; transition:all 0.15s; text-align:left; line-height:1.4; }
+.course-block:hover { transform:scale(1.02); box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+.course-block .course-name { font-weight:700; margin-bottom:2px; }
+.course-block .course-info { font-size:10px; opacity:0.9; }
+
+/* 表单 */
+.form-group { margin-bottom:14px; }
+.form-group label { display:block; font-size:12px; font-weight:600; color:var(--text-2); margin-bottom:6px; }
+.form-group input, .form-group select { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:8px; background:var(--bg); color:var(--text); font-size:13px; }
+.form-group input:focus, .form-group select:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,0.1); }
+.form-row { display:flex; gap:10px; }
+.form-row .form-group { flex:1; }
 .modal-actions { display:flex; justify-content:space-between; gap:12px; margin-top:24px; }
 .modal-btn { flex:1; padding:12px 20px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; border:none; transition:all 0.15s; }
 .modal-btn.primary { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; }
@@ -284,6 +315,7 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
     <a class="nav-link" data-page="media" href="#" onclick="switchPage('media');return false;">🎬 课程库</a>
     <a class="nav-link" data-page="cs" href="#" onclick="switchPage('cs');return false;">💻 编程库</a>
     <a class="nav-link" data-page="tools" href="#" onclick="switchPage('tools');return false;">⏱️ 工具箱</a>
+    <a class="nav-link" data-page="schedule" href="#" onclick="switchPage('schedule');return false;">📅 课表</a>
     <a class="nav-link" data-page="music" href="#" onclick="switchPage('music');return false;">🎵 音乐</a>
   </div>
   <div class="nav-actions">
@@ -478,6 +510,82 @@ body { font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; backgro
       <div class="playlist-empty">
         🎵 暂无音乐<br>
         <span style="font-size:11px;">点击上方「导入本地音乐」，把你喜欢的流行歌加进来</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 课表 -->
+  <div class="page" id="page-schedule">
+    <div class="schedule-toolbar">
+      <h3 style="font-size:18px;font-weight:700;">📅 我的课表</h3>
+      <div class="schedule-actions">
+        <label class="import-btn small">
+          📥 导入课表
+          <input type="file" id="scheduleImport" accept=".json" onchange="importSchedule(this.files[0])" style="display:none;">
+        </label>
+        <button class="schedule-btn" onclick="showAddCourseForm()">➕ 添加课程</button>
+        <button class="schedule-btn secondary" onclick="exportSchedule()">📤 导出</button>
+        <button class="schedule-btn danger" onclick="clearSchedule()">🗑️ 清空</button>
+      </div>
+    </div>
+    <div class="schedule-tip">
+      💡 支持导入JSON格式课表，或手动添加课程。数据保存在本地，刷新不丢失。
+      <a href="#" onclick="showScheduleTemplate();return false;">查看导入格式示例</a>
+    </div>
+    <div class="schedule-container" id="scheduleContainer">
+      <div class="schedule-empty">
+        📭 暂无课表<br>
+        <span style="font-size:12px;">点击「导入课表」或「添加课程」开始</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 添加课程弹窗 -->
+  <div class="modal-overlay" id="courseModal">
+    <div class="modal-box" style="max-width:420px;">
+      <button class="modal-close" onclick="closeCourseModal()">✕</button>
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;text-align:center;">添加课程</h3>
+      <div class="form-group">
+        <label>课程名称</label>
+        <input type="text" id="courseName" placeholder="例如：高等数学">
+      </div>
+      <div class="form-group">
+        <label>授课老师</label>
+        <input type="text" id="courseTeacher" placeholder="例如：张老师">
+      </div>
+      <div class="form-group">
+        <label>上课地点</label>
+        <input type="text" id="courseLocation" placeholder="例如：教学楼A101">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>星期</label>
+          <select id="courseDay">
+            <option value="1">周一</option>
+            <option value="2">周二</option>
+            <option value="3">周三</option>
+            <option value="4">周四</option>
+            <option value="5">周五</option>
+            <option value="6">周六</option>
+            <option value="7">周日</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>开始节次</label>
+          <input type="number" id="courseStart" value="1" min="1" max="10">
+        </div>
+        <div class="form-group">
+          <label>结束节次</label>
+          <input type="number" id="courseEnd" value="2" min="1" max="10">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>上课周次（如：1-16 或 1,3,5,7）</label>
+        <input type="text" id="courseWeeks" value="1-16" placeholder="例如：1-16 或 1,3,5,7">
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn secondary" onclick="closeCourseModal()">取消</button>
+        <button class="modal-btn primary" onclick="saveCourse()">保存</button>
       </div>
     </div>
   </div>
@@ -1049,6 +1157,159 @@ audio.addEventListener('ended', () => {
   nextMusic();
 });
 
+// ===== 课表功能 =====
+const timeSlots = [
+  { start: "08:00", end: "08:45" },
+  { start: "08:55", end: "09:40" },
+  { start: "10:00", end: "10:45" },
+  { start: "10:55", end: "11:40" },
+  { start: "14:00", end: "14:45" },
+  { start: "14:55", end: "15:40" },
+  { start: "16:00", end: "16:45" },
+  { start: "16:55", end: "17:40" },
+  { start: "19:00", end: "19:45" },
+  { start: "19:55", end: "20:40" }
+];
+const dayNames = ['周一','周二','周三','周四','周五','周六','周日'];
+const courseColors = ['#6366f1','#8b5cf6','#ec4899','#ef4444','#f59e0b','#10b981','#06b6d4','#3b82f6','#f97316','#84cc16'];
+let scheduleData = JSON.parse(localStorage.getItem('schedule_data') || '{"courses":[]}');
+let courseColorMap = {};
+
+function getCourseColor(name) {
+  if (!courseColorMap[name]) {
+    const idx = Object.keys(courseColorMap).length % courseColors.length;
+    courseColorMap[name] = courseColors[idx];
+  }
+  return courseColorMap[name];
+}
+
+function renderSchedule() {
+  const container = document.getElementById('scheduleContainer');
+  if (scheduleData.courses.length === 0) {
+    container.innerHTML = '<div class="schedule-empty">📭 暂无课表<br><span style="font-size:12px;">点击「导入课表」或「添加课程」开始</span></div>';
+    return;
+  }
+  let html = '<table class="schedule-table"><thead><tr><th class="time-col">节次</th>';
+  dayNames.forEach(d => html += `<th>${d}</th>`);
+  html += '</tr></thead><tbody>';
+  for (let i = 0; i < 10; i++) {
+    html += `<tr><td class="time-col">第${i+1}节<br>${timeSlots[i].start}</td>`;
+    for (let day = 1; day <= 7; day++) {
+      const course = scheduleData.courses.find(c => c.day === day && c.start === i + 1);
+      if (course) {
+        const rowspan = course.end - course.start + 1;
+        const color = getCourseColor(course.name);
+        html += `<td rowspan="${rowspan}"><div class="course-block" style="background:${color}" onclick="showCourseDetail(${course.id})">
+          <div class="course-name">${course.name}</div>
+          <div class="course-info">${course.teacher || ''}</div>
+          <div class="course-info">${course.location || ''}</div>
+        </div></td>`;
+      } else {
+        const covered = scheduleData.courses.find(c => c.day === day && i + 1 > c.start && i + 1 <= c.end);
+        if (!covered) html += '<td></td>';
+      }
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+function showAddCourseForm() {
+  document.getElementById('courseName').value = '';
+  document.getElementById('courseTeacher').value = '';
+  document.getElementById('courseLocation').value = '';
+  document.getElementById('courseDay').value = '1';
+  document.getElementById('courseStart').value = '1';
+  document.getElementById('courseEnd').value = '2';
+  document.getElementById('courseWeeks').value = '1-16';
+  document.getElementById('courseModal').classList.add('show');
+}
+
+function closeCourseModal() {
+  document.getElementById('courseModal').classList.remove('show');
+}
+
+function saveCourse() {
+  const name = document.getElementById('courseName').value.trim();
+  if (!name) { alert('请输入课程名称'); return; }
+  const course = {
+    id: Date.now(),
+    name: name,
+    teacher: document.getElementById('courseTeacher').value.trim(),
+    location: document.getElementById('courseLocation').value.trim(),
+    day: parseInt(document.getElementById('courseDay').value),
+    start: parseInt(document.getElementById('courseStart').value),
+    end: parseInt(document.getElementById('courseEnd').value),
+    weeks: document.getElementById('courseWeeks').value.trim() || '1-16'
+  };
+  scheduleData.courses.push(course);
+  localStorage.setItem('schedule_data', JSON.stringify(scheduleData));
+  closeCourseModal();
+  renderSchedule();
+}
+
+function showCourseDetail(id) {
+  const course = scheduleData.courses.find(c => c.id === id);
+  if (!course) return;
+  if (confirm(`课程：${course.name}\n老师：${course.teacher || '未填写'}\n地点：${course.location || '未填写'}\n时间：${dayNames[course.day-1]} 第${course.start}-${course.end}节\n周次：${course.weeks}\n\n点击确定删除此课程，取消返回`)) {
+    scheduleData.courses = scheduleData.courses.filter(c => c.id !== id);
+    localStorage.setItem('schedule_data', JSON.stringify(scheduleData));
+    renderSchedule();
+  }
+}
+
+function importSchedule(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.courses && Array.isArray(data.courses)) {
+        scheduleData = data;
+        localStorage.setItem('schedule_data', JSON.stringify(scheduleData));
+        renderSchedule();
+        alert(`✅ 导入成功，共${data.courses.length}门课程`);
+      } else {
+        alert('❌ 格式错误，请使用正确的JSON格式');
+      }
+    } catch(err) {
+      alert('❌ 文件解析失败：' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function exportSchedule() {
+  const blob = new Blob([JSON.stringify(scheduleData, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '我的课表.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function clearSchedule() {
+  if (confirm('确定要清空所有课程吗？此操作不可恢复。')) {
+    scheduleData = {courses: []};
+    courseColorMap = {};
+    localStorage.setItem('schedule_data', JSON.stringify(scheduleData));
+    renderSchedule();
+  }
+}
+
+function showScheduleTemplate() {
+  const template = {
+    courses: [
+      {name: "高等数学", teacher: "张老师", location: "教学楼A101", day: 1, start: 1, end: 2, weeks: "1-16"},
+      {name: "大学英语", teacher: "李老师", location: "教学楼B202", day: 3, start: 3, end: 4, weeks: "1-16"},
+      {name: "C语言程序设计", teacher: "王老师", location: "实验楼C303", day: 5, start: 5, end: 6, weeks: "1-16"}
+    ]
+  };
+  alert('课表导入格式示例（JSON）：\n\n' + JSON.stringify(template, null, 2));
+}
+
 // ===== 初始化 =====
 renderTimeline('homeTimeline');
 renderFilters('policyFilters', policyData, 'cat');
@@ -1062,6 +1323,7 @@ document.getElementById('pomoCount').textContent = pomodoroCount;
 updatePomodoroDisplay();
 renderPlaylist();
 audio.volume = 0.7;
+renderSchedule();
 
 // 页面加载后自动弹出个性化名片（如果用户没填写过）
 setTimeout(() => {
