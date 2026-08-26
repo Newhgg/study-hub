@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0d1b3e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#6366f1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="三班学习平台">
+<link rel="apple-touch-icon" href="https://newhgg.github.io/study-hub/icon.png">
 <title>阳光学院计算机三班 · 学习平台</title>
 <style>
 :root {
@@ -34,7 +42,7 @@
   --shadow-hover: 0 8px 32px rgba(99,102,241,0.3);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Microsoft YaHei',sans-serif; background:linear-gradient(135deg,#f5f3ff 0%,#ede9fe 50%,#f0f4ff 100%); color:#1a1a2e; min-height:100vh; transition:background 0.3s,color 0.3s; position:relative; }
+body { font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Microsoft YaHei',sans-serif; background:linear-gradient(135deg,#f5f3ff 0%,#ede9fe 50%,#f0f4ff 100%); color:#1a1a2e; min-height:100dvh; transition:background 0.3s,color 0.3s; position:relative; }
 body.dark { background:linear-gradient(135deg,#1a1625 0%,#1e1b3a 50%,#161829 100%); color:#e8e8f0; }
 
 /* 渐变背景浮动圆形 */
@@ -340,7 +348,7 @@ body.dark { background:linear-gradient(135deg,#1a1625 0%,#1e1b3a 50%,#161829 100
 
 /* 面板风格布局 - 学生Portal风格 */
 body { display:block; padding-bottom:70px; }
-.sidebar { width:72px; background:rgba(255,255,255,0.85); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-right:1px solid rgba(0,0,0,0.06); color:inherit; display:flex; flex-direction:column; align-items:center; position:fixed; height:100vh; left:0; top:0; z-index:100; padding:16px 0; box-shadow:2px 0 20px rgba(0,0,0,0.04); }
+.sidebar { width:72px; background:rgba(255,255,255,0.85); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-right:1px solid rgba(0,0,0,0.06); color:inherit; display:flex; flex-direction:column; align-items:center; position:fixed; min-height:100dvh; left:0; top:0; z-index:100; padding:16px 0; box-shadow:2px 0 20px rgba(0,0,0,0.04); }
 body.dark .sidebar { background:rgba(20,20,40,0.85); border-right:1px solid rgba(255,255,255,0.08); }
 .sidebar-brand { padding:0; border-bottom:none; display:flex; flex-direction:column; align-items:center; gap:4px; margin-bottom:20px; }
 .sidebar-brand .logo { font-size:28px; margin-bottom:0; width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,#6366f1,#8b5cf6); display:flex; align-items:center; justify-content:center; }
@@ -354,7 +362,7 @@ body.dark .sidebar-link.active { color:#a5b4fc; }
 .sidebar-link .icon { font-size:20px; width:auto; }
 .sidebar-link span:not(.icon) { font-size:9px; }
 .sidebar-footer { display:none; }
-.main-content { flex:none; margin-left:72px; display:block; min-height:100vh; position:relative; z-index:1; }
+.main-content { flex:none; margin-left:72px; display:block; min-height:100dvh; position:relative; z-index:1; }
 .topbar { display:none; }
 .wrap { padding:24px 28px 40px; max-width:1200px; margin:0 auto; }
 
@@ -434,6 +442,38 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
   .hero { padding:20px !important; }
   .hero h2 { font-size:20px; }
   .lib-grid { grid-template-columns:1fr; }
+}
+@media(max-width:480px){
+ .lib-grid{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+ .card-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+ .route-grid{grid-template-columns:1fr}
+ .profile-grid{grid-template-columns:1fr}
+}
+@media(max-width:360px){
+ .lib-grid,.card-grid{grid-template-columns:1fr}
+}
+@media (max-width:480px){
+ html{font-size:12px}
+ body,button,input,textarea{font-size:12px!important}
+}
+@media(max-width:768px){
+ .navbar,.hero-stat,.sidebar,.modal-overlay,.bg-shapes{
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  background:rgba(255,255,255,0.92)!important
+ }
+}
+.bottom-fixed,.profile-save-bar{bottom:env(safe-area-inset-bottom,0);bottom:max(0px,calc(100dvh - var(--vv-h,100dvh)))}
+.item-cat,.lib-tag,.route-tag{white-space:normal!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;}
+/* === AImac 移动端补丁 v1 (2026-08-26) === */
+@media (max-width:768px){
+  *{backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
+  small{font-size:12px !important}
+}
+@media (max-width:480px){
+  .lib-grid,.card-grid,.route-grid,.guide-checklist,.countdown-grid,.profile-grid,.committee-grid{grid-template-columns:repeat(auto-fill,minmax(138px,1fr)) !important}
+}
+@media (max-width:360px){
+  .lib-grid,.card-grid,.route-grid,.guide-checklist,.countdown-grid,.profile-grid,.committee-grid{grid-template-columns:repeat(auto-fill,minmax(118px,1fr)) !important}
 }
 </style>
 </head>
@@ -1993,6 +2033,27 @@ setTimeout(() => {
     </div>
   </div>
 </div>
-
+<script>
+(function(){
+  if(!window.visualViewport)return;
+  var fix=function(){document.documentElement.style.setProperty('--vv-h',window.visualViewport.height+'px');};
+  window.visualViewport.addEventListener('resize',fix);fix();
+})();
+</script>
+<script>
+(function(){
+  var addHint=function(){
+    document.querySelectorAll('.schedule-container').forEach(function(c){
+      if(c.querySelector('.scroll-hint'))return;
+      var h=document.createElement('div');
+      h.className='scroll-hint';h.textContent='← 左右滑动查看 →';
+      h.style.cssText='padding:4px 8px;font-size:12px;color:#6366f1;text-align:center;font-weight:600;background:rgba(99,102,241,0.06);border-top:1px dashed #ddd;border-radius:0 0 8px 8px;';
+      c.appendChild(h);
+    });
+  };
+  setTimeout(addHint,500);
+  if(typeof switchPage==='function'){var _sp=switchPage;switchPage=function(p){_sp(p);setTimeout(addHint,300);};}
+})();
+</script>
 </body>
 </html>
