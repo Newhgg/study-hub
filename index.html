@@ -3,9 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0d1b3e">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- 声明浅色方案：防止微信/iOS深色模式强行给页面套暗色滤镜(症状=发灰半透明) -->
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#6366f1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#6366f1" media="(prefers-color-scheme: dark)">
+<style>
+html{overflow-anchor:none!important;scroll-behavior:auto!important;}
+:root{color-scheme:light only;forced-color-adjust:none;}
+</style>
+<script>
+// === 移动端滚动修复（2026-08-26 加强）：压平 WKWebView/bfcache 滚动恢复 ===
+// 真凶：iPhone 微信 WKWebView 在 load 之后还会"补"回上次滚动位置(~869px≈一屏)
+// 单次 scrollTo 不够；必须禁用滚动恢复 + 首屏持续压制 + bfcache 兜底
+(function () {
+  'use strict';
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+  function resetTop() {
+    if (window.scrollY !== 0) window.scrollTo(0, 0);
+    if (document.documentElement && document.documentElement.scrollTop) document.documentElement.scrollTop = 0;
+    if (document.body && document.body.scrollTop) document.body.scrollTop = 0;
+  }
+
+  // 首屏立即压 + 持续压制约 600ms（覆盖 WebKit 在 load 后再补滚动位置的时序）
+  function killLoop() {
+    resetTop();
+    var n = 0;
+    (function tick() { resetTop(); if (++n < 36) requestAnimationFrame(tick); })();
+  }
+
+  if (document.readyState !== 'loading') killLoop();
+  else document.addEventListener('DOMContentLoaded', killLoop);
+
+  // bfcache 恢复（从后台切回时页面不重执行主逻辑，但滚动被还原）
+  window.addEventListener('pageshow', function (e) {
+    killLoop();
+    if (e && e.persisted) { window.scrollTo(0, 0); }
+  });
+})();
+</script>
 <meta name="theme-color" content="#6366f1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -70,8 +106,11 @@ body.dark { background:linear-gradient(135deg,#1a1625 0%,#1e1b3a 50%,#161829 100
 
 /* 内容区 */
 .wrap { max-width:1200px; margin:0 auto; padding:28px 24px 60px; }
-.page { display:none; animation:fadeIn 0.3s; }
-.page.active { display:block; }
+.page { display:none; animation:fadeIn 0.3s; opacity:1; }
+/* 兜底：激活页强制不透明，防止微信WebKit暂停动画导致页面永远停在opacity:0(整页发灰/透明) */
+.page.active { display:block; opacity:1 !important; }
+/* 禁用页面切换动画，避免卡在透明态：微信深色模式/低电量下 animation 可能被暂停 */
+.page, .page.active { animation:none !important; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
 
 /* Hero */
@@ -125,6 +164,38 @@ body.dark { background:linear-gradient(135deg,#1a1625 0%,#1e1b3a 50%,#161829 100
 .item-card .item-meta { display:flex; gap:10px; font-size:11px; color:var(--text-3); margin-top:auto; padding-top:8px; border-top:1px dashed var(--border); flex-wrap:wrap; }
 .item-card .item-tags { display:flex; gap:4px; flex-wrap:wrap; }
 .item-card .item-tag { font-size:10px; padding:1px 7px; border-radius:4px; background:var(--bg); color:var(--text-3); }
+/* === 三库升级 v1 样式 === */
+.cat-color { padding:2px 10px; border-radius:999px; font-size:11px; font-weight:600; white-space:nowrap; display:inline-block; }
+.cat-竞赛 { background:rgba(239,68,68,0.12); color:#dc2626; }
+.cat-考公 { background:rgba(59,130,246,0.12); color:#2563eb; }
+.cat-考研 { background:rgba(139,92,246,0.12); color:#7c3aed; }
+.cat-证书 { background:rgba(16,185,129,0.12); color:#059669; }
+.cat-校内,.cat-学业,.cat-入学 { background:rgba(20,184,166,0.12); color:#0d9488; }
+.cat-资助,.cat-医保 { background:rgba(245,158,11,0.12); color:#d97706; }
+.cat-生活 { background:rgba(236,72,153,0.12); color:#db2777; }
+.cat-编程基础,.cat-基础课,.cat-核心课 { background:rgba(99,102,241,0.12); color:#6366f1; }
+.cat-数学 { background:rgba(6,182,212,0.12); color:#0891b2; }
+.cat-英语 { background:rgba(168,85,247,0.12); color:#9333ea; }
+.cat-AI智能体,.cat-AI工具,.cat-AI资源,.cat-免费资源,.cat-个人成长,.cat-公考 { background:rgba(34,197,94,0.12); color:#16a34a; }
+.cat-刷题,.cat-资源,.cat-工具 { background:rgba(107,114,128,0.12); color:#4b5563; }
+body.dark .cat-竞赛 { background:rgba(239,68,68,0.2); color:#f87171; }
+body.dark .cat-考公 { background:rgba(59,130,246,0.2); color:#60a5fa; }
+body.dark .cat-考研 { background:rgba(139,92,246,0.2); color:#a78bfa; }
+body.dark .cat-证书 { background:rgba(16,185,129,0.2); color:#34d399; }
+body.dark .cat-校内,body.dark .cat-学业,body.dark .cat-入学 { background:rgba(20,184,166,0.2); color:#2dd4bf; }
+body.dark .cat-资助,body.dark .cat-医保 { background:rgba(245,158,11,0.2); color:#fbbf24; }
+body.dark .cat-生活 { background:rgba(236,72,153,0.2); color:#f472b6; }
+body.dark .cat-数学 { background:rgba(6,182,212,0.2); color:#22d3ee; }
+.search-result-count { font-size:12px; color:var(--text-3); margin-bottom:10px; padding:0 4px; }
+.search-highlight { background:rgba(251,191,36,0.4); color:inherit; border-radius:2px; padding:0 1px; }
+.source-badge { font-size:10px; padding:1px 6px; border-radius:4px; font-weight:500; }
+.source-官方 { background:rgba(34,197,94,0.1); color:#16a34a; }
+.source-B站 { background:rgba(251,113,133,0.1); color:#e11d48; }
+.source-MOOC { background:rgba(59,130,246,0.1); color:#2563eb; }
+.source-校内 { background:rgba(99,102,241,0.1); color:#6366f1; }
+.source-付费 { background:rgba(245,158,11,0.1); color:#d97706; }
+.source-开源 { background:rgba(16,185,129,0.1); color:#059669; }
+.source-其他 { background:rgba(107,114,128,0.1); color:#6b7280; }
 
 /* 时间线 */
 .timeline { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px; margin-bottom:24px; }
@@ -464,17 +535,6 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
 }
 .bottom-fixed,.profile-save-bar{bottom:env(safe-area-inset-bottom,0);bottom:max(0px,calc(100dvh - var(--vv-h,100dvh)))}
 .item-cat,.lib-tag,.route-tag{white-space:normal!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;}
-/* === AImac 移动端补丁 v1 (2026-08-26) === */
-@media (max-width:768px){
-  *{backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
-  small{font-size:12px !important}
-}
-@media (max-width:480px){
-  .lib-grid,.card-grid,.route-grid,.guide-checklist,.countdown-grid,.profile-grid,.committee-grid{grid-template-columns:repeat(auto-fill,minmax(138px,1fr)) !important}
-}
-@media (max-width:360px){
-  .lib-grid,.card-grid,.route-grid,.guide-checklist,.countdown-grid,.profile-grid,.committee-grid{grid-template-columns:repeat(auto-fill,minmax(118px,1fr)) !important}
-}
 </style>
 </head>
 <body>
@@ -515,6 +575,7 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
     <div class="dashboard-welcome">
       <h2 id="welcomeName">👋 你好，新同学</h2>
       <p>欢迎来到三班学习平台 · 阳光学院计算机科学与技术</p>
+      <button onclick="openProfileModal()" style="margin-top:10px;padding:6px 14px;font-size:12px;border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--text-2);cursor:pointer;">✏️ 编辑我的学习名片</button>
     </div>
 
     <div class="dashboard-stats">
@@ -646,6 +707,7 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
       <span class="search-scope">政策库</span>
     </div>
     <div class="filter-bar" id="policyFilters"></div>
+    <div class="search-result-count" id="policyCount"></div>
     <div class="card-grid" id="policyList"></div>
   </div>
 
@@ -657,6 +719,7 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
       <span class="search-scope">课程库</span>
     </div>
     <div class="filter-bar" id="mediaFilters"></div>
+    <div class="search-result-count" id="mediaCount"></div>
     <div class="card-grid" id="mediaList"></div>
   </div>
 
@@ -668,6 +731,7 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
       <span class="search-scope">编程库</span>
     </div>
     <div class="filter-bar" id="csFilters"></div>
+    <div class="search-result-count" id="csCount"></div>
     <div class="card-grid" id="csList"></div>
   </div>
 
@@ -828,7 +892,6 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
       </div>
       <div class="free-music-tip">
         💡 <b>免费音乐下载网站</b>（可下载后导入）：
-        <a href="https://www.soundhelix.com/" target="_blank">SoundHelix</a> · 
         <a href="https://incompetech.com/" target="_blank">Incompetech(CC BY)</a> · 
         <a href="https://www.bensound.com/" target="_blank">Bensound</a> · 
         <a href="https://freemusicarchive.org/" target="_blank">Free Music Archive</a>
@@ -928,7 +991,28 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
 
 <script>
 // ===== 数据 =====
+const guideContent = {
+  "guide_c_lang": { title: "C语言" + "学习导航指南", html: "<h3>C 语言程序设计 - 课程学习导航指南</h3>\n<h4>📚 课程定位</h4>\n<ul>\n<li>大一核心必修课（⭐⭐⭐⭐⭐），编程入门与所有专业课基础</li>\n<li>考研/考公必考科目，影响后续数据结构、操作系统等课程学习</li>\n</ul>\n<h4>🎯 学什么</h4>\n<ul>\n<li>C 语言语法、指针、结构体、文件操作等核心知识点</li>\n<li>参考教材：*C Primer Plus*/*C 语言程序设计（谭浩强）*（待学校确认最新版）</li>\n<blockquote>\n<p><b>备注</b>：本校具体教材章节安排，待课程大纲确认</p>\n</ul>\n</blockquote>\n<h4>💪 为什么重要</h4>\n<ul>\n<li>计科专业最重要的基础课之一，决定后续编程能力</li>\n<li>考公岗位常见计算机类专业要求，部分岗位要求 C 语言基础</li>\n<li>考研复试常考察 C 语言面试题目</li>\n</ul>\n<h4>📖 怎么学</h4>\n<ul>\n<li><b>推荐学习顺序</b>：基础语法→指针→结构体→文件操作→综合练习题</li>\n<li><b>实操建议</b>：每学一章立即上机实践，不要只看不写</li>\n<li><b>避坑指南</b>：切勿只抄代码不自己写，必须亲手敲一遍！</li>\n</ul>\n<h4>🎓 配套资源</h4>\n<h5>网课资源（从 02 学习资源库提取）</h5>\n<table>\n<tr><th>资源</th><th>平台</th><th>说明</th></tr>\n<tr><td>翁恺 C 语言</td><td>B 站</td><td>免费高清，适合零基础入门</td></tr>\n<tr><td>宋浩高数</td><td>MOOC</td><td>配合 C 语言学数学基础</td></tr>\n</table>\n<h5>学习工具（从 03 资料库提取）</h5>\n<ul>\n<li><b>每日一题</b>：每日推送编程/算法题，保持手感</li>\n<li><b>四级背单词</b>：同步准备英语四级（12 月考）</li>\n<li><b>番茄专注钟</b>：25+5 模式规划自习时间</li>\n<li><b>代码记事本</b>：临时记录代码片段</li>\n</ul>\n<h4>⏰ 四年规划（cs_curriculum_analysis）</h4>\n<ul>\n<li><b>大一上</b>：重点攻克 C 语言 + 高数 + 英语四级</li>\n<li><b>大二起</b>：C 语言作为后续数据结构/操作系统基础</li>\n<li><b>大四</b>：考公/就业时，C 语言是面试常见考题</li>\n</ul>\n<h4>⚠️ 常见误区</h4>\n<p>1. ❌ 只看不练→必须动手编程</p>\n<p>2. ❌ 死记硬背→理解逻辑更重要</p>\n<p>3. ❌ 忽视错误检查→学会调试才是真本事</p>\n<hr>\n<p>*注：待补充内容标为\"待学校课程大纲确认\"*</p>" },
+  "guide_ds": { title: "数据结构" + "学习导航指南", html: "<h3>数据结构与算法 — 课程学习导航指南</h3>\n<h4>📌 课程定位与重要性</h4>\n<ul>\n<li><b>专业课之王</b>⭐⭐⭐⭐⭐：计科核心基础，考研<b>408 必考</b>四门之一，就业面试必考（cs_curriculum_analysis/课程体系）</li>\n<li><b>考研价值</b>：数据结构 + 算法是 408 中相对易拿分科目，决定复试算法机试能力</li>\n</ul>\n<h4>📚 学什么 & 怎么配合学</h4>\n<ul>\n<li><b>内容框架</b>：数组/链表/栈队列/树/图/排序/查找/ Hash（待学校课程大纲确认具体章节）</li>\n<li><b>学习节奏</b>：理论 + 刷题并行。每节课后当日刷<b>每日一题</b>，错题记入<b>错题本</b>（03-资料库工具：6/9 项）</li>\n</ul>\n<h4>🎥 推荐资源（02-资源库精选）</h4>\n<table>\n<tr><th>类型</th><th>推荐条目</th></tr>\n<tr><td>B 站免费课</td><td>翁恺 C 语言、哈工大计网/组成原理视频</td></tr>\n<tr><td>MOOC</td><td>中国大学 MOOC：宋浩高数、名校公开课算法</td></tr>\n<tr><td>进阶网课</td><td>猴帝-AI 智能体线上课（19 集，含基础算法）</td></tr>\n</table>\n<h4>🚀 学习仓工具配合用法</h4>\n<ul>\n<li><b>每日习惯</b>：<code>番茄专注钟</code> 25min 刷题 + <code>大事倒计时</code> 追踪考试</li>\n<li><b>统计复盘</b>：每周看<code>学习统计</code>调整计划，考前用<code>真题仓库</code>刷题（期中/期末/考研题）</li>\n<li><b>数据同步</b>：个人数据本地存储，定期备份</li>\n</ul>\n<h4>⚠️ 常见误区</h4>\n<p>❌ 只看书不刷题 → ✅ 每节课后刷 1 道算法题</p>\n<p>❌ 盲目抄代码 → ✅ 理解时间复杂度、动手写逻辑</p>\n<h4>📈 四年规划衔接（大二重点）</h4>\n<ul>\n<li><b>大一</b>：C 语言基础 + 高数四级</li>\n<li><b>大二</b>：<b>数据结构核心期</b>，配合计组/计网同步复习 408</li>\n<li><b>大三</b>：考公/考研分流，数据结构持续强化</li>\n<li><b>大四</b>：毕业设计+冲刺</li>\n</ul>\n<blockquote>\n<p>备注：具体教材版本、章节安排、本校老师教学要求请<b>待学校课程大纲确认</b>。</p>\n</blockquote>" },
+  "guide_co": { title: "计算机组成原理" + "学习导航指南", html: "<h3>计算机组成原理 - 学习导航指南</h3>\n<h4>一、课程定位</h4>\n<ul>\n<li><b>考研核心</b>：408统考科目之一，计科专业四大主干课（与数据结构、操作系统、计算机网络并列）[1]</li>\n<li><b>非考研学生</b>：定位\"及格就行\"，不影响考公/就业 [2]</li>\n<li><b>重要性</b>：理解计算机底层工作原理的关键课程</li>\n</ul>\n<h4>二、学什么</h4>\n<p>待学校课程大纲确认（暂无具体教材章节明细）。主要涉及 CPU 指令系统、存储层次结构、数据通路等计算机硬件与软件接口内容。</p>\n<h4>三、怎么学</h4>\n<ul>\n<li><b>课件 + 网课结合</b>：</li>\n</ul>\n<p>  - B 站哈工大组成原理课程 [3]</p>\n<p>  - 中国大学 MOOC 哈工大计算机专业课 [3]</p>\n<ul>\n<li><b>动手实践</b>：配合实验室模拟工具，理解数据通路时序</li>\n<li><b>真题训练</b>：利用学习仓真题仓库（期中期末/考研真题）[4]</li>\n</ul>\n<h4>四、常见误区</h4>\n<ul>\n<li>❌ 死记硬背硬件参数而不联系底层原理</li>\n<li>❌ 忽略指令系统与汇编编程关联</li>\n<li>✅ 建议结合 AImac 平台实践，以用促学</li>\n</ul>" },
+  "guide_os": { title: "操作系统" + "学习导航指南", html: "<h3>操作系统课程学习导航指南</h3>\n<h4>📌 课程定位与重要性</h4>\n<ul>\n<li><b>大二核心专业课</b>，考研 408 四门必考科目之一（数据结构、计组、操作系统、计算机网络）[课程体系]</li>\n<li>理解计算机系统运行核心：进程/线程管理、内存管理、文件系统、设备管理等概念 [教材待确认]</li>\n<li><b>及格原则</b>：不考研的同学可\"及格就行\"，不影响考公就业；考研者需重点掌握 [cs_curriculum_analysis]</li>\n</ul>\n<h4>📖 学什么（基于来源）</h4>\n<p>课程涵盖操作系统核心模块。具体知识点明细待教材目录确认，建议先了解进程调度、内存分配等基本概念的重要性。</p>\n<h4>🎯 学习路线与资源</h4>\n<h5>免费网课资源</h5>\n<ul>\n<li><b>B 站</b>：哈工大计算机专业课系列 [02-学习资源库]</li>\n<li><b>中国大学 MOOC</b>：名校计算机操作系统公开课（icourse163.org）[02-学习资源库]</li>\n</ul>\n<h5>辅助工具（三班学习仓）[03-计算机学习资料库]</h5>\n<ul>\n<li>🍅番茄钟专注自习 + ⏳大事倒计时（跟踪复习节点）</li>\n<li>📝代码/临时记事本（记录课堂笔记）</li>\n<li>📊学习统计 + 🎯绩点计算器（评估学习效果）</li>\n</ul>\n<h4>🚫 常见误区</h4>\n<ul>\n<li>\"必须精通底层\"：非考研方向可重理解概念而非实现细节</li>\n<li>\"只背大题\"：操作系统重在理解系统设计思想</li>\n<li>\"不重视计组联动\"：408 四门关联，需综合复习</li>\n</ul>\n<h4>💡 不同发展方向建议</h4>\n<table>\n<tr><th>方向</th><th>重点</th><th>资源侧重</th></tr>\n<tr><td>考研（408）</td><td>四大核心概念 + 真题练习</td><td>B 站专业课系列 + 题库刷题</td></tr>\n<tr><td>就业开发</td><td>结合系统编程实践</td><td>学习仓网课 + Linux 实战项目</td></tr>\n<tr><td>考公/其他</td><td>基础理解即可</td><td>MOOC 入门课 + 课堂笔记</td></tr>\n</table>\n<blockquote>\n<p><b>说明</b>：本指南严格依据三源文件 [课程体系/cscurriculum_analysis/02-学习资源库/03-资料库] 编写。知识点明细、具体章节安排待教材目录确认。</p>\n</blockquote>" },
+  "guide_net": { title: "计算机网络" + "学习导航指南", html: "<h3>计算机网络课程学习导航指南</h3>\n<h4>📚 课程定位与重要性</h4>\n<ul>\n<li><b>考研 408 核心科目之一</b>（另三门：数据结构、计组、操作系统），大二必须学好</li>\n<li><b>Web/网络开发基础</b>，后续专业课程和项目实战的前置知识</li>\n<li>计科专业大二必学核心课，与计组/操作系统并列考研重点</li>\n</ul>\n<h4>🎯 学习目标</h4>\n<p>掌握分层思想（OSI/TCP-IP 模型）、基本协议理解、抓包实践技能；<b>知识点明细待教材目录确认</b>。</p>\n<h4>🛠️ 学习资源</h4>\n<ul>\n<li><b>网课</b>：B 站哈工大计算机网络/组成原理（免费公开）</li>\n<li><b>平台</b>：中国大学MOOC（同专业课程）、计算机学习资料库（17 门精选网课）</li>\n<li><b>工具</b>：学习资料库内的代码记事本、真题仓库模拟</li>\n</ul>\n<h4>📖 学习方法</h4>\n<ul>\n<li><b>抓包实践</b>：结合 Wireshark/浏览器开发者工具验证协议流程</li>\n<li><b>分层理解</b>：从物理层到应用层逐层学习，避免死记硬背</li>\n<li><b>真题辅助</b>：利用资料库期中期末/考研真题刷题</li>\n</ul>\n<h4>⚠️ 常见误区</h4>\n<ul>\n<li>❌ 只背结论不抓包验证 → ✅ 结合实践加深理解</li>\n<li>❌ 忽视分层思想 → ✅ 先理解模型再学具体协议</li>\n<li>❌ 考研党轻度过于细节 → ✅ 408 及格即可，抓框架为主</li>\n</ul>\n<h4>🗺️ 路线定位</h4>\n<table>\n<tr><th><b>目标</b></th><th><b>建议</b></th></tr>\n<tr><td><b>考研</b></td><td>重点突破：IP/TCP/DNS/HTTP等核心协议，结合真题复习</td></tr>\n<tr><td><b>考公</b></td><td>了解即可，不影响上岸，抓基础概念</td></tr>\n<tr><td><b>就业</b></td><td>Web/后端方向需深入，实践项目优先</td></tr>\n</table>\n<blockquote>\n<p>注：具体章节明细以任课教师教材目录为准。</p>\n</blockquote>" },
+  "guide_policy": { title: "政策资料" + "学习导航指南", html: "<h3>阳光学院计科三班 政策详细解读（2026.08）</h3>\n<h4>📊 一图看懂政策库</h4>\n<table>\n<tr><th>分类</th><th>关键条目</th><th>对你有用程度</th></tr>\n<tr><td>考公/选调生</td><td>熊海楠上岸案例、国考/省考入口</td><td>⭐⭐⭐</td></tr>\n<tr><td>考研</td><td>2026 国家线、考研模拟考奖学金</td><td>⭐⭐⭐</td></tr>\n<tr><td>竞赛</td><td>教育部 A 类 3 大赛、蓝桥杯国赛奖项</td><td>⭐⭐⭐⭐</td></tr>\n<tr><td>就业</td><td>福建省毕业生就业创业网、毕业实习动员</td><td>⭐⭐⭐</td></tr>\n<tr><td>计算机学院</td><td>专业介绍/通知公告/AI 大会</td><td>⭐⭐⭐</td></tr>\n<tr><td>招生参考</td><td>投档线/章程</td><td>⭐⭐</td></tr>\n<tr><td>本地文件</td><td>校历/助学贷款/医保等</td><td>⭐⭐⭐</td></tr>\n</table>\n<hr>\n<h4>一、考公/选调生相关</h4>\n<h5>1.1 选调生上岸案例</h5>\n<ul>\n<li><b>是什么</b>：熊海楠（2025 届法学专业）成功上岸南平市党政类选调生。</li>\n<li><b>对计科三班用处</b>：证明本校同学可参考备考路径，拓展职业选择。</li>\n<li><b>怎么用</b>：点击链接查看备考经历，联系学院了解公考课程资源。</li>\n</ul>\n<h5>1.2 考公相关政策入口</h5>\n<ul>\n<li><b>是什么</b>：国家公务员局、中国人事考试网、福建省教育考试院官方政策发布平台 [36-38]。</li>\n<li><b>对计科三班用处</b>：获取考试真题、报考信息、备考资料。</li>\n<li><b>怎么用</b>：收藏 http://www.scs.gov.cn/ 和 http://www.cpta.com.cn/，刷题用影音库真题合集。</li>\n</ul>\n<hr>\n<h4>二、考研相关</h4>\n<h5>2.1 2026 年考研国家线</h5>\n<ul>\n<li><b>是什么</b>：2026 年分数线及复试录取政策，调剂服务系统入口。</li>\n<li><b>对计科三班用处</b>：评估上岸概率，了解调剂机会。</li>\n<li><b>怎么用</b>：2026-02-28 更新，点击 https://yz.chsi.com.cn/ 查看（关注时间点后刷新）。</li>\n</ul>\n<h5>2.2 阳光学院考研模拟考奖学金</h5>\n<ul>\n<li><b>是什么</b>：考研过程性奖学金政策，2025-2026 学年获奖名单公示。</li>\n<li><b>对计科三班用处</b>：提前激励，备考期间可按要求争取奖学金。</li>\n<li><b>怎么用</b>：点击 https://xsc.ygu.edu.cn/info/1039/10819.htm 查看细则并关注报名。</li>\n</ul>\n<hr>\n<h4>三、竞赛相关</h4>\n<h5>3.1 教育部 A 类竞赛官方入口</h5>\n<h5>🟢 中国大学生计算机设计大赛（第 19 届）</h5>\n<ul>\n<li><b>是什么</b>：软件设计、大数据、AI 应用等全品类竞赛。</li>\n<li><b>对计科三班用处</b>：教育部 A 类，含金量高，提升简历竞争力。</li>\n<li><b>怎么用</b>：2026-08-01 更新，点击 https://jsjds.blcu.edu.cn/ 报名。</li>\n</ul>\n<h5>🟢 团体程序设计天梯赛（GPLT）</h5>\n<ul>\n<li><b>是什么</b>：教育部计算机教指委主办，考察程序设计能力。</li>\n<li><b>对计科三班用处</b>：锻炼算法能力，适合 ACM/ICPC 备赛选手。</li>\n<li><b>怎么用</b>：https://gplt.patest.cn/，4 月更新后关注报名通知。</li>\n</ul>\n<h5>🟢 全国高校计算机能力挑战赛（NCCCU）</h5>\n<ul>\n<li><b>是什么</b>：进入学科竞赛排行榜观察目录。</li>\n<li><b>对计科三班用处</b>：拓宽竞赛视野，积累项目经验。</li>\n<li><b>怎么用</b>：https://www.ncccu.org.cn/，2026-08-01 更新。</li>\n</ul>\n<h5>3.2 蓝桥杯获奖记录（本校参考）</h5>\n<ul>\n<li><b>是什么</b>：第十七届蓝桥杯斩获 5 项国奖、4 人晋级国赛。</li>\n<li><b>对计科三班用处</b>：说明学院竞赛氛围好，参与可增强信心。</li>\n<li><b>怎么用</b>：查看获奖详情激励自己，关注学院报名通知。</li>\n</ul>\n<h5>3.3 挑战杯省级奖项</h5>\n<ul>\n<li><b>是什么</b>：第十四届福建省大学生创业计划竞赛 2 项省级奖。</li>\n<li><b>对计科三班用处</b>：了解创业方向，可组队参与（结合辅修/社团）。</li>\n<li><b>怎么用</b>：点击 https://d.xiumius.cn/board/v5/6glUK/712106958@L.Quer 查看案例。</li>\n</ul>\n<h5>3.4 学科竞赛分享会</h5>\n<ul>\n<li><b>是什么</b>：学长学姐经验分享（本地文件：2026 年学科竞赛分享会.pdf）。</li>\n<li><b>对计科三班用处</b>：快速入门竞赛，了解组队/备赛流程。</li>\n<li><b>怎么用</b>：联系辅导员获取文件，重点看选什么赛项、如何准备。</li>\n</ul>\n<hr>\n<h4>四、就业相关</h4>\n<h5>4.1 福建省毕业生就业创业公共服务网</h5>\n<ul>\n<li><b>是什么</b>：原 fjbys.gov.cn 停用，替换为官网。</li>\n<li><b>对计科三班用处</b>：实习信息、企业内推、招聘会汇总。</li>\n<li><b>怎么用</b>：https://www.fj99.org.cn/bys（定期浏览）。</li>\n</ul>\n<h5>4.2 毕业实习动员（4 个专业）</h5>\n<ul>\n<li><b>是什么</b>：机器人/通信/物联网/电子信息四大工程系实习动员。</li>\n<li><b>对计科三班用处</b>：了解毕业实习流程、要求，确保顺利毕业。</li>\n<li><b>怎么用</b>：点击 4 个系别链接，按学院通知提前准备材料。</li>\n</ul>\n<h5>4.3 访企拓岗（校企合作）</h5>\n<ul>\n<li><b>是什么</b>：校级 + 计算机学院合作企业渠道。</li>\n<li><b>对计科三班用处</b>：可能有实习/就业推荐机会。</li>\n<li><b>怎么用</b>：访问阳光学院新闻和学院页面，留意内推入口。</li>\n</ul>\n<hr>\n<h4>五、计算机/人工智能学院</h4>\n<h5>5.1 学院简介与专业介绍</h5>\n<ul>\n<li><b>是什么</b>：4 个专业（计算机/数据科学/AI/网络工程）。</li>\n<li><b>对计科三班用处</b>：选辅修、转专业可参考课程规划。</li>\n<li><b>怎么用</b>：点击各链接对比课程体系，关注学院通知 [140-143]。</li>\n</ul>\n<h5>5.2 最新通知</h5>\n<ul>\n<li><b>是什么</b>：竞赛/考研/就业/评优等通知汇总页。</li>\n<li><b>对计科三班用处</b>：第一时间获取关键政策信息。</li>\n<li><b>怎么用</b>：https://xxgc.ygu.edu.cn/tzgg/zxtz.htm 每月必查（设浏览器书签）。</li>\n</ul>\n<h5>5.3 2026 亚太人工智能教育大会</h5>\n<ul>\n<li><b>是什么</b>：阳光学院承办，联合主办。</li>\n<li><b>对计科三班用处</b>：展示学院 AI 领域影响力，AI 方向同学可关注。</li>\n<li><b>怎么用</b>：链接 https://news.ygu.edu.cn/info/1003/11593.htm 了解后续活动（2026-05-26）。</li>\n</ul>\n<h5>5.4 E 修小站志愿服务</h5>\n<ul>\n<li><b>是什么</b>：电脑维修志愿服务平台。</li>\n<li><b>对计科三班用处</b>：丰富履历，实践技能（适合计算机类同学）。</li>\n<li><b>怎么用</b>：https://xxgc.ygu.edu.cn/dtgz/txhd.htm 报名参与活动。</li>\n</ul>\n<hr>\n<h4>六、招生参考（往届数据）</h4>\n<h5>6.1 本科与专升本录取</h5>\n<ul>\n<li><b>是什么</b>：2026 普通本科 + 专升本招生计划、章程、投档分。</li>\n<li><b>对计科三班用处</b>：了解往年分数线，评估报考难度。</li>\n<li><b>怎么用</b>：点击链接收藏（招生季重点关注）[168-177]。</li>\n</ul>\n<hr>\n<h4>七、本地政策文件（必读）</h4>\n<table>\n<tr><th>文件</th><th>用途</th><th>优先级 ⭐⭐⭐</th></tr>\n<tr><td>2026-2027 学年校历通知.pdf</td><td>放假/教学安排</td><td>✅ 必看</td></tr>\n<tr><td>生源地助学贷款指南.pdf</td><td>贷款申请流程</td><td>✅ 必看（需资金的同学）</td></tr>\n<tr><td>资助政策明白卡.pdf</td><td>国家/省资助汇总</td><td>✅ 必看（家庭困难同学）</td></tr>\n</table>\n<table>\n<tr><th>文件</th><th>用途</th><th>⭐⭐</th></tr>\n<tr><td>圆梦之路宣传册.pdf、医保信.pdf、辅修方案.docx</td><td>资助详解/医保/辅修</td><td>建议阅读</td></tr>\n<tr><td>新生开学清单.docx、竞赛分享会.pdf</td><td>入学准备/经验</td><td>参考用</td></tr>\n</table>\n<blockquote>\n<p>📂 位置：双库/政策库/政策文件/796752490-计算机新生群/2026-08/</p>\n</blockquote>\n<hr>\n<h4>八、定期更新建议</h4>\n<ul>\n<li><b>每月</b>：学院通知公告、阳光新闻（设书签）</li>\n<li><b>每学期</b>：校历（开课前）、竞赛报名通知</li>\n<li><b>每年 3 月</b>：考研国家线，1 月：专升本政策</li>\n<li><b>方式</b>：运行 fetch-policies.py 抓取，替换 auto-policies.js 后部署。</li>\n</ul>\n<hr>\n<h4>❓ 常见疑问</h4>\n<h5>Q1：考公从大几开始准备？</h5>\n<p>政策库明确展示选调生案例、国考省考入口 [36-39]，但未说明具体大几开始（待补充）。</p>\n<h5>Q2：竞赛如何入门？</h5>\n<p>建议看学科竞赛分享会.pdf、参加 E 修志愿服务、关注教育部 A 类竞赛公告。但竞赛报名时间点需查阅最新通知（政策库未明确给出各赛项截止日，待更新）。</p>\n<h5>Q3：考研奖学金怎么拿？</h5>\n<p>阳光学院提供过程性奖学金政策，但具体申请资格/流程来自链接细则，需点击查看详情（2026-07-01 公示名单可作参考）。</p>\n<hr>\n<blockquote>\n<p>⚠️ <b>标注说明</b>：共 12 处\"待补充\"——包括竞赛报名截止日、考公准备时间、奖学金申请资格等细节均来自源文件但源文件未明确给出。</p>\n</blockquote>" },
+};
+
+
+function openGuide(gid) {
+  const g = guideContent[gid];
+  if (!g) return;
+  document.getElementById('guideModalTitle').textContent = g.title;
+  document.getElementById('guideModalBody').innerHTML = g.html;
+  document.getElementById('guideModal').classList.add('show');
+}
+function closeGuide() {
+  document.getElementById('guideModal').classList.remove('show');
+}
 const policyData = [
+  {title:"三班政策资料详细解读", cat:"校内", desc:"政策库详细解读：考公/考研/竞赛/就业/学院/本地文件全导航，附常见疑问（点击查看全文）", source:"学习指南", date:"2026-08", tags:['政策', '考公', '考研', '竞赛', '就业'], guide:"guide_policy"},
   {title:"2026-2027学年校历", cat:"校内", desc:"阳光学院2026-2027学年校历通知，含开学、放假、考试时间安排", source:"校内文件", date:"2026-08", tags:["校历","开学","放假"]},
   {title:"福建省生源地信用助学贷款操作指南", cat:"资助", desc:"福建省生源地信用助学贷款申请流程、材料准备、还款说明", source:"校内文件", date:"2026-08", tags:["助学贷款","资助","大一新生"]},
   {title:"国家资助福建省资助政策明白卡", cat:"资助", desc:"国家奖学金、国家励志奖学金、国家助学金、生源地贷款等资助政策汇总", source:"校内文件", date:"2026-08", tags:["奖学金","助学金","资助"]},
@@ -958,6 +1042,11 @@ const policyData = [
 ];
 
 const mediaData = [
+  {title:"C语言学习导航指南", cat:"核心课", desc:"三班专属《C语言》课程学习导航指南：学什么/怎么学/免费资源/常见误区（点击查看全文）", source:"学习指南", date:"2026-08", tags:['C语言', '指南', '大一', '导航'], guide:"guide_c_lang"},
+  {title:"数据结构学习导航指南", cat:"核心课", desc:"三班专属《数据结构》课程学习导航指南：学什么/怎么学/免费资源/常见误区（点击查看全文）", source:"学习指南", date:"2026-08", tags:['数据结构', '算法', '408', '指南'], guide:"guide_ds"},
+  {title:"计算机组成原理学习导航指南", cat:"核心课", desc:"三班专属《计算机组成原理》课程学习导航指南：学什么/怎么学/免费资源/常见误区（点击查看全文）", source:"学习指南", date:"2026-08", tags:['计组', '408', '硬件', '指南'], guide:"guide_co"},
+  {title:"操作系统学习导航指南", cat:"核心课", desc:"三班专属《操作系统》课程学习导航指南：学什么/怎么学/免费资源/常见误区（点击查看全文）", source:"学习指南", date:"2026-08", tags:['操作系统', '进程', '408', '指南'], guide:"guide_os"},
+  {title:"计算机网络学习导航指南", cat:"核心课", desc:"三班专属《计算机网络》课程学习导航指南：学什么/怎么学/免费资源/常见误区（点击查看全文）", source:"学习指南", date:"2026-08", tags:['计网', 'TCP/IP', '408', '指南'], guide:"guide_net"},
   {title:"宋浩高等数学全程教学视频2.0版", cat:"数学", desc:"B站宋浩老师高等数学全程教学视频，上册+下册，适合大一新生", source:"B站免费", tags:["高数","宋浩","B站","大一"]},
   {title:"宋浩线性代数", cat:"数学", desc:"B站宋浩老师线性代数全程教学视频，适合大一下学期", source:"B站免费", tags:["线代","宋浩","B站","大一"]},
   {title:"宋浩概率论与数理统计", cat:"数学", desc:"B站宋浩老师概率论与数理统计全程教学视频", source:"B站免费", tags:["概率论","宋浩","B站","大二"]},
@@ -1112,9 +1201,9 @@ function getItemUrl(d, type) {
     if (title.includes('新生') || title.includes('入学')) return 'https://zsb.ygu.edu.cn/';
     if (title.includes('图书馆')) return 'https://lib.ygu.edu.cn/';
     if (title.includes('教务系统')) return 'https://jwxt.ygu.edu.cn/';
-    if (title.includes('校园网')) return 'https://www.ygu.edu.cn/xxfw/wlfw.htm';
+    if (title.includes('校园网')) return 'https://www.ygu.edu.cn/';
     if (title.includes('食堂') || title.includes('快递') || title.includes('超市')) return 'https://www.ygu.edu.cn/';
-    if (title.includes('竞赛分享会')) return 'https://www.ygu.edu.cn/cxcy/';
+    if (title.includes('竞赛分享会')) return 'https://www.ygu.edu.cn/xsst/cxcyl.htm';
     return 'https://www.ygu.edu.cn/';
   }
   // 课程库链接
@@ -1126,7 +1215,7 @@ function getItemUrl(d, type) {
       return 'https://www.icourse163.org/search.htm?search=' + encodeURIComponent(title);
     }
     if (title.includes('Coze') || title.includes('扣子')) return 'https://www.coze.cn/';
-    if (title.includes('考虫')) return 'https://www.kaochong.com/';
+    if (title.includes('考虫')) return 'https://search.bilibili.com/all?keyword=' + encodeURIComponent('考虫四级');
     return '';
   }
   // 编程库链接
@@ -1165,9 +1254,24 @@ function getItemUrl(d, type) {
   return '';
 }
 
+function highlightText(text, search) {
+  if (!search) return text;
+  const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+  return text.replace(regex, '<span class="search-highlight">$1</span>');
+}
+function getSourceBadge(source) {
+  if (source.includes('官方')) return `<span class="source-badge source-官方">🏛️ ${source}</span>`;
+  if (source.includes('B站')) return `<span class="source-badge source-B站">📺 ${source}</span>`;
+  if (source.includes('MOOC')) return `<span class="source-badge source-MOOC">🎓 ${source}</span>`;
+  if (source.includes('校内')) return `<span class="source-badge source-校内">🏫 ${source}</span>`;
+  if (source.includes('付费')) return `<span class="source-badge source-付费">💰 ${source}</span>`;
+  if (source.includes('开源')) return `<span class="source-badge source-开源">🔓 ${source}</span>`;
+  return `<span class="source-badge source-其他">📌 ${source}</span>`;
+}
 function renderList(type) {
   const dataMap = {policy:policyData, media:mediaData, cs:csData};
   const listId = {policy:'policyList', media:'mediaList', cs:'csList'};
+  const countId = {policy:'policyCount', media:'mediaCount', cs:'csCount'};
   const data = dataMap[type];
   const filter = currentFilter[type];
   const search = currentSearch[type].toLowerCase();
@@ -1176,23 +1280,36 @@ function renderList(type) {
     const matchSearch = !search || d.title.toLowerCase().includes(search) || d.desc.toLowerCase().includes(search) || d.tags.some(t => t.toLowerCase().includes(search));
     return matchCat && matchSearch;
   });
+  // 更新结果计数
+  const countEl = document.getElementById(countId[type]);
+  if (countEl) {
+    const total = data.length;
+    if (search || filter !== '全部') {
+      countEl.innerHTML = `找到 <strong>${filtered.length}</strong> / ${total} 条结果` + (search ? ` · 搜索「${highlightText(search, search)}」` : '') + (filter !== '全部' ? ` · 分类「${filter}」` : '');
+    } else {
+      countEl.innerHTML = `共 <strong>${total}</strong> 条`;
+    }
+  }
   document.getElementById(listId[type]).innerHTML = filtered.length ? filtered.map(d => {
     const url = getItemUrl(d, type);
-    const cardTag = url ? 'a' : 'div';
-    const hrefAttr = url ? `href="${url}" target="_blank" rel="noopener noreferrer"` : '';
-    const clickHint = url ? '<div class="item-go">🔗 点击访问官网 →</div>' : '';
+    const isGuide = !!d.guide;
+    const cardTag = (url || isGuide) ? 'a' : 'div';
+    const hrefAttr = url ? `href="${url}" target="_blank" rel="noopener noreferrer"` : (isGuide ? `href="javascript:void(0)" onclick="openGuide('${d.guide}');return false;"` : '');
+    const clickHint = url ? '<div class="item-go">🔗 点击访问官网 →</div>' : (isGuide ? '<div class="item-go">📖 点击查看全文 →</div>' : '');
+    const titleHtml = highlightText(d.title, search);
+    const descHtml = highlightText(d.desc, search);
     return `
     <${cardTag} class="item-card ${url?'has-link':''}" ${hrefAttr}>
       <div class="item-head">
-        <h4>${d.title}</h4>
-        <span class="item-cat">${d.cat}</span>
+        <h4>${titleHtml}</h4>
+        <span class="cat-color cat-${d.cat}">${d.cat}</span>
       </div>
-      <div class="item-desc">${d.desc}</div>
-      <div class="item-tags">${d.tags.map(t => `<span class="item-tag">${t}</span>`).join('')}</div>
-      <div class="item-meta"><span>📌 ${d.source}</span><span>📅 ${d.date}</span></div>
+      <div class="item-desc">${descHtml}</div>
+      <div class="item-tags">${d.tags.map(t => `<span class="item-tag">${highlightText(t, search)}</span>`).join('')}</div>
+      <div class="item-meta">${getSourceBadge(d.source)}<span>📅 ${d.date}</span></div>
       ${clickHint}
     </${cardTag}>`;
-  }).join('') : '<div class="empty"><div class="icon">🔍</div><p>没有找到匹配的内容</p></div>';
+  }).join('') : '<div class="empty"><div class="icon">🔍</div><p>没有找到匹配的内容，试试其他关键词？</p></div>';
 }
 
 function filterPolicy(q) { currentSearch.policy = q; renderList('policy'); }
@@ -1966,13 +2083,74 @@ setTimeout(loadFeishuData, 1000);
 setInterval(loadFeishuData, 300000);
 
 // 页面加载后自动弹出个性化名片（如果用户没填写过）
+// v2修复：移动端(≤768px)不再自动弹出——微信WebView下遮罩层会导致整页变暗看不清，
+// 且localStorage不持久导致每次都弹；移动端用户可从首页手动打开
 setTimeout(() => {
-  const data = JSON.parse(localStorage.getItem('study_profile') || '{}');
-  const hasFilled = data.name || data.goal || data.learn || data.exam || data.welcome;
-  if (!hasFilled) {
-    openProfileModal();
-  }
+  try {
+    if (window.innerWidth <= 768) return; // 移动端跳过自动弹窗
+    const data = JSON.parse(localStorage.getItem('study_profile') || '{}');
+    const hasFilled = data.name || data.goal || data.learn || data.exam || data.welcome;
+    if (!hasFilled) {
+      openProfileModal();
+    }
+  } catch(e) { console.log('名片弹窗跳过:', e); }
 }, 500);
+
+// 全局兜底：任何JS异常发生时，强制关闭所有遮罩，保证页面永远可读可操作
+window.addEventListener('error', function() {
+  try {
+    document.querySelectorAll('.modal-overlay').forEach(function(m){ m.classList.remove('show'); });
+    document.body.style.overflow = '';
+  } catch(e) {}
+}, true);
+
+// === 手机诊断黑匣子：错误实时回传服务器日志（临时，验收后移除） ===
+(function(){
+  function report(msg){
+    try{ new Image().src='/__err?msg='+encodeURIComponent(String(msg).slice(0,300))+'&w='+window.innerWidth; }catch(e){}
+  }
+  window.addEventListener('error', function(e){ report('ERR:'+(e&&e.message||'unknown')+' @line'+(e&&e.lineno)); }, true);
+  window.addEventListener('unhandledrejection', function(e){ report('REJ:'+((e.reason&&e.reason.message)||e.reason)); });
+  window.addEventListener('load', function(){ setTimeout(function(){ report('OK加载完成 w='+window.innerWidth+' 页面高度='+document.body.scrollHeight+' active页数='+document.querySelectorAll('.page.active').length); },1500); });
+  // 几何探针：关键元素到底渲染在屏幕哪里
+  window.addEventListener('load', function(){ setTimeout(function(){
+    try{
+      var probe=function(sel){ var el=document.querySelector(sel); if(!el) return sel+':无此元素';
+        var r=el.getBoundingClientRect(); var cs=getComputedStyle(el);
+        return sel+'[top='+Math.round(r.top)+' left='+Math.round(r.left)+' w='+Math.round(r.width)+' h='+Math.round(r.height)+' display='+cs.display+' op='+cs.opacity+' color='+cs.color+']'; };
+      report('几何 '+probe('.wrap')+' | '+probe('#page-home')+' | '+probe('.main-content')+' | '+probe('.dashboard-welcome')+' | scrollY='+window.scrollY);
+    }catch(e){ report('探针失败:'+e.message); }
+  },2000); })();
+  // 连续滚动监控：盯住0~6秒内 scrollY/scrollX 每次变化，找出"谁在滚、什么时候滚"
+  window.addEventListener('load', function(){
+    var lastY=-1,lastX=-1,log=[],t0=performance.now();
+    var timer=setInterval(function(){
+      try{
+        var y=Math.round(window.scrollY),x=Math.round(window.scrollX);
+        if(y!==lastY||x!==lastX){
+          log.push(Math.round(performance.now()-t0)+'ms:y'+y+',x'+x);
+          lastY=y;lastX=x;
+        }
+      }catch(e){}
+    },150);
+    setTimeout(function(){
+      clearInterval(timer);
+      try{
+        var r=document.querySelector('.wrap').getBoundingClientRect();
+        // 顶层元素透视：屏幕中央那个点，从最上层往下数5层，看有没有"纱"盖着内容
+        var stack=[]; var el=document.elementFromPoint(window.innerWidth/2, 250);
+        while(el && stack.length<5){
+          var cs=getComputedStyle(el);
+          stack.push(el.tagName+'['+(el.className||'').toString().split(' ').slice(0,2).join('.')+' pos='+cs.position+' z='+cs.zIndex+' bg='+cs.backgroundColor+' op='+cs.opacity+' filter='+cs.filter+']');
+          el=el.parentElement;
+        }
+        var shapes=document.querySelector('.bg-shapes');
+        var shapesInfo=shapes?('shapes_z='+getComputedStyle(shapes).zIndex+' pos='+getComputedStyle(shapes).position):'无shapes';
+        report('监控['+log.slice(0,8).join(' → ')+'] 最终wrap_top='+Math.round(r.top)+' | 顶层链 '+stack.join(' < ')+' | '+shapesInfo);
+      }catch(e){ report('监控失败:'+e.message); }
+    },6000);
+  });
+})();
 </script>
 <!-- 个性化名片弹窗 -->
 <div class="modal-overlay" id="profileModal">
@@ -2055,5 +2233,14 @@ setTimeout(() => {
   if(typeof switchPage==='function'){var _sp=switchPage;switchPage=function(p){_sp(p);setTimeout(addHint,300);};}
 })();
 </script>
+<!-- 学习指南弹窗 -->
+<div class="modal-overlay" id="guideModal" onclick="if(event.target===this)closeGuide()">
+  <div class="modal-box" style="max-width:640px;max-height:80vh;overflow-y:auto">
+    <button class="modal-close" onclick="closeGuide()">✕</button>
+    <div class="modal-header"><h3 id="guideModalTitle" style="font-size:18px;margin:0 30px 8px 0"></h3></div>
+    <div id="guideModalBody" style="text-align:left;font-size:13.5px;line-height:1.7;color:var(--text)"></div>
+  </div>
+</div>
+
 </body>
 </html>
