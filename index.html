@@ -143,6 +143,20 @@ body.dark { background:linear-gradient(135deg,#1a1625 0%,#1e1b3a 50%,#161829 100
 .search-bar input::placeholder { color:var(--text-3); }
 .search-scope { font-size:12px; padding:4px 10px; border-radius:6px; background:var(--bg); color:var(--text-2); cursor:pointer; border:1px solid var(--border); }
 
+/* 全局搜索结果 */
+.global-search-results { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:16px; max-height:420px; overflow-y:auto; }
+.gs-section { margin-bottom:14px; }
+.gs-section:last-child { margin-bottom:0; }
+.gs-section-title { font-size:12px; font-weight:700; color:var(--text-2); margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+.gs-section-count { font-size:11px; color:var(--text-3); font-weight:400; }
+.gs-item { padding:8px 10px; border-radius:8px; cursor:pointer; transition:all 0.15s; border:1px solid transparent; margin-bottom:4px; }
+.gs-item:hover { background:rgba(99,102,241,0.06); border-color:rgba(99,102,241,0.2); }
+.gs-item-title { font-size:13px; font-weight:600; color:var(--text); line-height:1.4; }
+.gs-item-desc { font-size:11px; color:var(--text-3); margin-top:2px; line-height:1.4; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.gs-empty { text-align:center; padding:24px; color:var(--text-3); font-size:13px; }
+.gs-more { font-size:12px; color:var(--primary); font-weight:600; cursor:pointer; padding:6px 10px; border-radius:8px; display:inline-block; }
+.gs-more:hover { background:rgba(99,102,241,0.08); }
+
 /* 标签筛选 */
 .filter-bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
 .filter-chip { padding:6px 14px; border-radius:999px; background:var(--card); border:1px solid var(--border); font-size:13px; cursor:pointer; color:var(--text-2); transition:all 0.15s; font-weight:500; }
@@ -156,6 +170,23 @@ body.dark { background:linear-gradient(135deg,#1a1625 0%,#1e1b3a 50%,#161829 100
 .item-card.has-link { cursor:pointer; }
 .item-card.has-link:hover { border-color:var(--primary); }
 .item-go { font-size:12px; color:var(--primary); font-weight:600; margin-top:4px; padding-top:8px; border-top:1px dashed var(--border); }
+.item-detail-toggle { font-size:12px; color:var(--primary); font-weight:600; cursor:pointer; margin-top:4px; user-select:none; display:inline-block; }
+.item-detail-toggle:hover { text-decoration:underline; }
+.item-detail { display:none; margin-top:8px; padding:10px 12px; background:var(--bg); border-radius:8px; font-size:12px; line-height:1.7; color:var(--text-2); }
+.item-detail.show { display:block; }
+.item-detail p { margin-bottom:4px; }
+.item-detail b { color:var(--text); }
+
+/* 收藏按钮 */
+.item-fav { position:absolute; top:10px; right:10px; background:none; border:none; cursor:pointer; font-size:16px; color:var(--text-3); padding:4px; border-radius:6px; transition:all 0.15s; z-index:2; line-height:1; }
+.item-fav:hover { background:rgba(99,102,241,0.1); color:#f59e0b; }
+.item-fav.active { color:#f59e0b; }
+.item-card { position:relative; }
+.fav-toggle { display:inline-flex; align-items:center; gap:5px; padding:6px 14px; border-radius:999px; font-size:12px; cursor:pointer; border:1px solid var(--border); background:var(--card); color:var(--text-2); transition:all 0.15s; margin-left:8px; user-select:none; }
+.fav-toggle:hover { border-color:var(--primary); color:var(--primary); }
+.fav-toggle.active { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; border-color:transparent; }
+.fav-toggle .fav-count { font-size:11px; background:rgba(0,0,0,0.1); padding:1px 6px; border-radius:999px; }
+.fav-toggle.active .fav-count { background:rgba(255,255,255,0.25); }
 .item-card:hover { border-color:var(--primary); box-shadow:var(--shadow-hover); transform:translateY(-2px); }
 .item-card .item-head { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
 .item-card h4 { font-size:14px; font-weight:600; line-height:1.4; }
@@ -278,6 +309,30 @@ body.dark .cat-数学 { background:rgba(6,182,212,0.2); color:#22d3ee; }
 .pomodoro-settings label { font-size:13px; color:var(--text-2); display:flex; align-items:center; gap:8px; }
 .pomodoro-settings input { width:60px; padding:6px 8px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); font-size:13px; text-align:center; }
 .pomodoro-count { font-size:13px; color:var(--text-3); }
+
+/* 每日一题 */
+.daily-problem-box { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:20px; }
+.dp-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
+.dp-title { font-size:16px; font-weight:700; line-height:1.4; }
+.dp-badges { display:flex; gap:6px; flex-wrap:wrap; }
+.dp-badge { font-size:11px; padding:3px 10px; border-radius:999px; font-weight:600; white-space:nowrap; }
+.dp-badge.easy { background:rgba(16,185,129,0.12); color:#059669; }
+.dp-badge.medium { background:rgba(245,158,11,0.12); color:#d97706; }
+.dp-badge.hard { background:rgba(239,68,68,0.12); color:#dc2626; }
+.dp-badge.tag { background:rgba(99,102,241,0.1); color:#6366f1; }
+.dp-desc { font-size:13px; color:var(--text-2); line-height:1.6; margin-bottom:14px; }
+.dp-hint { background:var(--bg); border-radius:10px; padding:12px 14px; margin-bottom:12px; display:none; }
+.dp-hint.show { display:block; }
+.dp-hint-label { font-size:12px; font-weight:700; color:var(--primary); margin-bottom:4px; }
+.dp-hint-text { font-size:13px; color:var(--text-2); line-height:1.6; }
+.dp-actions { display:flex; gap:10px; flex-wrap:wrap; }
+.dp-btn { padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; border:none; transition:all 0.15s; }
+.dp-btn.primary { background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; }
+.dp-btn.primary:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(99,102,241,0.4); }
+.dp-btn.secondary { background:var(--bg); color:var(--text-2); border:1px solid var(--border); }
+.dp-btn.secondary:hover { background:var(--border); }
+.dp-streak { font-size:12px; color:var(--text-3); margin-top:12px; }
+.dp-streak b { color:var(--primary); }
 
 /* 工具箱 - 倒计时 */
 .countdown-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
@@ -587,9 +642,10 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
 
     <div class="search-bar">
       <span class="icon">🔍</span>
-      <input type="text" placeholder="全局搜索：政策 / 课程 / 编程资源 / 知识点..." oninput="globalSearch(this.value)">
+      <input type="text" id="globalSearchInput" placeholder="全局搜索：政策 / 课程 / 编程资源 / 知识点..." oninput="globalSearch(this.value)" onkeydown="if(event.key==='Enter'&&this.value.trim())goToFirstResult()">
       <span class="search-scope">全部</span>
     </div>
+    <div class="global-search-results" id="globalSearchResults" style="display:none;"></div>
 
     <div class="dashboard-grid">
       <div class="dashboard-card">
@@ -707,6 +763,7 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
       <span class="search-scope">政策库</span>
     </div>
     <div class="filter-bar" id="policyFilters"></div>
+    <div class="filter-bar" style="margin-top:-12px;margin-bottom:16px;"><button class="fav-toggle" onclick="toggleShowFavs('policy')"><span>⭐ 只看收藏</span><span class="fav-count">0</span></button></div>
     <div class="search-result-count" id="policyCount"></div>
     <div class="card-grid" id="policyList"></div>
   </div>
@@ -719,6 +776,7 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
       <span class="search-scope">课程库</span>
     </div>
     <div class="filter-bar" id="mediaFilters"></div>
+    <div class="filter-bar" style="margin-top:-12px;margin-bottom:16px;"><button class="fav-toggle" onclick="toggleShowFavs('media')"><span>⭐ 只看收藏</span><span class="fav-count">0</span></button></div>
     <div class="search-result-count" id="mediaCount"></div>
     <div class="card-grid" id="mediaList"></div>
   </div>
@@ -731,6 +789,7 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
       <span class="search-scope">编程库</span>
     </div>
     <div class="filter-bar" id="csFilters"></div>
+    <div class="filter-bar" style="margin-top:-12px;margin-bottom:16px;"><button class="fav-toggle" onclick="toggleShowFavs('cs')"><span>⭐ 只看收藏</span><span class="fav-count">0</span></button></div>
     <div class="search-result-count" id="csCount"></div>
     <div class="card-grid" id="csList"></div>
   </div>
@@ -751,6 +810,9 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
       </div>
       <div class="pomodoro-count">今日完成：<span id="pomoCount">0</span> 个番茄</div>
     </div>
+
+    <h3 style="font-size:18px;font-weight:700;margin:28px 0 16px;">💡 每日一题</h3>
+    <div class="daily-problem-box" id="dailyProblemBox"></div>
 
     <h3 style="font-size:18px;font-weight:700;margin:28px 0 16px;">⏰ 重要日期倒计时</h3>
     <div class="countdown-grid" id="countdownGrid"></div>
@@ -1012,94 +1074,94 @@ function closeGuide() {
   document.getElementById('guideModal').classList.remove('show');
 }
 const policyData = [
-  {title:"三班政策资料详细解读", cat:"校内", desc:"政策库详细解读：考公/考研/竞赛/就业/学院/本地文件全导航，附常见疑问（点击查看全文）", source:"学习指南", date:"2026-08", tags:['政策', '考公', '考研', '竞赛', '就业'], guide:"guide_policy"},
-  {title:"2026-2027学年校历", cat:"校内", desc:"阳光学院2026-2027学年校历通知，含开学、放假、考试时间安排", source:"校内文件", date:"2026-08", tags:["校历","开学","放假"]},
-  {title:"福建省生源地信用助学贷款操作指南", cat:"资助", desc:"福建省生源地信用助学贷款申请流程、材料准备、还款说明", source:"校内文件", date:"2026-08", tags:["助学贷款","资助","大一新生"]},
-  {title:"国家资助福建省资助政策明白卡", cat:"资助", desc:"国家奖学金、国家励志奖学金、国家助学金、生源地贷款等资助政策汇总", source:"校内文件", date:"2026-08", tags:["奖学金","助学金","资助"]},
-  {title:"致在榕高校大学生医保的一封信", cat:"医保", desc:"福州市大学生医保参保指南、报销流程、定点医院说明", source:"校内文件", date:"2026-08", tags:["医保","报销","福州"]},
-  {title:"各专业辅修培养方案汇总", cat:"学业", desc:"阳光学院各专业辅修/双学位培养方案，申请条件和流程", source:"校内文件", date:"2026-08", tags:["辅修","双学位","学业"]},
-  {title:"大一新生开学必备清单", cat:"入学", desc:"大一新生入学必备物品清单、报到流程、注意事项", source:"校内文件", date:"2026-08", tags:["新生","入学","清单"]},
-  {title:"阳光学院图书馆资源指南", cat:"学业", desc:"图书馆馆藏查询、电子资源数据库、借阅规则、自习室预约", source:"校内文件", date:"2026-08", tags:["图书馆","数据库","自习"]},
-  {title:"阳光学院教务系统使用指南", cat:"学业", desc:"选课、查成绩、评教、培养方案查询、考试安排", source:"校内文件", date:"2026-08", tags:["教务系统","选课","成绩"]},
-  {title:"阳光学院校园网使用指南", cat:"生活", desc:"校园网连接方式、账号密码、流量套餐、故障排查", source:"校内文件", date:"2026-08", tags:["校园网","网络","故障"]},
-  {title:"阳光学院食堂/超市/快递指南", cat:"生活", desc:"各食堂楼层分布、超市位置、快递点地址、取件方式", source:"校内文件", date:"2026-08", tags:["食堂","快递","生活"]},
-  {title:"2026年学科竞赛分享会", cat:"竞赛", desc:"阳光学院学科竞赛分享会资料，含蓝桥杯、数学建模、互联网+等竞赛介绍", source:"校内文件", date:"2026-08", tags:["竞赛","蓝桥杯","数学建模"]},
-  {title:"研招网 - 国家政策", cat:"考研", desc:"教育部研究生招生考试官方政策、报名条件、考试安排", source:"官方链接", date:"持续更新", tags:["考研","政策","教育部"]},
-  {title:"国家公务员局", cat:"考公", desc:"国家公务员考试官方网站，招考公告、报名入口、成绩查询", source:"官方链接", date:"持续更新", tags:["国考","公务员","招考"]},
-  {title:"福建省公务员考试录用网", cat:"考公", desc:"福建省公务员考试/选调生官方网站，公告、职位表、成绩查询", source:"官方链接", date:"持续更新", tags:["福建省考","选调","职位表"]},
-  {title:"蓝桥杯大赛", cat:"竞赛", desc:"蓝桥杯全国软件和信息技术专业人才大赛官方网站，报名、赛程、真题", source:"官方链接", date:"每年10月报名", tags:["蓝桥杯","编程","算法"]},
-  {title:"ACM-ICPC国际大学生程序设计竞赛", cat:"竞赛", desc:"ACM国际大学生程序设计竞赛官方网站，亚洲区域赛、全球总决赛", source:"官方链接", date:"每年9月报名", tags:["ACM","算法","编程竞赛"]},
-  {title:"全国大学生数学建模竞赛", cat:"竞赛", desc:"全国大学生数学建模竞赛官方网站，报名、赛题、获奖名单", source:"官方链接", date:"每年9月比赛", tags:["数学建模","竞赛","数据分析"]},
-  {title:"中国国际大学生创新大赛（互联网+）", cat:"竞赛", desc:"原中国互联网+大学生创新创业大赛，高教主赛道、红旅赛道、产业赛道", source:"官方链接", date:"每年4-10月", tags:["互联网+","创新创业","大创"]},
-  {title:"挑战杯全国大学生课外学术科技作品竞赛", cat:"竞赛", desc:"挑战杯全国大学生课外学术科技作品竞赛和创业计划大赛", source:"官方链接", date:"奇数年举办", tags:["挑战杯","课外学术","创业"]},
-  {title:"CCPC中国大学生程序设计竞赛", cat:"竞赛", desc:"中国大学生程序设计竞赛官方网站，分站赛、总决赛", source:"官方链接", date:"每年5-11月", tags:["CCPC","编程","算法"]},
-  {title:"中国大学生计算机设计大赛", cat:"竞赛", desc:"中国大学生计算机设计大赛官方网站，软件应用、微课、数媒等类别", source:"官方链接", date:"每年3-8月", tags:["计算机设计","软件","数媒"]},
-  {title:"全国大学生英语竞赛（NECCS）", cat:"竞赛", desc:"全国大学生英语竞赛官方网站，初赛/决赛、获奖证书、真题", source:"官方链接", date:"每年4月初赛", tags:["英语竞赛","NECCS","四级"]},
-  {title:"全国计算机等级考试（NCRE）", cat:"证书", desc:"全国计算机等级考试官方网站，报名、成绩查询、证书查询", source:"官方链接", date:"每年3/9/12月", tags:["计算机二级","NCRE","证书"]},
-  {title:"大学英语四六级考试（CET）", cat:"证书", desc:"全国大学英语四、六级考试官方网站，报名、成绩查询", source:"官方链接", date:"每年6/12月", tags:["四级","六级","CET","英语"]},
-  {title:"软件专业技术资格（水平）考试", cat:"证书", desc:"计算机技术与软件专业技术资格（水平）考试，初级/中级/高级", source:"官方链接", date:"每年5/11月", tags:["软考","程序员","证书"]},
-  {title:"教师资格考试（NTCE）", cat:"证书", desc:"中小学教师资格考试官方网站，笔试/面试报名、成绩查询、认定", source:"官方链接", date:"每年3/11月笔试", tags:["教资","教师资格","证书"]},
+  {title:"三班政策资料详细解读", cat:"校内", desc:"政策库详细解读：考公/考研/竞赛/就业/学院/本地文件全导航，附常见疑问（点击查看全文）", source:"学习指南", date:"2026-08", tags:['政策', '考公', '考研', '竞赛', '就业'], guide:"guide_policy"detail:"<p><b>📌 是什么：</b>政策库总览解读，含考公/考研/竞赛/就业/学院/本地文件七大板块的逐条解读。</p><p><b>💡 对你有什么用：</b>一次性了解所有可用政策资源，不用逐个查。考公方向重点看「考公/选调生」板块。</p><p><b>📋 怎么用：</b>点击「查看全文」打开完整弹窗版解读，内含每个板块的详细分析。</p>"},
+  {title:"2026-2027学年校历", cat:"校内", desc:"阳光学院2026-2027学年校历通知，含开学、放假、考试时间安排", source:"校内文件", date:"2026-08", tags:["校历","开学","放假"]detail:"<p><b>📌 是什么：</b>阳光学院2026-2027学年校历通知，含开学、放假、考试时间等关键节点安排。</p><p><b>💡 对你有什么用：</b>提前规划学期节奏——何时选课、何时考试、何时放假。考研/考公备考需要避开考试周集中冲刺。</p><p><b>📋 怎么用：</b>下载PDF后标注重点日期（开学/期中/期末/放假），导入平台倒计时追踪。</p><p><b>⚠️ 注意：</b>具体日期以学校正式发布为准，此为通知参考。</p>"},
+  {title:"福建省生源地信用助学贷款操作指南", cat:"资助", desc:"福建省生源地信用助学贷款申请流程、材料准备、还款说明", source:"校内文件", date:"2026-08", tags:["助学贷款","资助","大一新生"]detail:"<p><b>📌 是什么：</b>福建省生源地信用助学贷款申请全流程指南，含申请材料、办理流程、合同签订、还款方式。</p><p><b>💡 对你有什么用：</b>家庭经济困难的同学可通过贷款缓解学费压力。贷款期间在校期间利息由国家补贴。</p><p><b>📋 怎么用：</b>开学前联系户籍所在地县/区学生资助管理中心办理（通常在每年7-9月）。备好身份证、录取通知书、户口本。</p>"},
+  {title:"国家资助福建省资助政策明白卡", cat:"资助", desc:"国家奖学金、国家励志奖学金、国家助学金、生源地贷款等资助政策汇总", source:"校内文件", date:"2026-08", tags:["奖学金","助学金","资助"]detail:"<p><b>📌 是什么：</b>国家奖学金、国家励志奖学金、国家助学金、生源地贷款等全套资助政策的官方说明。</p><p><b>💡 对你有什么用：</b>大一即可申请生源地贷款；大二起可申请国家助学金/励志奖学金（成绩要求中等以上）。</p><p><b>📋 怎么用：</b>开学后向辅导员/班主任了解申请时间和材料要求。国家奖学金竞争激烈（前5%），助学金按经济困难等级评定。</p>"},
+  {title:"致在榕高校大学生医保的一封信", cat:"医保", desc:"福州市大学生医保参保指南、报销流程、定点医院说明", source:"校内文件", date:"2026-08", tags:["医保","报销","福州"]detail:"<p><b>📌 是什么：</b>福州市大学生医保参保指南，说明参保流程、缴费标准、报销比例、定点医院。</p><p><b>💡 对你有什么用：</b>医保一年几十块钱，住院报销比例高。不参保的话看病全自费，不划算。</p><p><b>📋 怎么用：</b>通常开学时统一办理参保缴费。在福州定点医院看病可直接刷医保卡。具体报销比例详见文件。</p>"},
+  {title:"各专业辅修培养方案汇总", cat:"学业", desc:"阳光学院各专业辅修/双学位培养方案，申请条件和流程", source:"校内文件", date:"2026-08", tags:["辅修","双学位","学业"]detail:"<p><b>📌 是什么：</b>阳光学院各专业辅修/双学位培养方案，含申请条件、课程设置、学分要求。</p><p><b>💡 对你有什么用：</b>如果主修计科但想拓展方向（如法学辅修助力考公、英语辅修助力四六级），可提前了解。</p><p><b>📋 怎么用：</b>大二申请时注意课程冲突——辅修课不能与主修课撞时间。具体方案待学校确认。</p>"},
+  {title:"大一新生开学必备清单", cat:"入学", desc:"大一新生入学必备物品清单、报到流程、注意事项", source:"校内文件", date:"2026-08", tags:["新生","入学","清单"]detail:"<p><b>📌 是什么：</b>大一新生入学准备清单，含证件、生活用品、学习用品等分类。</p><p><b>💡 对你有什么用：</b>避免到校后才发现缺东西。计科专业建议带笔记本电脑（编程需要）。</p><p><b>📋 怎么用：</b>打印出来逐项打勾。重点：录取通知书、身份证、一寸/二寸照片、银行卡、充电器。</p>"},
+  {title:"阳光学院图书馆资源指南", cat:"学业", desc:"图书馆馆藏查询、电子资源数据库、借阅规则、自习室预约", source:"校内文件", date:"2026-08", tags:["图书馆","数据库","自习"]detail:"<p><b>📌 是什么：</b>图书馆使用指南，含馆藏查询、电子资源数据库、借阅规则、自习室预约。</p><p><b>💡 对你有什么用：</b>图书馆有免费电子资源（知网、万方等），考研查资料/找真题必备。自习室比宿舍安静。</p><p><b>📋 怎么用：</b>凭校园卡借书。电子资源校外也能通过VPN或图书馆网站访问。具体流程详见文件。</p>"},
+  {title:"阳光学院教务系统使用指南", cat:"学业", desc:"选课、查成绩、评教、培养方案查询、考试安排", source:"校内文件", date:"2026-08", tags:["教务系统","选课","成绩"]detail:"<p><b>📌 是什么：</b>教务系统操作指南，含选课、查成绩、评教、培养方案查询、考试安排。</p><p><b>💡 对你有什么用：</b>每学期的选课、查成绩、考试安排都在这个系统里。不会用=选不到课。</p><p><b>📋 怎么用：</b>登录后先熟悉界面。选课通常每学期开学前开放，注意时间节点。具体操作流程详见文件。</p><p><b>⚠️ 注意：</b>教务系统(jwxt.ygu.edu.cn)需校内网访问，校外可能需要VPN。</p>"},
+  {title:"阳光学院校园网使用指南", cat:"生活", desc:"校园网连接方式、账号密码、流量套餐、故障排查", source:"校内文件", date:"2026-08", tags:["校园网","网络","故障"]detail:"<p><b>📌 是什么：</b>校园网使用说明，含连接方式、账号密码、流量套餐、故障排查。</p><p><b>💡 对你有什么用：</b>校园网是自习/查资料的基础设施。宿舍可能没有WiFi，校园网是刚需。</p><p><b>📋 怎么用：</b>连上校园网SSID后登录认证页面。初始账号一般是学号，密码为身份证后6位（待确认）。具体流程详见文件。</p>"},
+  {title:"阳光学院食堂/超市/快递指南", cat:"生活", desc:"各食堂楼层分布、超市位置、快递点地址、取件方式", source:"校内文件", date:"2026-08", tags:["食堂","快递","生活"]detail:"<p><b>📌 是什么：</b>校园生活实用信息，含各食堂位置楼层、超市、快递点地址。</p><p><b>💡 对你有什么用：</b>大一新生快速了解校园生活圈，不用每天问人。</p><p><b>📋 怎么用：</b>存到手机备忘录。重点关注：哪个食堂便宜、快递点几点关门、超市在哪。</p>"},
+  {title:"2026年学科竞赛分享会", cat:"竞赛", desc:"阳光学院学科竞赛分享会资料，含蓝桥杯、数学建模、互联网+等竞赛介绍", source:"校内文件", date:"2026-08", tags:["竞赛","蓝桥杯","数学建模"]detail:"<p><b>📌 是什么：</b>阳光学院学科竞赛分享会资料，含蓝桥杯、数学建模、互联网+等竞赛的学长学姐经验分享。</p><p><b>💡 对你有什么用：</b>本校学长学姐的真实经验比外部攻略更靠谱。本校蓝桥杯拿过5项国奖，说明竞赛氛围好。</p><p><b>📋 怎么用：</b>开学后关注学院通知，参加线下分享会。重点听：备赛时间线、资源推荐、常见坑。</p>"},
+  {title:"研招网 - 国家政策", cat:"考研", desc:"教育部研究生招生考试官方政策、报名条件、考试安排", source:"官方链接", date:"持续更新", tags:["考研","政策","教育部"]detail:"<p><b>📌 是什么：</b>教育部研究生招生考试官方平台，含政策文件、报名流程、调剂系统。</p><p><b>💡 对你有什么用：</b>大三下/大四上考研报名的唯一官方入口。国家线、调剂都在这里查。</p><p><b>📋 怎么用：</b>大三下9月预报名、10月正式报名。日常关注：国家线公布（每年3月）、调剂系统开放（每年4月）。</p>"},
+  {title:"国家公务员局", cat:"考公", desc:"国家公务员考试官方网站，招考公告、报名入口、成绩查询", source:"官方链接", date:"持续更新", tags:["国考","公务员","招考"]detail:"<p><b>📌 是什么：</b>国家公务员局官网，国考招考公告、报名入口、成绩查询的官方平台。</p><p><b>💡 对你有什么用：</b>国考报名的唯一官方入口。计科专业可报计算机类岗位。</p><p><b>📋 怎么用：</b>每年10月发布招考公告、11月底笔试。大三起可报名（应届本科生身份）。日常关注公告更新。</p><p><b>💡 计科优势：</b>国考有「计算机类」岗位限制，竞争对手比「不限」岗位少很多。</p>"},
+  {title:"福建省公务员考试录用网", cat:"考公", desc:"福建省公务员考试/选调生官方网站，公告、职位表、成绩查询", source:"官方链接", date:"持续更新", tags:["福建省考","选调","职位表"]detail:"<p><b>📌 是什么：</b>福建省公务员考试/选调生官方平台，含公告、职位表、报名入口、成绩查询。</p><p><b>💡 对你有什么用：</b>福建省考+选调生报名入口。本校已有选调生上岸案例（熊海楠→南平市），可参考路径。</p><p><b>📋 怎么用：</b>每年2-3月发布公告、3-4月笔试。选调一般需要大四上报名。大三可关注了解。</p>"},
+  {title:"蓝桥杯大赛", cat:"竞赛", desc:"蓝桥杯全国软件和信息技术专业人才大赛官方网站，报名、赛程、真题", source:"官方链接", date:"每年10月报名", tags:["蓝桥杯","编程","算法"]detail:"<p><b>📌 是什么：</b>蓝桥杯全国软件和信息技术专业人才大赛，由教育部高等学校计算机类专业教学指导委员会指导。</p><p><b>💡 对你有什么用：</b>计科入门竞赛首选！本校已获5项国奖。省赛奖项含金量高，加分+简历加分。</p><p><b>📋 怎么用：</b>每年10月报名、12月省赛、4月国赛。大一即可参加。C语言/Java/Python三个赛道选一个。</p><p><b>📈 备赛建议：</b>大一寒假开始准备，刷蓝桥杯历年真题（网站有）。重点：算法基础+数据结构+真题模拟。</p>"},
+  {title:"ACM-ICPC国际大学生程序设计竞赛", cat:"竞赛", desc:"ACM国际大学生程序设计竞赛官方网站，亚洲区域赛、全球总决赛", source:"官方链接", date:"每年9月报名", tags:["ACM","算法","编程竞赛"]detail:"<p><b>📌 是什么：</b>全球最顶级的大学编程竞赛，考察算法、数据结构、数学能力。</p><p><b>💡 对你有什么用：</b>含金量极高但难度也极高。如果大二开始集训，有机会拿省赛/区域赛奖。不考研就业的同学，ICPC经历是简历亮点。</p><p><b>📋 怎么用：</b>每年9月组队报名。需要3人一队。入门路径：LeetCode中等题→洛谷提高组→区域赛真题。</p>"},
+  {title:"全国大学生数学建模竞赛", cat:"竞赛", desc:"全国大学生数学建模竞赛官方网站，报名、赛题、获奖名单", source:"官方链接", date:"每年9月比赛", tags:["数学建模","竞赛","数据分析"]detail:"<p><b>📌 是什么：</b>全国大学生数学建模竞赛（CUMCM），3天组队解决一个实际问题，写论文。</p><p><b>💡 对你有什么用：</b>锻炼数据分析+建模+写作能力。对考公有帮助（数据分析能力），对考研复试是加分项。本校学生可组队参加。</p><p><b>📋 怎么用：</b>每年9月比赛，赛前有培训。需要数学+编程+写作三人组队。大三可参加。</p>"},
+  {title:"中国国际大学生创新大赛（互联网+）", cat:"竞赛", desc:"原中国互联网+大学生创新创业大赛，高教主赛道、红旅赛道、产业赛道", source:"官方链接", date:"每年4-10月", tags:["互联网+","创新创业","大创"]detail:"<p><b>📌 是什么：</b>原「互联网+」大学生创新创业大赛，国内最大规模的大学生创新竞赛，覆盖高教主赛道、红旅赛道、产业赛道。</p><p><b>💡 对你有什么用：</b>如果做一个项目（如AI应用、小程序），可以报名参赛。获奖对简历/保研有帮助。</p><p><b>📋 怎么用：</b>每年4-10月，校内选拔→省赛→国赛。大一可了解，大二组队报名。计科方向适合做「高教主赛道」的创业类或创意类项目。</p>"},
+  {title:"挑战杯全国大学生课外学术科技作品竞赛", cat:"竞赛", desc:"挑战杯全国大学生课外学术科技作品竞赛和创业计划大赛", source:"官方链接", date:"奇数年举办", tags:["挑战杯","课外学术","创业"]detail:"<p><b>📌 是什么：</b>「挑战杯」全国大学生课外学术科技作品竞赛+创业计划竞赛，奇数年举办。</p><p><b>💡 对你有什么用：</b>本校曾获福建省创业计划竞赛奖项。课外学术类适合做科研课题，创业计划类适合做项目方案。</p><p><b>📋 怎么用：</b>每年5月决赛。大二下开始准备，需要导师指导。计科方向可做AI/数据分析类课题。</p>"},
+  {title:"CCPC中国大学生程序设计竞赛", cat:"竞赛", desc:"中国大学生程序设计竞赛官方网站，分站赛、总决赛", source:"官方链接", date:"每年5-11月", tags:["CCPC","编程","算法"]detail:"<p><b>📌 是什么：</b>中国大学生程序设计竞赛（CCPC），国内最大的算法竞赛之一，分站赛+总决赛。</p><p><b>💡 对你有什么用：</b>和蓝桥杯/ACM并列为算法竞赛三大项。CCPC分区域赛，难度介于蓝桥杯和ACM之间。</p><p><b>📋 怎么用：</b>每年5-11月。组队参加（3人）。入门建议先刷LeetCode+洛谷，再参加分站赛。</p>"},
+  {title:"中国大学生计算机设计大赛", cat:"竞赛", desc:"中国大学生计算机设计大赛官方网站，软件应用、微课、数媒等类别", source:"官方链接", date:"每年3-8月", tags:["计算机设计","软件","数媒"]detail:"<p><b>📌 是什么：</b>教育部A类竞赛，赛项覆盖软件设计、大数据、AI应用、物联网、微课、数媒等，门槛相对低。</p><p><b>💡 对你有什么用：</b>入门竞赛推荐！比蓝桥杯/ACM容易拿奖。大一即可参加，项目类赛项（如做一个小程序/网页）适合计科学生。</p><p><b>📋 怎么用：</b>每年3-8月。先报校内选拔，再报省赛/国赛。赛项多，选适合自己的（如AI应用、数据分析、网页设计）。</p>"},
+  {title:"全国大学生英语竞赛（NECCS）", cat:"竞赛", desc:"全国大学生英语竞赛官方网站，初赛/决赛、获奖证书、真题", source:"官方链接", date:"每年4月初赛", tags:["英语竞赛","NECCS","四级"]detail:"<p><b>📌 是什么：</b>全国大学生英语竞赛，分C赛（非英语专业本科生）、D赛（研究生）。初赛+决赛两轮。</p><p><b>💡 对你有什么用：</b>考公岗位有英语要求，NECCS获奖是英语能力的证明。四级+NECCS双保险。</p><p><b>📋 怎么用：</b>每年4月初赛。大一即可参加（非英语专业报C赛）。备考重点：听力+阅读+翻译+写作。和四级复习同步进行。</p>"},
+  {title:"全国计算机等级考试（NCRE）", cat:"证书", desc:"全国计算机等级考试官方网站，报名、成绩查询、证书查询", source:"官方链接", date:"每年3/9/12月", tags:["计算机二级","NCRE","证书"]detail:"<p><b>📌 是什么：</b>全国计算机等级考试（NCRE），含一级/二级/三级/四级。二级最常见，分C语言/Java/Python/MS Office等方向。</p><p><b>💡 对你有什么用：</b>考公部分岗位明确要求「计算机二级」。大二可考，大三考公时是加分项。</p><p><b>📋 怎么用：</b>每年3月/9月/12月三次考试。计科专业建议考「二级C语言」或「二级Python」。备考用官方模拟软件刷题即可。</p>"},
+  {title:"大学英语四六级考试（CET）", cat:"证书", desc:"全国大学英语四、六级考试官方网站，报名、成绩查询", source:"官方链接", date:"每年6/12月", tags:["四级","六级","CET","英语"]detail:"<p><b>📌 是什么：</b>大学英语四、六级考试，中国最权威的英语能力测试。四级是基础门槛，六级是进阶。</p><p><b>💡 对你有什么用：</b>考公岗位基本要求四级（部分要求四级500+）。大一大二必须过四级，大三大四冲六级。</p><p><b>📋 怎么用：</b>每年6月/12月两次考试。大一上即可报四级（需通过CET等级要求，具体待确认）。备考：背单词+真题+听力。</p><p><b>📅 三班目标：</b>大一过四级（500+），大二过六级（500+），为考公铺路。</p>"},
+  {title:"软件专业技术资格（水平）考试", cat:"证书", desc:"计算机技术与软件专业技术资格（水平）考试，初级/中级/高级", source:"官方链接", date:"每年5/11月", tags:["软考","程序员","证书"]detail:"<p><b>📌 是什么：</b>软考（计算机技术与软件专业技术资格考试），分初级（程序员）、中级（软件设计师/网络工程师）、高级（信息系统项目管理师）。</p><p><b>💡 对你有什么用：</b>考公部分岗位要求软考中级。中级证书是职称资格，对考公/事业编有用。</p><p><b>📋 怎么用：</b>每年5月/11月两次考试。大二可考初级，大三考中级（软件设计师）。备考用官方教材+历年真题。</p>"},
+  {title:"教师资格考试（NTCE）", cat:"证书", desc:"中小学教师资格考试官方网站，笔试/面试报名、成绩查询、认定", source:"官方链接", date:"每年3/11月笔试", tags:["教资","教师资格","证书"]detail:"<p><b>📌 是什么：</b>中小学教师资格考试，分笔试（教育知识与能力+学科知识）和面试。</p><p><b>💡 对你有什么用：</b>如果考公走教师编路线，这是前置证书。计科专业可报「信息技术」学科。</p><p><b>📋 怎么用：</b>每年3月/11月笔试。大三可报。笔试通过后参加面试，认定后拿教师资格证。</p><p><b>💡 注意：</b>非师范生也可报考，但认定时需要符合当地教育局要求（待确认）。</p>"},
 ];
 
 const mediaData = [
-  {title:"C语言学习导航指南", cat:"核心课", desc:"三班专属《C语言》课程学习导航指南：学什么/怎么学/免费资源/常见误区（点击查看全文）", source:"学习指南", date:"2026-08", tags:['C语言', '指南', '大一', '导航'], guide:"guide_c_lang"},
-  {title:"数据结构学习导航指南", cat:"核心课", desc:"三班专属《数据结构》课程学习导航指南：学什么/怎么学/免费资源/常见误区（点击查看全文）", source:"学习指南", date:"2026-08", tags:['数据结构', '算法', '408', '指南'], guide:"guide_ds"},
-  {title:"计算机组成原理学习导航指南", cat:"核心课", desc:"三班专属《计算机组成原理》课程学习导航指南：学什么/怎么学/免费资源/常见误区（点击查看全文）", source:"学习指南", date:"2026-08", tags:['计组', '408', '硬件', '指南'], guide:"guide_co"},
-  {title:"操作系统学习导航指南", cat:"核心课", desc:"三班专属《操作系统》课程学习导航指南：学什么/怎么学/免费资源/常见误区（点击查看全文）", source:"学习指南", date:"2026-08", tags:['操作系统', '进程', '408', '指南'], guide:"guide_os"},
-  {title:"计算机网络学习导航指南", cat:"核心课", desc:"三班专属《计算机网络》课程学习导航指南：学什么/怎么学/免费资源/常见误区（点击查看全文）", source:"学习指南", date:"2026-08", tags:['计网', 'TCP/IP', '408', '指南'], guide:"guide_net"},
-  {title:"宋浩高等数学全程教学视频2.0版", cat:"数学", desc:"B站宋浩老师高等数学全程教学视频，上册+下册，适合大一新生", source:"B站免费", tags:["高数","宋浩","B站","大一"]},
-  {title:"宋浩线性代数", cat:"数学", desc:"B站宋浩老师线性代数全程教学视频，适合大一下学期", source:"B站免费", tags:["线代","宋浩","B站","大一"]},
-  {title:"宋浩概率论与数理统计", cat:"数学", desc:"B站宋浩老师概率论与数理统计全程教学视频", source:"B站免费", tags:["概率论","宋浩","B站","大二"]},
-  {title:"翁恺C语言程序设计", cat:"编程基础", desc:"浙江大学翁恺老师C语言程序设计课程，MOOC国家级精品课", source:"中国大学MOOC", tags:["C语言","翁恺","浙大","入门"]},
-  {title:"黑马程序员Python入门教程", cat:"编程基础", desc:"黑马程序员Python零基础入门教程，含基础语法、项目实战", source:"B站免费", tags:["Python","黑马","入门","B站"]},
-  {title:"数据结构与算法（陈越）", cat:"核心课", desc:"浙江大学陈越、何钦铭老师数据结构课程，MOOC国家级精品课", source:"中国大学MOOC", tags:["数据结构","算法","浙大","考研408"]},
-  {title:"计算机组成原理（唐朔飞）", cat:"核心课", desc:"哈工大唐朔飞老师计算机组成原理课程，考研408核心科目", source:"中国大学MOOC", tags:["计组","唐朔飞","哈工大","考研408"]},
-  {title:"计算机网络（谢希仁）", cat:"核心课", desc:"计算机网络经典教材配套课程，TCP/IP、HTTP、网络安全等", source:"B站免费", tags:["计网","谢希仁","TCP/IP","考研408"]},
-  {title:"操作系统（汤小丹）", cat:"核心课", desc:"西安电子科技大学汤小丹老师操作系统课程，进程、内存、文件系统", source:"中国大学MOOC", tags:["操作系统","汤小丹","西电","考研408"]},
-  {title:"刘晓艳四级词汇课", cat:"英语", desc:"刘晓艳老师大学英语四级词汇课程，词根记忆法，适合四级备考", source:"B站免费", tags:["四级","英语","词汇","刘晓艳"]},
-  {title:"刘晓艳四级语法课", cat:"英语", desc:"刘晓艳老师大学英语四级语法课程，系统梳理语法体系", source:"B站免费", tags:["四级","英语","语法","刘晓艳"]},
-  {title:"考虫四级系统班", cat:"英语", desc:"考虫四级系统班，听力/阅读/写作/翻译全题型覆盖", source:"付费课程", tags:["四级","英语","考虫","系统班"]},
-  {title:"白先生AI流量体-老板的随身操盘手", cat:"AI智能体", desc:"AI智能体流量变现课程，含个人IP打造、内容生产、私域运营、变现路径", source:"付费课程", tags:["AI","流量","变现","IP"]},
-  {title:"秋叶AI智能体课程", cat:"AI智能体", desc:"秋叶团队AI智能体实战课程，Coze/扣子平台操作、智能体搭建、工作流设计", source:"付费课程", tags:["Coze","扣子","智能体","工作流"]},
-  {title:"猴帝AI智能体线上课", cat:"AI智能体", desc:"猴帝AI智能体线上课程，从入门到实战，含多个行业案例拆解", source:"付费课程", tags:["AI","智能体","案例"]},
-  {title:"陈厂长AI智能体实战创业营", cat:"AI智能体", desc:"陈厂长AI智能体实战创业营，从0到1搭建AI智能体，含创业落地指导", source:"付费课程", tags:["AI","创业","智能体","实战"]},
-  {title:"王大锤26蓝图公考青云宏志班", cat:"公考", desc:"王大锤公考全程班，行测+申论系统课程，含刷题、模考、答疑", source:"付费课程", tags:["公考","行测","申论","全程班"]},
-  {title:"34省+国考真题合集", cat:"公考", desc:"全国34个省份+国家公务员考试历年真题汇总，含答案解析", source:"资料合集", tags:["真题","国考","省考","答案解析"]},
-  {title:"大齐超级个体认知成长学习圈", cat:"个人成长", desc:"大齐超级个体认知成长学习圈，36集涵盖形象、法律、营养、自媒体、财务、减脂等", source:"付费课程", tags:["认知","成长","形象","法律","自媒体"]},
-  {title:"Coze扣子AI智能体平台", cat:"免费资源", desc:"字节跳动Coze扣子AI智能体搭建平台，免费使用，支持发布到多个平台", source:"官方平台", tags:["Coze","扣子","AI","免费"]},
-  {title:"B站免费编程课程合集", cat:"免费资源", desc:"B站免费编程课程汇总，C/Python/Java/前端/算法全覆盖", source:"B站免费", tags:["B站","编程","免费","合集"]},
+  {title:"C语言学习导航指南", cat:"核心课", desc:"三班专属《C语言》课程学习导航指南：学什么/怎么学/免费资源/常见误区（点击查看全文）", source:"学习指南", date:"2026-08", tags:['C语言', '指南', '大一', '导航'], guide:"guide_c_lang"detail:"<p><b>📌 是什么：</b>三班专属C语言学习导航指南，含课程定位、学习路线、免费资源、常见误区。</p><p><b>💡 对你有什么用：</b>大一核心必修课。C语言是编程基础，影响后续数据结构/计组/操作系统。考研复试常考。</p><p><b>📋 怎么用：</b>点「查看全文」看完整指南。推荐顺序：基础语法→指针→结构体→文件操作。配合翁恺MOOC课+每日一题刷题。</p>"},
+  {title:"数据结构学习导航指南", cat:"核心课", desc:"三班专属《数据结构》课程学习导航指南：学什么/怎么学/免费资源/常见误区（点击查看全文）", source:"学习指南", date:"2026-08", tags:['数据结构', '算法', '408', '指南'], guide:"guide_ds"detail:"<p><b>📌 是什么：</b>三班专属数据结构导航指南，含408定位、学习节奏、推荐资源、常见误区。</p><p><b>💡 对你有什么用：</b>考研408必考四门之一，专业课之王。就业面试必考。大二核心课。</p><p><b>📋 怎么用：</b>理论+刷题并行。每节课后刷一道题。大二重点期，配合计组/计网同步复习408。</p>"},
+  {title:"计算机组成原理学习导航指南", cat:"核心课", desc:"三班专属《计算机组成原理》课程学习导航指南：学什么/怎么学/免费资源/常见误区（点击查看全文）", source:"学习指南", date:"2026-08", tags:['计组', '408', '硬件', '指南'], guide:"guide_co"detail:"<p><b>📌 是什么：</b>三班专属计组导航指南，含考研定位、学习路线、推荐资源。</p><p><b>💡 对你有什么用：</b>考研408四门之一。非考研可「及格就行」，不影响考公就业。理解计算机底层原理。</p><p><b>📋 怎么用：</b>B站哈工大唐朔飞课程+中国大学MOOC。结合实验室模拟工具理解数据通路。</p>"},
+  {title:"操作系统学习导航指南", cat:"核心课", desc:"三班专属《操作系统》课程学习导航指南：学什么/怎么学/免费资源/常见误区（点击查看全文）", source:"学习指南", date:"2026-08", tags:['操作系统', '进程', '408', '指南'], guide:"guide_os"detail:"<p><b>📌 是什么：</b>三班专属操作系统导航指南，含408定位、不同方向建议（考研/就业/考公）。</p><p><b>💡 对你有什么用：</b>考研408必考。非考研可重理解概念而非实现细节。理解进程/内存/文件系统核心概念。</p><p><b>📋 怎么用：</b>MOOC入门课+课堂笔记。考研党重点突破四大核心概念+真题。</p>"},
+  {title:"计算机网络学习导航指南", cat:"核心课", desc:"三班专属《计算机网络》课程学习导航指南：学什么/怎么学/免费资源/常见误区（点击查看全文）", source:"学习指南", date:"2026-08", tags:['计网', 'TCP/IP', '408', '指南'], guide:"guide_net"detail:"<p><b>📌 是什么：</b>三班专属计网导航指南，含408定位、抓包实践、分层理解。</p><p><b>💡 对你有什么用：</b>考研408四门之一。Web/网络开发基础。计科大二核心课。</p><p><b>📋 怎么用：</b>B站哈工大计网+中国大学MOOC。抓包实践（Wireshark）验证协议流程。考研抓IP/TCP/DNS/HTTP核心协议。</p>"},
+  {title:"宋浩高等数学全程教学视频2.0版", cat:"数学", desc:"B站宋浩老师高等数学全程教学视频，上册+下册，适合大一新生", source:"B站免费", tags:["高数","宋浩","B站","大一"]detail:"<p><b>📌 是什么：</b>B站宋浩老师高等数学全程教学视频，上册+下册，讲解详细、适合大一新生。</p><p><b>💡 对你有什么用：</b>大一必修高数是基础课，考公/考研都要用。宋浩讲得慢、例子多，零基础友好。</p><p><b>📋 怎么用：</b>B站搜「宋浩高数」，按章节跟。配合课堂学习，每节课后做配套习题。</p>"},
+  {title:"宋浩线性代数", cat:"数学", desc:"B站宋浩老师线性代数全程教学视频，适合大一下学期", source:"B站免费", tags:["线代","宋浩","B站","大一"]detail:"<p><b>📌 是什么：</b>B站宋浩线性代数全程教学视频，适合大一下学期。</p><p><b>💡 对你有什么用：</b>线性代数是数据分析/AI/机器学习的数学基础。考研数学也考。</p><p><b>📋 怎么用：</b>B站搜「宋浩线代」。大一上先学高数，大一下学线代。</p>"},
+  {title:"宋浩概率论与数理统计", cat:"数学", desc:"B站宋浩老师概率论与数理统计全程教学视频", source:"B站免费", tags:["概率论","宋浩","B站","大二"]detail:"<p><b>📌 是什么：</b>B站宋浩概率论与数理统计全程教学视频。</p><p><b>💡 对你有什么用：</b>大二的数学课，考研数学考概率论。对数据分析/AI方向有用。</p><p><b>📋 怎么用：</b>大二上开课后配合跟课。先学高数和线代，再学概率论。</p>"},
+  {title:"翁恺C语言程序设计", cat:"编程基础", desc:"浙江大学翁恺老师C语言程序设计课程，MOOC国家级精品课", source:"中国大学MOOC", tags:["C语言","翁恺","浙大","入门"]detail:"<p><b>📌 是什么：</b>浙江大学翁恺老师C语言程序设计，MOOC国家级精品课，零基础入门首选。</p><p><b>💡 对你有什么用：</b>大一C语言必修配套课。翁恺讲得清楚、例题多、代码规范，比课本好理解。</p><p><b>📋 怎么用：</b>中国大学MOOC搜「翁恺C语言」。每章课后练习必做，配合平台每日一题。</p>"},
+  {title:"黑马程序员Python入门教程", cat:"编程基础", desc:"黑马程序员Python零基础入门教程，含基础语法、项目实战", source:"B站免费", tags:["Python","黑马","入门","B站"]detail:"<p><b>📌 是什么：</b>B站黑马程序员Python零基础入门教程，含基础语法+项目实战。</p><p><b>💡 对你有什么用：</b>Python是AI/数据分析/自动化脚本的通用语言。大一下可学，比C语言更容易上手。</p><p><b>📋 怎么用：</b>B站搜「黑马程序员Python」。先看基础语法部分，再做项目实战。</p>"},
+  {title:"数据结构与算法（陈越）", cat:"核心课", desc:"浙江大学陈越、何钦铭老师数据结构课程，MOOC国家级精品课", source:"中国大学MOOC", tags:["数据结构","算法","浙大","考研408"]detail:"<p><b>📌 是什么：</b>浙江大学陈越、何钦铭老师数据结构课程，MOOC国家级精品课，考研408核心科目。</p><p><b>💡 对你有什么用：</b>考研408必考。浙大版本讲解严谨、配套习题质量高，是数据结构的标准课。</p><p><b>📋 怎么用：</b>中国大学MOOC搜「陈越数据结构」。大二核心期，配合刷题平台（LeetCode/洛谷）实践。</p>"},
+  {title:"计算机组成原理（唐朔飞）", cat:"核心课", desc:"哈工大唐朔飞老师计算机组成原理课程，考研408核心科目", source:"中国大学MOOC", tags:["计组","唐朔飞","哈工大","考研408"]detail:"<p><b>📌 是什么：</b>哈工大唐朔飞老师计算机组成原理，考研408核心科目。</p><p><b>💡 对你有什么用：</b>408四大科目之一。唐朔飞是计组领域权威，讲解深入。</p><p><b>📋 怎么用：</b>中国大学MOOC搜「唐朔飞计组」。大二学，配合真题复习。</p>"},
+  {title:"计算机网络（谢希仁）", cat:"核心课", desc:"计算机网络经典教材配套课程，TCP/IP、HTTP、网络安全等", source:"B站免费", tags:["计网","谢希仁","TCP/IP","考研408"]detail:"<p><b>📌 是什么：</b>谢希仁《计算机网络》经典教材配套课程，TCP/IP、HTTP、网络安全等。</p><p><b>💡 对你有什么用：</b>计网考研标准教材。谢希仁版本覆盖全面，适合系统学习。</p><p><b>📋 怎么用：</b>B站搜「谢希仁计网」。大二学，重点：分层模型+核心协议+HTTP/TCP。</p>"},
+  {title:"操作系统（汤小丹）", cat:"核心课", desc:"西安电子科技大学汤小丹老师操作系统课程，进程、内存、文件系统", source:"中国大学MOOC", tags:["操作系统","汤小丹","西电","考研408"]detail:"<p><b>📌 是什么：</b>西安电子科技大学汤小丹老师操作系统课程，进程、内存、文件系统。</p><p><b>💡 对你有什么用：</b>408必考科目。汤小丹版本是操作系统经典教材配套课。</p><p><b>📋 怎么用：</b>中国大学MOOC搜「汤小丹操作系统」。大二学，重点理解进程调度+内存管理。</p>"},
+  {title:"刘晓艳四级词汇课", cat:"英语", desc:"刘晓艳老师大学英语四级词汇课程，词根记忆法，适合四级备考", source:"B站免费", tags:["四级","英语","词汇","刘晓艳"]detail:"<p><b>📌 是什么：</b>刘晓艳老师大学英语四级词汇课程，词根记忆法，B站免费。</p><p><b>💡 对你有什么用：</b>大一必须过四级（500+）。词根记忆法比死背高效。考公岗位有英语要求。</p><p><b>📋 怎么用：</b>B站搜「刘晓艳四级词汇」。每天30分钟背词，配合真题刷阅读。</p>"},
+  {title:"刘晓艳四级语法课", cat:"英语", desc:"刘晓艳老师大学英语四级语法课程，系统梳理语法体系", source:"B站免费", tags:["四级","英语","语法","刘晓艳"]detail:"<p><b>📌 是什么：</b>刘晓艳老师大学英语四级语法课程，系统梳理语法体系。</p><p><b>💡 对你有什么用：</b>四级阅读/翻译/写作都考语法。语法体系清晰=做题更稳。</p><p><b>📋 怎么用：</b>B站搜「刘晓艳四级语法」。大一上看完，配合真题练。</p>"},
+  {title:"考虫四级系统班", cat:"英语", desc:"考虫四级系统班，听力/阅读/写作/翻译全题型覆盖", source:"付费课程", tags:["四级","英语","考虫","系统班"]detail:"<p><b>📌 是什么：</b>考虫四级系统班，听力/阅读/写作/翻译全题型覆盖。付费课程。</p><p><b>💡 对你有什么用：</b>如果自学四级效率低，系统班有老师带练+批改+答疑。</p><p><b>📋 怎么用：</b>付费课程，按需购买。重点看题型技巧+模考批改。</p>"},
+  {title:"白先生AI流量体-老板的随身操盘手", cat:"AI智能体", desc:"AI智能体流量变现课程，含个人IP打造、内容生产、私域运营、变现路径", source:"付费课程", tags:["AI","流量","变现","IP"]detail:"<p><b>📌 是什么：</b>AI智能体流量变现课程，含个人IP打造、内容生产、私域运营、变现路径。</p><p><b>💡 对你有什么用：</b>如果你对自媒体/副业感兴趣，可了解AI在内容行业的变现逻辑。但核心还是先把学业搞好。</p><p><b>📋 怎么用：</b>付费课程。大一了解即可，大三考研/考公稳定后再考虑副业。</p>"},
+  {title:"秋叶AI智能体课程", cat:"AI智能体", desc:"秋叶团队AI智能体实战课程，Coze/扣子平台操作、智能体搭建、工作流设计", source:"付费课程", tags:["Coze","扣子","智能体","工作流"]detail:"<p><b>📌 是什么：</b>秋叶团队AI智能体实战课程，Coze/扣子平台操作、智能体搭建、工作流设计。付费课程。</p><p><b>💡 对你有什么用：</b>如果你想了解AI智能体的实际应用，Coze/扣子是最易上手的零代码平台。</p><p><b>📋 怎么用：</b>先用Coze官方免费平台练手（平台编程库里有），付费课按需。</p>"},
+  {title:"猴帝AI智能体线上课", cat:"AI智能体", desc:"猴帝AI智能体线上课程，从入门到实战，含多个行业案例拆解", source:"付费课程", tags:["AI","智能体","案例"]detail:"<p><b>📌 是什么：</b>猴帝AI智能体线上课程，从入门到实战，含多个行业案例拆解。付费课程。</p><p><b>💡 对你有什么用：</b>AI智能体是当前热门方向，了解有助于拓展职业视野。</p><p><b>📋 怎么用：</b>付费课程。大一先学好基础课，AI方向大三再深入。</p>"},
+  {title:"陈厂长AI智能体实战创业营", cat:"AI智能体", desc:"陈厂长AI智能体实战创业营，从0到1搭建AI智能体，含创业落地指导", source:"付费课程", tags:["AI","创业","智能体","实战"]detail:"<p><b>📌 是什么：</b>陈厂长AI智能体实战创业营，从0到1搭建AI智能体，含创业落地指导。付费课程。</p><p><b>💡 对你有什么用：</b>创业方向参考。计科学生有技术优势，AI+创业是可行路线。</p><p><b>📋 怎么用：</b>大三/大四有创业想法时再考虑。大一先把基础打牢。</p>"},
+  {title:"王大锤26蓝图公考青云宏志班", cat:"公考", desc:"王大锤公考全程班，行测+申论系统课程，含刷题、模考、答疑", source:"付费课程", tags:["公考","行测","申论","全程班"]detail:"<p><b>📌 是什么：</b>王大锤公考全程班，行测+申论系统课程，含刷题、模考、答疑。付费课程。</p><p><b>💡 对你有什么用：</b>考公全程系统课程。如果决定考公，全程班比自学效率高。</p><p><b>📋 怎么用：</b>大三下决定考公后再报。先做几套真题了解自己的水平，再决定是否需要全程班。</p>"},
+  {title:"34省+国考真题合集", cat:"公考", desc:"全国34个省份+国家公务员考试历年真题汇总，含答案解析", source:"资料合集", tags:["真题","国考","省考","答案解析"]detail:"<p><b>📌 是什么：</b>全国34省+国家公务员考试历年真题汇总，含答案解析。</p><p><b>💡 对你有什么用：</b>考公刷题必备。真题是最好的备考材料，比模拟题靠谱。</p><p><b>📋 怎么用：</b>大三下开始刷真题。先做本省真题，再做国考。每套题做完认真复盘。</p>"},
+  {title:"大齐超级个体认知成长学习圈", cat:"个人成长", desc:"大齐超级个体认知成长学习圈，36集涵盖形象、法律、营养、自媒体、财务、减脂等", source:"付费课程", tags:["认知","成长","形象","法律","自媒体"]detail:"<p><b>📌 是什么：</b>大齐超级个体认知成长学习圈，36集涵盖形象、法律、营养、自媒体、财务、减脂等。付费课程。</p><p><b>💡 对你有什么用：</b>大学四年个人成长体系，包含法律/财务/形象等非学业能力。</p><p><b>📋 怎么用：</b>大一了解即可。时间有限，优先保证专业课+四级+基础课。</p>"},
+  {title:"Coze扣子AI智能体平台", cat:"免费资源", desc:"字节跳动Coze扣子AI智能体搭建平台，免费使用，支持发布到多个平台", source:"官方平台", tags:["Coze","扣子","AI","免费"]detail:"<p><b>📌 是什么：</b>字节跳动Coze扣子AI智能体搭建平台，免费使用，支持发布到多个平台。</p><p><b>💡 对你有什么用：</b>零代码搭建AI Bot的最佳入门平台。计科学生有技术优势，可以快速上手AI应用开发。</p><p><b>📋 怎么用：</b>官网注册免费账号。先试官方模板，再自己搭一个（如课程问答Bot、学习助手）。</p>"},
+  {title:"B站免费编程课程合集", cat:"免费资源", desc:"B站免费编程课程汇总，C/Python/Java/前端/算法全覆盖", source:"B站免费", tags:["B站","编程","免费","合集"]detail:"<p><b>📌 是什么：</b>B站免费编程课程汇总，C/Python/Java/前端/算法全覆盖。</p><p><b>💡 对你有什么用：</b>一站式免费编程学习资源。B站是国内最大的免费编程资源库。</p><p><b>📋 怎么用：</b>B站搜「编程」按播放量排序。推荐：翁恺C语言、黑马Python、尚硅谷Java。</p>"},
 ];
 
 const csData = [
-  {title:"C语言程序设计（翁恺）", cat:"基础课", desc:"浙江大学翁恺老师C语言程序设计课程，MOOC精品课，适合零基础入门", source:"中国大学MOOC", tags:["C语言","翁恺","浙大","入门"]},
-  {title:"Python编程从入门到实践", cat:"基础课", desc:"Python经典教材配套视频，基础语法+项目实战，适合初学者", source:"B站免费", tags:["Python","入门","实战"]},
-  {title:"数据结构与算法（陈越）", cat:"核心课", desc:"浙江大学陈越、何钦铭老师数据结构课程，MOOC国家级精品课", source:"中国大学MOOC", tags:["数据结构","算法","浙大","考研408"]},
-  {title:"计算机组成原理（唐朔飞）", cat:"核心课", desc:"哈工大唐朔飞老师计算机组成原理课程，考研408核心科目", source:"中国大学MOOC", tags:["计组","唐朔飞","哈工大","考研408"]},
-  {title:"计算机网络（谢希仁）", cat:"核心课", desc:"计算机网络经典教材配套课程，TCP/IP、HTTP、网络安全等", source:"B站免费", tags:["计网","谢希仁","TCP/IP","考研408"]},
-  {title:"操作系统（汤小丹）", cat:"核心课", desc:"西安电子科技大学汤小丹老师操作系统课程，进程、内存、文件系统", source:"中国大学MOOC", tags:["操作系统","汤小丹","西电","考研408"]},
-  {title:"LeetCode力扣刷题", cat:"刷题", desc:"LeetCode力扣算法刷题平台，1000+道算法题，支持多种语言，面试必备", source:"官方平台", tags:["LeetCode","算法","刷题","面试"]},
-  {title:"洛谷OJ", cat:"刷题", desc:"洛谷在线评测平台，适合算法竞赛入门，含题单、题解、讨论区", source:"官方平台", tags:["洛谷","OJ","算法竞赛","入门"]},
-  {title:"Codeforces", cat:"刷题", desc:"Codeforces国际算法竞赛平台，每周比赛，适合进阶算法训练", source:"官方平台", tags:["Codeforces","竞赛","算法","进阶"]},
-  {title:"GitHub开源项目", cat:"资源", desc:"GitHub全球最大开源社区，搜索优秀项目学习源码，参与开源贡献", source:"官方平台", tags:["GitHub","开源","源码","项目"]},
-  {title:"Gitee码云", cat:"资源", desc:"Gitee码云国内Git托管平台，访问速度快，适合国内开发者", source:"官方平台", tags:["Gitee","Git","国内","托管"]},
-  {title:"菜鸟教程", cat:"资源", desc:"菜鸟教程在线编程教程，涵盖HTML/CSS/JS/Python/Java/C等多种语言", source:"官方平台", tags:["菜鸟教程","在线","多语言","入门"]},
-  {title:"MDN Web Docs", cat:"资源", desc:"Mozilla开发者网络，Web前端开发权威文档，HTML/CSS/JS参考", source:"官方平台", tags:["MDN","前端","Web","文档"]},
-  {title:"Stack Overflow", cat:"资源", desc:"Stack Overflow全球最大程序员问答社区，编程问题搜索首选", source:"官方平台", tags:["StackOverflow","问答","社区","英文"]},
-  {title:"掘金", cat:"资源", desc:"掘金国内技术社区，前端/后端/AI/移动端技术文章，适合学习和分享", source:"官方平台", tags:["掘金","技术社区","文章","国内"]},
-  {title:"CSDN", cat:"资源", desc:"CSDN中国最大IT技术社区，博客、下载、问答、课程", source:"官方平台", tags:["CSDN","博客","IT","国内"]},
-  {title:"VS Code编辑器", cat:"工具", desc:"Visual Studio Code微软开源代码编辑器，插件丰富，轻量高效", source:"官方下载", tags:["VSCode","编辑器","微软","免费"]},
-  {title:"JetBrains全家桶", cat:"工具", desc:"JetBrains系列IDE，PyCharm/IDEA/CLion等，学生免费授权", source:"官方下载", tags:["JetBrains","IDE","学生免费","专业"]},
-  {title:"Git版本控制", cat:"工具", desc:"Git分布式版本控制系统，程序员必备技能，配合GitHub/Gitee使用", source:"官方文档", tags:["Git","版本控制","必备","协作"]},
-  {title:"Docker容器化", cat:"工具", desc:"Docker容器化部署工具，一次构建到处运行，适合项目部署", source:"官方文档", tags:["Docker","容器","部署","DevOps"]},
-  {title:"Postman接口测试", cat:"工具", desc:"Postman API接口测试工具，支持REST/GraphQL，调试后端必备", source:"官方下载", tags:["Postman","API","接口测试","后端"]},
-  {title:"Anaconda数据科学", cat:"工具", desc:"Anaconda Python数据科学发行版，含conda包管理，适合AI/数据分析", source:"官方下载", tags:["Anaconda","Python","数据科学","AI"]},
-  {title:"Ollama本地大模型", cat:"AI工具", desc:"Ollama本地大模型运行工具，支持Llama/Qwen/DeepSeek等，免费离线使用", source:"官方下载", tags:["Ollama","大模型","本地","免费"]},
-  {title:"Dify LLMOps平台", cat:"AI工具", desc:"Dify开源LLM应用开发平台，支持RAG、Agent、工作流，可私有化部署", source:"开源项目", tags:["Dify","LLM","RAG","Agent","开源"]},
-  {title:"Coze扣子AI平台", cat:"AI工具", desc:"字节跳动Coze扣子AI智能体搭建平台，零代码创建AI Bot，支持多平台发布", source:"官方平台", tags:["Coze","扣子","AI","零代码"]},
-  {title:"Hugging Face", cat:"AI资源", desc:"Hugging Face全球最大AI模型社区，模型、数据集、Spaces应用，免费使用", source:"官方平台", tags:["HuggingFace","模型","数据集","AI"]},
-  {title:"ModelScope魔搭", cat:"AI资源", desc:"阿里达摩院ModelScope魔搭社区，国内AI模型平台，中文模型丰富", source:"官方平台", tags:["ModelScope","魔搭","AI","国内"]},
-  {title:"AI绘画Midjourney", cat:"AI工具", desc:"Midjourney AI绘画工具，通过Discord使用，生成高质量图片", source:"付费平台", tags:["Midjourney","AI绘画","图片","付费"]},
-  {title:"Stable Diffusion", cat:"AI工具", desc:"Stable Diffusion开源AI绘画模型，可本地部署，免费使用", source:"开源项目", tags:["StableDiffusion","AI绘画","本地","开源"]},
+  {title:"C语言程序设计（翁恺）", cat:"基础课", desc:"浙江大学翁恺老师C语言程序设计课程，MOOC精品课，适合零基础入门", source:"中国大学MOOC", tags:["C语言","翁恺","浙大","入门"]detail:"<p><b>📌 是什么：</b>浙大翁恺C语言MOOC精品课，适合零基础入门。</p><p><b>💡 对你有什么用：</b>大一必修C语言的标准配套课，讲解清晰、代码规范。</p><p><b>📋 怎么用：</b>MOOC搜「翁恺C语言」。每章课后练习必做。</p>"},
+  {title:"Python编程从入门到实践", cat:"基础课", desc:"Python经典教材配套视频，基础语法+项目实战，适合初学者", source:"B站免费", tags:["Python","入门","实战"]detail:"<p><b>📌 是什么：</b>Python经典教材配套视频，基础语法+项目实战。</p><p><b>💡 对你有什么用：</b>Python是AI/数据分析/自动化通用语言，比C语言更易上手。</p><p><b>📋 怎么用：</b>B站搜「Python编程从入门到实践」。大一下可学，先学C语言再学Python。</p>"},
+  {title:"数据结构与算法（陈越）", cat:"核心课", desc:"浙江大学陈越、何钦铭老师数据结构课程，MOOC国家级精品课", source:"中国大学MOOC", tags:["数据结构","算法","浙大","考研408"]detail:"<p><b>📌 是什么：</b>浙大陈越/何钦铭数据结构MOOC，国家级精品课。</p><p><b>💡 对你有什么用：</b>考研408必考。浙大版本是数据结构标准课。</p><p><b>📋 怎么用：</b>MOOC搜「陈越数据结构」。大二核心期，配合LeetCode刷题。</p>"},
+  {title:"计算机组成原理（唐朔飞）", cat:"核心课", desc:"哈工大唐朔飞老师计算机组成原理课程，考研408核心科目", source:"中国大学MOOC", tags:["计组","唐朔飞","哈工大","考研408"]detail:"<p><b>📌 是什么：</b>哈工大唐朔飞计组课程，考研408核心科目。</p><p><b>💡 对你有什么用：</b>408四门之一。唐朔飞是计组权威。</p><p><b>📋 怎么用：</b>MOOC搜「唐朔飞计组」。大二学，配合真题复习。</p>"},
+  {title:"计算机网络（谢希仁）", cat:"核心课", desc:"计算机网络经典教材配套课程，TCP/IP、HTTP、网络安全等", source:"B站免费", tags:["计网","谢希仁","TCP/IP","考研408"]detail:"<p><b>📌 是什么：</b>谢希仁《计算机网络》经典教材配套课，TCP/IP/HTTP/网络安全。</p><p><b>💡 对你有什么用：</b>计网考研标准教材配套。</p><p><b>📋 怎么用：</b>B站搜「谢希仁计网」。大二学，重点IP/TCP/DNS/HTTP。</p>"},
+  {title:"操作系统（汤小丹）", cat:"核心课", desc:"西安电子科技大学汤小丹老师操作系统课程，进程、内存、文件系统", source:"中国大学MOOC", tags:["操作系统","汤小丹","西电","考研408"]detail:"<p><b>📌 是什么：</b>西电汤小丹操作系统课程，进程/内存/文件系统。</p><p><b>💡 对你有什么用：</b>408必考。汤小丹版本是操作系统经典教材配套。</p><p><b>📋 怎么用：</b>MOOC搜「汤小丹操作系统」。大二学，重点进程调度+内存管理。</p>"},
+  {title:"LeetCode力扣刷题", cat:"刷题", desc:"LeetCode力扣算法刷题平台，1000+道算法题，支持多种语言，面试必备", source:"官方平台", tags:["LeetCode","算法","刷题","面试"]detail:"<p><b>📌 是什么：</b>LeetCode力扣算法刷题平台，1000+道算法题，支持多种语言。</p><p><b>💡 对你有什么用：</b>面试必备。算法基础训练首选。计科学生大三面试/考研复试都考。</p><p><b>📋 怎么用：</b>从「代码随堂练习」或「技术面试必刷50题」开始。每日一题保持手感。</p>"},
+  {title:"洛谷OJ", cat:"刷题", desc:"洛谷在线评测平台，适合算法竞赛入门，含题单、题解、讨论区", source:"官方平台", tags:["洛谷","OJ","算法竞赛","入门"]detail:"<p><b>📌 是什么：</b>洛谷在线评测平台，适合算法竞赛入门，含题单、题解、讨论区。</p><p><b>💡 对你有什么用：</b>蓝桥杯/CCPC备赛首选。题单分类清晰，从入门到竞赛全覆盖。</p><p><b>📋 怎么用：</b>按「题单推荐」从入门开始。蓝桥杯历年真题在这里有。</p>"},
+  {title:"Codeforces", cat:"刷题", desc:"Codeforces国际算法竞赛平台，每周比赛，适合进阶算法训练", source:"官方平台", tags:["Codeforces","竞赛","算法","进阶"]detail:"<p><b>📌 是什么：</b>Codeforces国际算法竞赛平台，每周比赛，适合进阶算法训练。</p><p><b>💡 对你有什么用：</b>国际最顶级的算法竞赛平台。难度高于洛谷，适合进阶训练。</p><p><b>📋 怎么用：</b>先刷ABC（入门）→然后Codeforces 2500+难度。大三可尝试。</p>"},
+  {title:"GitHub开源项目", cat:"资源", desc:"GitHub全球最大开源社区，搜索优秀项目学习源码，参与开源贡献", source:"官方平台", tags:["GitHub","开源","源码","项目"]detail:"<p><b>📌 是什么：</b>GitHub全球最大开源社区，搜索优秀项目学习源码。</p><p><b>💡 对你有什么用：</b>学习优秀项目架构、参与开源贡献、积累项目经验。简历加分项。</p><p><b>📋 怎么用：</b>搜「awesome-c」「awesome-python」等精选列表。大三开始关注。</p>"},
+  {title:"Gitee码云", cat:"资源", desc:"Gitee码云国内Git托管平台，访问速度快，适合国内开发者", source:"官方平台", tags:["Gitee","Git","国内","托管"]detail:"<p><b>📌 是什么：</b>Gitee码云国内Git托管平台，访问速度快。</p><p><b>💡 对你有什么用：</b>国内GitHub替代，访问不需要梯子。作业提交/项目托管。</p><p><b>📋 怎么用：</b>注册免费账号。大一即可用，配合Git学习版本控制。</p>"},
+  {title:"菜鸟教程", cat:"资源", desc:"菜鸟教程在线编程教程，涵盖HTML/CSS/JS/Python/Java/C等多种语言", source:"官方平台", tags:["菜鸟教程","在线","多语言","入门"]detail:"<p><b>📌 是什么：</b>菜鸟教程在线编程教程，涵盖HTML/CSS/JS/Python/Java/C等多语言。</p><p><b>💡 对你有什么用：</b>快速查语法的在线手册。适合碎片时间学习。</p><p><b>📋 怎么用：</b>搜「菜鸟教程」+ 语言名。当字典查，不要当教材学。</p>"},
+  {title:"MDN Web Docs", cat:"资源", desc:"Mozilla开发者网络，Web前端开发权威文档，HTML/CSS/JS参考", source:"官方平台", tags:["MDN","前端","Web","文档"]detail:"<p><b>📌 是什么：</b>Mozilla开发者网络，Web前端开发权威文档。</p><p><b>💡 对你有什么用：</b>HTML/CSS/JS查询首选。Web开发必备。</p><p><b>📋 怎么用：</b>搜「MDN」+ 技术名。大三做Web项目时必备。</p>"},
+  {title:"Stack Overflow", cat:"资源", desc:"Stack Overflow全球最大程序员问答社区，编程问题搜索首选", source:"官方平台", tags:["StackOverflow","问答","社区","英文"]detail:"<p><b>📌 是什么：</b>全球最大程序员问答社区，编程问题搜索首选。</p><p><b>💡 对你有什么用：</b>遇到编程问题第一站。答案质量高、覆盖面广。</p><p><b>📋 怎么用：</b>搜索用英文关键词。大三开始大量使用。</p>"},
+  {title:"掘金", cat:"资源", desc:"掘金国内技术社区，前端/后端/AI/移动端技术文章，适合学习和分享", source:"官方平台", tags:["掘金","技术社区","文章","国内"]detail:"<p><b>📌 是什么：</b>国内技术社区，前端/后端/AI/移动端技术文章。</p><p><b>💡 对你有什么用：</b>国内最大技术社区，中文阅读友好。</p><p><b>📋 怎么用：</b>关注感兴趣的技术方向。大三开始关注。</p>"},
+  {title:"CSDN", cat:"资源", desc:"CSDN中国最大IT技术社区，博客、下载、问答、课程", source:"官方平台", tags:["CSDN","博客","IT","国内"]detail:"<p><b>📌 是什么：</b>中国最大IT技术社区，博客、下载、问答、课程。</p><p><b>💡 对你有什么用：</b>国内最大的中文技术内容平台。</p><p><b>📋 怎么用：</b>搜技术关键词。注意辨别质量，有些是AI生成的低质内容。</p>"},
+  {title:"VS Code编辑器", cat:"工具", desc:"Visual Studio Code微软开源代码编辑器，插件丰富，轻量高效", source:"官方下载", tags:["VSCode","编辑器","微软","免费"]detail:"<parameter name="code">📌 是什么：</b>微软开源代码编辑器，插件丰富、轻量高效。</p><p><b>💡 对你有什么用：</b>编程必备编辑器。插件生态丰富，几乎支持所有语言。</p><p><b>📋 怎么用：</b>官网下载。推荐插件：Python/C++/GitLens/Remote-SSH。</p>"},
+  {title:"JetBrains全家桶", cat:"工具", desc:"JetBrains系列IDE，PyCharm/IDEA/CLion等，学生免费授权", source:"官方下载", tags:["JetBrains","IDE","学生免费","专业"]detail:"<p><b>📌 是什么：</b>JetBrains系列IDE（PyCharm/IDEA/CLion等），学生免费授权。</p><p><b>💡 对你有什么用：</b>专业级IDE，智能提示/调试/重构功能远超VS Code。</p><p><b>📋 怎么用：</b>用学校edu邮箱申请学生免费授权。大一即可用。</p>"},
+  {title:"Git版本控制", cat:"工具", desc:"Git分布式版本控制系统，程序员必备技能，配合GitHub/Gitee使用", source:"官方文档", tags:["Git","版本控制","必备","协作"]detail:"<p><b>📌 是什么：</b>Git分布式版本控制系统，程序员必备技能。</p><p><b>💡 对你有什么用：</b>作业提交/项目协作/代码备份。所有程序员必会。</p><p><b>📋 怎么用：</b>大一开学学基础命令（add/commit/push/pull）。配合GitHub/Gitee使用。</p>"},
+  {title:"Docker容器化", cat:"工具", desc:"Docker容器化部署工具，一次构建到处运行，适合项目部署", source:"官方文档", tags:["Docker","容器","部署","DevOps"]detail:"<p><b>📌 是什么：</b>Docker容器化部署工具，一次构建到处运行。</p><p><b>💡 对你有什么用：</b>大三/大四做项目部署必备。环境隔离/快速部署。</p><p><b>📋 怎么用：</b>大三再学。先掌握Linux基础，再学Docker。</p>"},
+  {title:"Postman接口测试", cat:"工具", desc:"Postman API接口测试工具，支持REST/GraphQL，调试后端必备", source:"官方下载", tags:["Postman","API","接口测试","后端"]detail:"<p><b>📌 是什么：</b>Postman API接口测试工具，支持REST/GraphQL。</p><p><b>💡 对你有什么用：</b>后端开发/接口调试必备。大三做Web项目时必用。</p><p><b>📋 怎么用：</b>官网下载免费使用。大三学习Web开发时开始用。</p>"},
+  {title:"Anaconda数据科学", cat:"工具", desc:"Anaconda Python数据科学发行版，含conda包管理，适合AI/数据分析", source:"官方下载", tags:["Anaconda","Python","数据科学","AI"]detail:"<p><b>📌 是什么：</b>Anaconda Python数据科学发行版，含conda包管理。</p><p><b>💡 对你有什么用：</b>AI/数据分析方向必备。环境管理比pip方便得多。</p><p><b>📋 怎么用：</b>官网下载。大三学AI/数据分析时安装。</p>"},
+  {title:"Ollama本地大模型", cat:"AI工具", desc:"Ollama本地大模型运行工具，支持Llama/Qwen/DeepSeek等，免费离线使用", source:"官方下载", tags:["Ollama","大模型","本地","免费"]detail:"<p><b>📌 是什么：</b>Ollama本地大模型运行工具，支持Llama/Qwen/DeepSeek等，免费离线使用。</p><p><b>💡 对你有什么用：</b>本地跑AI模型，不用联网、不用API key、完全免费。AImac系统主力工具。</p><p><b>📋 怎么用：</b>官网安装。运行 ollama pull qwen3.5:9b 即可使用。Sir的Mac上已装27b+9b。</p>"},
+  {title:"Dify LLMOps平台", cat:"AI工具", desc:"Dify开源LLM应用开发平台，支持RAG、Agent、工作流，可私有化部署", source:"开源项目", tags:["Dify","LLM","RAG","Agent","开源"]detail:"<p><b>📌 是什么：</b>Dify开源LLM应用开发平台，支持RAG/Agent/工作流，可私有化部署。</p><p><b>💡 对你有什么用：</b>开源AI应用开发平台，不用花钱买SaaS。</p><p><b>📋 怎么用：</b>Docker部署。大三学AI应用开发时使用。</p>"},
+  {title:"Coze扣子AI平台", cat:"AI工具", desc:"字节跳动Coze扣子AI智能体搭建平台，零代码创建AI Bot，支持多平台发布", source:"官方平台", tags:["Coze","扣子","AI","零代码"]detail:"<p><b>📌 是什么：</b>字节跳动Coze扣子AI智能体搭建平台，零代码创建AI Bot。</p><p><b>💡 对你有什么用：</b>零代码入门AI应用，计科学生有技术优势。</p><p><b>📋 怎么用：</b>官网注册免费账号。先试模板，再自己搭。</p>"},
+  {title:"Hugging Face", cat:"AI资源", desc:"Hugging Face全球最大AI模型社区，模型、数据集、Spaces应用，免费使用", source:"官方平台", tags:["HuggingFace","模型","数据集","AI"]detail:"<p><b>📌 是什么：</b>全球最大AI模型社区，模型/数据集/Spaces应用，免费使用。</p><p><b>💡 对你有什么用：</b>AI模型下载首选。开源模型最全。</p><p><b>📋 怎么用：</b>搜「huggingface」+ 模型名。大三学AI时使用。</p>"},
+  {title:"ModelScope魔搭", cat:"AI资源", desc:"阿里达摩院ModelScope魔搭社区，国内AI模型平台，中文模型丰富", source:"官方平台", tags:["ModelScope","魔搭","AI","国内"]detail:"<p><b>📌 是什么：</b>阿里达摩院ModelScope魔搭社区，国内AI模型平台，中文模型丰富。</p><p><b>💡 对你有什么用：</b>国内访问速度快，中文模型多。Ollama国内替代方案。</p><p><b>📋 怎么用：</b>官网注册。下载模型需登录。Sir的Mac上用hf-mirror镜像加速下载。</p>"},
+  {title:"AI绘画Midjourney", cat:"AI工具", desc:"Midjourney AI绘画工具，通过Discord使用，生成高质量图片", source:"付费平台", tags:["Midjourney","AI绘画","图片","付费"]detail:"<p><b>📌 是什么：</b>Midjourney AI绘画工具，通过Discord使用，生成高质量图片。付费。</p><p><b>💡 对你有什么用：</b>AI绘画质量最高。但需付费+Discord。</p><p><b>📋 怎么用：</b>需付费订阅。大一了解即可，不急。</p>"},
+  {title:"Stable Diffusion", cat:"AI工具", desc:"Stable Diffusion开源AI绘画模型，可本地部署，免费使用", source:"开源项目", tags:["StableDiffusion","AI绘画","本地","开源"]detail:"<p><b>📌 是什么：</b>Stable Diffusion开源AI绘画模型，可本地部署，免费使用。</p><p><b>💡 对你有什么用：</b>免费本地AI绘画。开源可定制。</p><p><b>📋 怎么用：</b>需要GPU。大三有硬件条件时再学。</p>"},
 ];
 
 const timelineData = [
@@ -1193,18 +1255,14 @@ function getItemUrl(d, type) {
     if (title.includes('四六级') || title.includes('CET')) return 'https://cet.neea.edu.cn/';
     if (title.includes('软考') || title.includes('专业技术资格')) return 'https://www.ruankao.org.cn/';
     if (title.includes('教师资格') || title.includes('NTCE')) return 'https://ntce.neea.edu.cn/';
-    // 校内文件也加链接
-    if (title.includes('校历')) return 'https://www.ygu.edu.cn/';
+    // 校内文件：不链到泛泛主页，靠 detail 解读撑住
     if (title.includes('助学贷款') || title.includes('资助')) return 'http://www.xszz.edu.cn/';
     if (title.includes('医保')) return 'http://ybj.fuzhou.gov.cn/';
     if (title.includes('辅修')) return 'https://jwxt.ygu.edu.cn/';
-    if (title.includes('新生') || title.includes('入学')) return 'https://zsb.ygu.edu.cn/';
     if (title.includes('图书馆')) return 'https://lib.ygu.edu.cn/';
     if (title.includes('教务系统')) return 'https://jwxt.ygu.edu.cn/';
-    if (title.includes('校园网')) return 'https://www.ygu.edu.cn/';
-    if (title.includes('食堂') || title.includes('快递') || title.includes('超市')) return 'https://www.ygu.edu.cn/';
     if (title.includes('竞赛分享会')) return 'https://www.ygu.edu.cn/xsst/cxcyl.htm';
-    return 'https://www.ygu.edu.cn/';
+    return '';
   }
   // 课程库链接
   if (type === 'media') {
@@ -1268,6 +1326,45 @@ function getSourceBadge(source) {
   if (source.includes('开源')) return `<span class="source-badge source-开源">🔓 ${source}</span>`;
   return `<span class="source-badge source-其他">📌 ${source}</span>`;
 }
+
+// ===== 收藏功能 =====
+function getFavorites() {
+  try { return JSON.parse(localStorage.getItem('study_favorites') || '[]'); }
+  catch(e) { return []; }
+}
+function saveFavorites(favs) {
+  localStorage.setItem('study_favorites', JSON.stringify(favs));
+}
+function isFavorited(type, title) {
+  return getFavorites().includes(type + ':' + title);
+}
+function toggleFavorite(type, title) {
+  let favs = getFavorites();
+  const key = type + ':' + title;
+  if (favs.includes(key)) {
+    favs = favs.filter(f => f !== key);
+  } else {
+    favs.push(key);
+  }
+  saveFavorites(favs);
+  updateFavToggle();
+}
+function updateFavToggle() {
+  const favs = getFavorites().length;
+  document.querySelectorAll('.fav-toggle').forEach(btn => {
+    const countEl = btn.querySelector('.fav-count');
+    if (countEl) countEl.textContent = favs;
+  });
+}
+let showOnlyFavs = false;
+function toggleShowFavs(type) {
+  showOnlyFavs = !showOnlyFavs;
+  document.querySelectorAll('.fav-toggle').forEach(btn => {
+    btn.classList.toggle('active', showOnlyFavs);
+  });
+  renderList(type);
+}
+
 function renderList(type) {
   const dataMap = {policy:policyData, media:mediaData, cs:csData};
   const listId = {policy:'policyList', media:'mediaList', cs:'csList'};
@@ -1293,13 +1390,25 @@ function renderList(type) {
   document.getElementById(listId[type]).innerHTML = filtered.length ? filtered.map(d => {
     const url = getItemUrl(d, type);
     const isGuide = !!d.guide;
-    const cardTag = (url || isGuide) ? 'a' : 'div';
-    const hrefAttr = url ? `href="${url}" target="_blank" rel="noopener noreferrer"` : (isGuide ? `href="javascript:void(0)" onclick="openGuide('${d.guide}');return false;"` : '');
-    const clickHint = url ? '<div class="item-go">🔗 点击访问官网 →</div>' : (isGuide ? '<div class="item-go">📖 点击查看全文 →</div>' : '');
+    const hasDetail = !!d.detail;
+    const cardTag = hasDetail ? 'div' : ((url || isGuide) ? 'a' : 'div');
+    const hrefAttr = hasDetail ? '' : (url ? `href="${url}" target="_blank" rel="noopener noreferrer"` : (isGuide ? `href="javascript:void(0)" onclick="openGuide('${d.guide}');return false;"` : ''));
+    const favKey = type + ':' + d.title;
+    const isFav = isFavorited(type, d.title);
+    const favBtn = `<button class="item-fav ${isFav?'active':''}" onclick="event.stopPropagation();toggleFavorite('${type}','${d.title.replace(/'/g,"\\'")}');this.classList.toggle('active')" title="收藏">${isFav?'⭐':'☆'}</button>`;
     const titleHtml = highlightText(d.title, search);
     const descHtml = highlightText(d.desc, search);
+    let bottomHtml;
+    if (hasDetail) {
+      bottomHtml = `<div class="item-detail-toggle" onclick="var el=this.nextElementSibling;el.classList.toggle('show');this.textContent=el.classList.contains('show')?'📖 详细解读 ▾':'📖 详细解读 ▸'">📖 详细解读 ▸</div><div class="item-detail">${d.detail}</div>`;
+      if (url) bottomHtml += `<a href="${url}" target="_blank" rel="noopener noreferrer" class="item-go" style="text-decoration:none;display:block;">🔗 点击访问官网 →</a>`;
+      else if (isGuide) bottomHtml += `<a href="javascript:void(0)" onclick="openGuide('${d.guide}');return false;" class="item-go" style="text-decoration:none;display:block;">📖 点击查看全文 →</a>`;
+    } else {
+      bottomHtml = url ? '<div class="item-go">🔗 点击访问官网 →</div>' : (isGuide ? '<div class="item-go">📖 点击查看全文 →</div>' : '');
+    }
     return `
-    <${cardTag} class="item-card ${url?'has-link':''}" ${hrefAttr}>
+    <${cardTag} class="item-card ${(!hasDetail&&url)?'has-link':''}" ${hrefAttr}>
+      ${favBtn}
       <div class="item-head">
         <h4>${titleHtml}</h4>
         <span class="cat-color cat-${d.cat}">${d.cat}</span>
@@ -1307,7 +1416,7 @@ function renderList(type) {
       <div class="item-desc">${descHtml}</div>
       <div class="item-tags">${d.tags.map(t => `<span class="item-tag">${highlightText(t, search)}</span>`).join('')}</div>
       <div class="item-meta">${getSourceBadge(d.source)}<span>📅 ${d.date}</span></div>
-      ${clickHint}
+      ${bottomHtml}
     </${cardTag}>`;
   }).join('') : '<div class="empty"><div class="icon">🔍</div><p>没有找到匹配的内容，试试其他关键词？</p></div>';
 }
@@ -1317,11 +1426,62 @@ function filterMedia(q) { currentSearch.media = q; renderList('media'); }
 function filterCS(q) { currentSearch.cs = q; renderList('cs'); }
 
 function globalSearch(q) {
-  if (!q) return;
-  switchPage('policy');
-  currentSearch.policy = q;
-  document.querySelector('#page-policy .search-bar input').value = q;
-  renderList('policy');
+  const container = document.getElementById('globalSearchResults');
+  if (!container) return;
+  q = q.trim();
+  if (!q) { container.style.display = 'none'; container.innerHTML = ''; return; }
+  container.style.display = 'block';
+  const search = q.toLowerCase();
+  // 搜三大库
+  const libs = [
+    { name:'政策库', icon:'📋', type:'policy', data:policyData, page:'policy' },
+    { name:'课程库', icon:'🎬', type:'media', data:mediaData, page:'media' },
+    { name:'编程库', icon:'💻', type:'cs', data:csData, page:'cs' },
+  ];
+  let totalFound = 0;
+  let firstResult = null;
+  const sections = libs.map(lib => {
+    const matches = lib.data.filter(d =>
+      d.title.toLowerCase().includes(search) ||
+      d.desc.toLowerCase().includes(search) ||
+      d.tags.some(t => t.toLowerCase().includes(search))
+    );
+    totalFound += matches.length;
+    if (matches.length > 0 && !firstResult) firstResult = { lib, item: matches[0] };
+    const showItems = matches.slice(0, 4);
+    const itemsHtml = showItems.map(d => {
+      const url = getItemUrl(d, lib.type);
+      const isGuide = !!d.guide;
+      const click = url
+        ? `window.open('${url}','_blank')`
+        : isGuide
+          ? `openGuide('${d.guide}')`
+          : `switchPage('${lib.page}');currentSearch.${lib.type}='${q}';document.querySelector('#page-${lib.page} .search-bar input').value='${q}';renderList('${lib.type}')`;
+      const titleHl = highlightText(d.title, search);
+      const descHl = highlightText(d.desc, search);
+      return `<div class="gs-item" onclick="${click}">
+        <div class="gs-item-title">${titleHl} <span class="cat-color cat-${d.cat}">${d.cat}</span></div>
+        <div class="gs-item-desc">${descHl}</div>
+      </div>`;
+    }).join('');
+    const moreBtn = matches.length > 4
+      ? `<span class="gs-more" onclick="switchPage('${lib.page}');currentSearch.${lib.type}='${q}';document.querySelector('#page-${lib.page} .search-bar input').value='${q}';renderList('${lib.type}')">查看全部 ${matches.length} 条 →</span>`
+      : '';
+    return matches.length ? `<div class="gs-section">
+      <div class="gs-section-title">${lib.icon} ${lib.name} <span class="gs-section-count">${matches.length} 条</span></div>
+      ${itemsHtml}${moreBtn}
+    </div>` : '';
+  }).join('');
+  container.innerHTML = totalFound
+    ? `<div style="font-size:12px;color:var(--text-3);margin-bottom:10px;">找到 <strong style="color:var(--primary)">${totalFound}</strong> 条结果 · 搜索「${highlightText(search, search)}」</div>${sections}`
+    : `<div class="gs-empty">🔍 没有找到「${q}」相关内容，试试：C语言 / 考公 / 四级 / 蓝桥杯</div>`;
+}
+
+function goToFirstResult() {
+  const container = document.getElementById('globalSearchResults');
+  if (!container) return;
+  const first = container.querySelector('.gs-item');
+  if (first) first.click();
 }
 
 // ===== 个性化名片弹窗 =====
@@ -1465,6 +1625,87 @@ function updatePomodoroDisplay() {
   const m = Math.floor(pomodoroSeconds / 60);
   const s = pomodoroSeconds % 60;
   document.getElementById('pomodoroDisplay').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+// ===== 每日一题 =====
+const dailyProblems = [
+  { title:'两数之和', diff:'easy', tags:['数组','哈希表'], desc:'给定一个整数数组 nums 和目标值 target，找出和为目标值的那两个整数，返回它们的下标。', hint:'用哈希表存储「值→下标」，遍历一次即可 O(n) 完成。', link:'https://leetcode.cn/problems/two-sum/' },
+  { title:'反转链表', diff:'easy', tags:['链表'], desc:'给你单链表的头节点 head，反转链表并返回新的头节点。', hint:'用三个指针 prev/curr/next 逐步翻转，注意保存 next 再改 next 指向。', link:'https://leetcode.cn/problems/reverse-linked-list/' },
+  { title:'有效的括号', diff:'easy', tags:['栈','字符串'], desc:'给定一个只包含 ()[]{} 的字符串，判断字符串是否有效（括号正确闭合）。', hint:'用栈：遇左括号入栈，遇右括号检查栈顶是否匹配。', link:'https://leetcode.cn/problems/valid-parentheses/' },
+  { title:'合并两个有序链表', diff:'easy', tags:['链表','递归'], desc:'将两个升序链表合并为一个新的升序链表。', hint:'双指针比较头节点，小的接入结果链表，递归或迭代均可。', link:'https://leetcode.cn/problems/merge-two-sorted-lists/' },
+  { title:'最大子数组和', diff:'medium', tags:['数组','动态规划'], desc:'找出数组中具有最大和的连续子数组，返回其最大和。', hint:'Kadane 算法：dp[i]=max(nums[i], dp[i-1]+nums[i])，遍历取最大值。', link:'https://leetcode.cn/problems/maximum-subarray/' },
+  { title:'爬楼梯', diff:'easy', tags:['动态规划'], desc:'每次可以爬 1 或 2 个台阶，爬到 n 阶有多少种方法？', hint:'斐波那契：f(n)=f(n-1)+f(n-2)，用滚动变量省空间。', link:'https://leetcode.cn/problems/climbing-stairs/' },
+  { title:'二叉树的中序遍历', diff:'easy', tags:['树','栈'], desc:'给定二叉树根节点，返回其中序遍历结果。', hint:'递归最简单（左→根→右），或用栈模拟递归过程。', link:'https://leetcode.cn/problems/binary-tree-inorder-traversal/' },
+  { title:'只出现一次的数字', diff:'easy', tags:['位运算'], desc:'给定非空整数数组，除了某个元素只出现一次外，其余均出现两次。找出那个只出现一次的元素。', hint:'异或！a^a=0, a^0=a，全部异或一遍结果就是答案。', link:'https://leetcode.cn/problems/single-number/' },
+  { title:'移动零', diff:'easy', tags:['数组','双指针'], desc:'给定数组，将所有 0 移动到末尾，同时保持非零元素相对顺序。', hint:'双指针：快指针遍历，遇非零就和慢指针交换，慢指针++。', link:'https://leetcode.cn/problems/move-zeroes/' },
+  { title:'买卖股票最佳时机', diff:'easy', tags:['数组','贪心'], desc:'给定股票每日价格，只能买卖一次，求最大利润。', hint:'记录遍历到每天时的历史最低价，计算当天卖出的利润取最大值。', link:'https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/' },
+  { title:'三数之和', diff:'medium', tags:['数组','双指针'], desc:'找出数组中所有和为 0 的不重复三元组。', hint:'排序后固定一个数，双指针找另外两个，注意去重。', link:'https://leetcode.cn/problems/3sum/' },
+  { title:'无重复字符的最长子串', diff:'medium', tags:['哈希表','滑动窗口'], desc:'找出不含重复字符的最长子串的长度。', hint:'滑动窗口+哈希表记录字符最后出现位置，遇重复就收缩窗口左边界。', link:'https://leetcode.cn/problems/longest-substring-without-repeating-characters/' },
+  { title:'环形链表', diff:'easy', tags:['链表','双指针'], desc:'判断链表是否有环。', hint:'快慢指针！快指针每次走两步，慢指针走一步，相遇则有环。', link:'https://leetcode.cn/problems/linked-list-cycle/' },
+  { title:'回文数', diff:'easy', tags:['数学'], desc:'判断一个整数是否是回文数（不转成字符串）。', hint:'反转后半部分数字，与前半部分比较。注意处理负数和末尾为 0 的情况。', link:'https://leetcode.cn/problems/palindrome-number/' },
+  { title:'合并两个有序数组', diff:'easy', tags:['数组','双指针'], desc:'两个非递增有序数组 nums1（有 m 个元素）和 nums2（有 n 个元素），合并到 nums1 中。', hint:'从后往前填充！三个指针从各自末尾开始，大的放 nums1 末尾。', link:'https://leetcode.cn/problems/merge-sorted-array/' },
+  { title:'多数元素', diff:'easy', tags:['数组','分治'], desc:'找出数组中出现次数大于 n/2 的元素。', hint:'Boyer-Moore 投票法：维护候选人和计数器，相同+1不同-1，归零换人。', link:'https://leetcode.cn/problems/majority-element/' },
+  { title:'Excel表列序号', diff:'easy', tags:['数学'], desc:'给定 Excel 表列名称（如 "AB"），返回其列序号（如 28）。', hint:'26 进制转十进制：从左到右 result = result*26 + (c-A+1)。', link:'https://leetcode.cn/problems/excel-sheet-column-number/' },
+  { title:'删除链表倒数第N个节点', diff:'medium', tags:['链表','双指针'], desc:'删除链表的倒数第 n 个节点并返回头节点。', hint:'快指针先走 n 步，然后快慢一起走，快到尾时慢正好在倒数第 n+1 个。', link:'https://leetcode.cn/problems/remove-nth-node-from-end-of-list/' },
+  { title:'有效的字母异位词', diff:'easy', tags:['哈希表','排序'], desc:'判断两个字符串 s 和 t 是否由相同字母组成（字母异位词）。', hint:'用 26 长度数组计数，s 中字符+1，t 中字符-1，全为 0 则是异位词。', link:'https://leetcode.cn/problems/valid-anagram/' },
+  { title:'反转二进制位', diff:'easy', tags:['位运算'], desc:'反转给定的 32 位无符号整数的二进制位。', hint:'逐位处理：result 左移 1 位，加上 n 的最低位，n 右移 1 位，循环 32 次。', link:'https://leetcode.cn/problems/reverse-bits/' },
+  { title:'缺失数字', diff:'easy', tags:['数组','位运算'], desc:'一个包含 0 到 n 的数组中缺失了一个数字，找出它。', hint:'等差数列求和公式 n(n+1)/2 减去数组总和，差值就是缺失数字。', link:'https://leetcode.cn/problems/missing-number/' },
+  { title:'阶乘后的零', diff:'medium', tags:['数学'], desc:'给定 n，返回 n! 结果中尾随零的数量。', hint:'统计 5 的因子个数：n/5 + n/25 + n/125 + ... 直到为 0。', link:'https://leetcode.cn/problems/factorial-trailing-zeroes/' },
+  { title:'相交链表', diff:'easy', tags:['链表','双指针'], desc:'找出两个单链表相交的起始节点。', hint:'双指针各走一遍，到尾就切换到另一条链表头，相交点必相遇。', link:'https://leetcode.cn/problems/intersection-of-two-linked-lists/' },
+  { title:'2的幂', diff:'easy', tags:['位运算'], desc:'判断 n 是否是 2 的幂次方。', hint:'n>0 且 n&(n-1)==0，即二进制只有一个 1。', link:'https://leetcode.cn/problems/power-of-two/' },
+  { title:'各位相加', diff:'easy', tags:['数学'], desc:'给定非负整数 num，反复将各位相加直到结果为一位数。', hint:'数学规律（数根）：结果 = 1 + (num-1) % 9，num=0 时为 0。', link:'https://leetcode.cn/problems/add-digits/' },
+  { title:'4的幂', diff:'easy', tags:['位运算'], desc:'判断 n 是否是 4 的幂次方。', hint:'n>0 且 n&(n-1)==0（是2的幂）且 n&0x55555555!=0（1在奇数位）。', link:'https://leetcode.cn/problems/power-of-four/' },
+  { title:' Nim游戏', diff:'easy', tags:['脑筋急转弯','数学'], desc:'桌上 4 块石头，你和对手轮流拿 1-3 块，拿最后一块的赢。判断先手是否必胜。', hint:'只要 n 不是 4 的倍数，先手必胜。', link:'https://leetcode.cn/problems/nim-game/' },
+  { title:'Fizz Buzz', diff:'easy', tags:['数学','字符串'], desc:'1 到 n，3 的倍数输出 Fizz，5 的倍数输出 Buzz，15 的倍数输出 FizzBuzz。', hint:'遍历，取余判断，注意先判断 15 的情况。', link:'https://leetcode.cn/problems/fizz-buzz/' },
+  { title:'第三大的数', diff:'easy', tags:['数组'], desc:'找出数组中第三大的数（不存在则返回最大值）。', hint:'用三个变量维护第一、第二、第三大值，遍历更新，注意去重。', link:'https://leetcode.cn/problems/third-maximum-number/' },
+  { title:'最长回文子串', diff:'medium', tags:['字符串','动态规划'], desc:'找出字符串 s 中的最长回文子串。', hint:'中心扩展法：以每个字符（及相邻间隙）为中心向两边扩展，O(n²)。', link:'https://leetcode.cn/problems/longest-palindromic-substring/' },
+  { title:'打家劫舍', diff:'medium', tags:['动态规划'], desc:'沿街排列房屋，每间有金额 nums[i]，不能偷相邻两间，求最大金额。', hint:'dp[i]=max(dp[i-1], dp[i-2]+nums[i])，滚动两个变量即可。', link:'https://leetcode.cn/problems/house-robber/' },
+];
+
+function getTodayProblem() {
+  const today = new Date();
+  const dayOfYear = Math.floor((today - new Date(today.getFullYear(),0,0)) / 86400000);
+  return dailyProblems[dayOfYear % dailyProblems.length];
+}
+
+function renderDailyProblem() {
+  const p = getTodayProblem();
+  const diffMap = { easy:['easy','简单'], medium:['medium','中等'], hard:['hard','困难'] };
+  const [diffClass, diffLabel] = diffMap[p.diff];
+  const today = new Date().toISOString().split('T')[0];
+  const streakData = JSON.parse(localStorage.getItem('daily_problem_streak') || '{"done":[]}');
+  const doneToday = streakData.done.includes(today);
+  document.getElementById('dailyProblemBox').innerHTML = `
+    <div class="dp-header">
+      <div class="dp-title">${p.title}</div>
+      <div class="dp-badges">
+        <span class="dp-badge ${diffClass}">${diffLabel}</span>
+        ${p.tags.map(t => `<span class="dp-badge tag">${t}</span>`).join('')}
+      </div>
+    </div>
+    <div class="dp-desc">${p.desc}</div>
+    <div class="dp-hint" id="dpHint">
+      <div class="dp-hint-label">💡 提示</div>
+      <div class="dp-hint-text">${p.hint}</div>
+    </div>
+    <div class="dp-actions">
+      <button class="dp-btn primary" onclick="window.open('${p.link}','_blank')">🔗 去力扣做题</button>
+      <button class="dp-btn secondary" onclick="document.getElementById('dpHint').classList.toggle('show')">💡 ${document.getElementById('dpHint')&&document.getElementById('dpHint').classList.contains('show')?'收起提示':'查看提示'}</button>
+      <button class="dp-btn ${doneToday?'primary':'secondary'}" onclick="toggleProblemDone('${today}')" id="dpDoneBtn">${doneToday?'✅ 今日已完成':'🎯 标记完成'}</button>
+    </div>
+    <div class="dp-streak">累计打卡 <b>${streakData.done.length}</b> 天</div>
+  `;
+}
+
+function toggleProblemDone(date) {
+  const data = JSON.parse(localStorage.getItem('daily_problem_streak') || '{"done":[]}');
+  if (data.done.includes(date)) {
+    data.done = data.done.filter(d => d !== date);
+  } else {
+    data.done.push(date);
+  }
+  localStorage.setItem('daily_problem_streak', JSON.stringify(data));
+  renderDailyProblem();
 }
 
 // ===== 倒计时 =====
@@ -1897,6 +2138,7 @@ renderList('policy');
 renderList('media');
 renderList('cs');
 renderCountdowns();
+renderDailyProblem();
 document.getElementById('pomoCount').textContent = pomodoroCount;
 updatePomodoroDisplay();
 renderPlaylist();
@@ -2008,7 +2250,7 @@ function renderCommittee() {
     </div>
   `).join('');
 }
-renderCommittee();
+renderCommittee();updateFavToggle();
 
 // 班委管理（占位，开学后实现）
 function showCommitteeManage() {
@@ -2081,6 +2323,17 @@ function renderFeishuMaterials() {
 setTimeout(loadFeishuData, 1000);
 // 每5分钟刷新一次飞书数据
 setInterval(loadFeishuData, 300000);
+
+// 页面加载后自动弹出个性化名片（如果用户没填写过）
+// v2修复：移动端(≤768px)不再自动弹出——微信WebView下遮罩层会导致整页变暗看不清，
+// 且localStorage不持久导致每次都弹；移动端用户可从首页手动打开
+
+// 回到顶部按钮：滚动超过 300px 显示
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('backToTop');
+  if (!btn) return;
+  btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+}, { passive: true });
 
 // 页面加载后自动弹出个性化名片（如果用户没填写过）
 // v2修复：移动端(≤768px)不再自动弹出——微信WebView下遮罩层会导致整页变暗看不清，
@@ -2241,6 +2494,9 @@ window.addEventListener('error', function() {
     <div id="guideModalBody" style="text-align:left;font-size:13.5px;line-height:1.7;color:var(--text)"></div>
   </div>
 </div>
+
+<!-- 回到顶部浮动按钮 -->
+<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;bottom:80px;right:20px;width:44px;height:44px;border-radius:50%;border:none;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-size:20px;cursor:pointer;z-index:200;box-shadow:0 4px 16px rgba(99,102,241,0.4);display:none;transition:opacity 0.2s;line-height:1;">↑</button>
 
 </body>
 </html>
