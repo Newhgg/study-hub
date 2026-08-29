@@ -583,10 +583,11 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
  body,button,input,textarea{font-size:12px!important}
 }
 @media(max-width:768px){
- .navbar,.hero-stat,.sidebar,.modal-overlay,.bg-shapes{
+ .navbar,.hero-stat,.sidebar,.modal-overlay{
   -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
   background:rgba(255,255,255,0.92)!important
  }
+ .bg-shapes{display:none!important}
 }
 .bottom-fixed,.profile-save-bar{bottom:env(safe-area-inset-bottom,0);bottom:max(0px,calc(100dvh - var(--vv-h,100dvh)))}
 .item-cat,.lib-tag,.route-tag{white-space:normal!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;}
