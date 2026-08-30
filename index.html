@@ -601,6 +601,1277 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
 }
 .bottom-fixed,.profile-save-bar{bottom:env(safe-area-inset-bottom,0);}
 .item-cat,.lib-tag,.route-tag{white-space:normal!important;display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;}
+
+/* ============================================================
+   方案A 设计升级 — 深海学术蓝 + 三级卡片 + 首页重构
+   ============================================================ */
+
+/* --- 配色变量覆盖 --- */
+:root {
+  --primary: #1e3a5f;
+  --primary-dark: #152a45;
+  --primary-light: #2d5a8a;
+  --accent: #14b8a6;
+  --accent-light: #5eead4;
+  --accent-dark: #0d9488;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --success: #10b981;
+  --bg: #f8fafc;
+  --bg-soft: #ffffff;
+  --card: #ffffff;
+  --text: #0f172a;
+  --text-2: #475569;
+  --text-3: #94a3b8;
+  --border: #e2e8f0;
+  --shadow: 0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+  --shadow-hover: 0 10px 25px rgba(30,58,95,0.12), 0 4px 10px rgba(30,58,95,0.06);
+}
+[data-theme="dark"] {
+  --bg: #0f172a !important;
+  --bg-soft: #1e293b !important;
+  --card: #1e293b !important;
+  --text: #f1f5f9 !important;
+  --text-2: #94a3b8 !important;
+  --text-3: #64748b !important;
+  --border: #334155 !important;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+  --shadow-hover: 0 10px 25px rgba(0,0,0,0.4) !important;
+}
+/* 暗色模式下保留hero渐变，不被原网站规则覆盖 */
+[data-theme="dark"] #page-home .home-hero {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8a 60%, #14b8a6 120%) !important;
+}
+[data-theme="dark"] #page-home .home-stats .stat-card { color: #fff !important; }
+[data-theme="dark"] #page-home .home-stats .stat-num { color: #fff !important; }
+[data-theme="dark"] #page-home .home-stats .stat-label { color: rgba(255,255,255,0.85) !important; }
+/* 暗色模式下班委子卡片 */
+[data-theme="dark"] #page-home .committee-grid > div {
+  background: rgba(255,255,255,0.05) !important;
+  border-color: var(--border) !important;
+}
+
+/* --- 页面背景：去掉紫渐变，改纯净底 --- */
+body {
+  background: #f8fafc !important;
+  background: linear-gradient(180deg, #f0f7ff 0%, #f8fafc 300px) !important;
+  color: var(--text);
+}
+[data-theme="dark"] body {
+  background: #0f172a !important;
+  background: linear-gradient(180deg, #0c1929 0%, #0f172a 300px) !important;
+  color: #f1f5f9 !important;
+}
+/* 背景装饰圆：极淡化，只留一丝氛围 */
+.bg-shape:nth-child(1) { background: linear-gradient(135deg, rgba(20,184,166,0.06), rgba(20,184,166,0.02)) !important; }
+.bg-shape:nth-child(2) { background: linear-gradient(135deg, rgba(30,58,95,0.05), rgba(30,58,95,0.02)) !important; }
+.bg-shape:nth-child(3) { background: linear-gradient(135deg, rgba(245,158,11,0.04), rgba(245,158,11,0.01)) !important; }
+
+/* --- 侧边栏配色同步 --- */
+.sidebar { background: rgba(255,255,255,0.85) !important; border-right: 1px solid var(--border) !important; }
+[data-theme="dark"] .sidebar { background: rgba(30,41,59,0.9) !important; border-right: 1px solid var(--border) !important; }
+.sidebar-link.active { background: rgba(20,184,166,0.1) !important; color: var(--accent-dark) !important; }
+.sidebar-link:hover { color: var(--primary) !important; background: rgba(30,58,95,0.05) !important; }
+[data-theme="dark"] .sidebar-link:hover { color: var(--accent-light) !important; }
+
+/* --- 顶部导航 --- */
+.navbar { background: rgba(255,255,255,0.8) !important; backdrop-filter: blur(12px) !important; border-bottom: 1px solid var(--border) !important; }
+[data-theme="dark"] .navbar { background: rgba(15,23,42,0.8) !important; }
+.nav-brand .logo { background: linear-gradient(135deg, var(--primary), var(--accent)) !important; }
+.nav-link.active { background: rgba(20,184,166,0.1) !important; color: var(--accent-dark) !important; }
+
+/* ============================================================
+   首页专属样式
+   ============================================================ */
+
+/* --- 首页顶部：欢迎+搜索合并 --- */
+#page-home .home-hero {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8a 60%, #14b8a6 120%);
+  border-radius: 20px;
+  padding: 28px 28px 24px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+}
+#page-home .home-hero::before {
+  content: "";
+  position: absolute;
+  top: -60%; right: -10%;
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(20,184,166,0.25), transparent 65%);
+  pointer-events: none;
+}
+#page-home .home-hero-text { position: relative; z-index: 1; margin-bottom: 18px; }
+#page-home .home-hero-text h2 { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+#page-home .home-hero-text p { font-size: 13px; opacity: 0.8; }
+#page-home .home-hero .home-search {
+  position: relative; z-index: 1;
+  background: rgba(255,255,255,0.15) !important;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.25) !important;
+  box-shadow: none !important;
+  border-radius: 14px;
+  padding: 12px 16px;
+}
+#page-home .home-hero .home-search input { color: #fff !important; }
+#page-home .home-hero .home-search input::placeholder { color: rgba(255,255,255,0.6); }
+#page-home .home-hero .home-search .search-scope {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border-color: rgba(255,255,255,0.3);
+}
+#page-home .home-hero .home-search .icon { opacity: 0.8; }
+
+/* --- 核心数据卡：渐变三色 --- */
+#page-home .home-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+#page-home .home-stats .stat-card {
+  border-radius: 16px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #fff;
+  border: none !important;
+  background: none !important;
+  backdrop-filter: none !important;
+  box-shadow: 0 4px 14px rgba(15,23,42,0.12) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: default;
+}
+#page-home .home-stats .stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(15,23,42,0.18) !important;
+}
+#page-home .home-stats .stat-blue { background: linear-gradient(135deg, #1e3a5f, #2d5a8a) !important; }
+#page-home .home-stats .stat-teal { background: linear-gradient(135deg, #0d9488, #14b8a6) !important; }
+#page-home .home-stats .stat-orange { background: linear-gradient(135deg, #d97706, #f59e0b) !important; }
+#page-home .home-stats .stat-card .stat-icon { font-size: 28px; opacity: 0.9; }
+#page-home .home-stats .stat-card .stat-num {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff !important;
+}
+#page-home .home-stats .stat-card .stat-label {
+  font-size: 12px;
+  opacity: 0.85;
+  margin-top: 4px;
+  color: #fff !important;
+}
+
+/* --- 快捷入口：一行6个，极简图标 --- */
+#page-home .home-quick {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 12px;
+  box-shadow: var(--shadow);
+}
+#page-home .home-quick .quick-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 4px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  color: inherit;
+}
+#page-home .home-quick .quick-item:hover {
+  background: rgba(20,184,166,0.08);
+  transform: translateY(-2px);
+}
+#page-home .home-quick .qi-icon {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  background: linear-gradient(135deg, rgba(30,58,95,0.08), rgba(20,184,166,0.08));
+}
+#page-home .home-quick .qi-label { font-size: 11px; font-weight: 600; color: var(--text-2); }
+
+/* --- Tab 卡片：课表/通知/作业 --- */
+#page-home .home-tabs-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+#page-home .home-tabs-nav {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  padding: 0 8px;
+}
+#page-home .home-tab-btn {
+  flex: 1;
+  padding: 14px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-3);
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.15s;
+  font-family: inherit;
+}
+#page-home .home-tab-btn.active { color: var(--accent-dark); }
+#page-home .home-tab-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: -1px; left: 20%; right: 20%;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px 2px 0 0;
+}
+#page-home .home-tab-content {
+  display: none;
+  padding: 16px;
+  animation: tabFadeIn 0.25s ease;
+}
+#page-home .home-tab-content.active { display: block; }
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 班委进度：精简 --- */
+#page-home .home-committee {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+#page-home .home-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+#page-home .home-section-head h4 { font-size: 14px; font-weight: 700; margin: 0; }
+
+/* --- 区块标题 --- */
+#page-home .home-section { margin-bottom: 24px; }
+#page-home .home-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#page-home .home-section-title::before {
+  content: "";
+  width: 3px;
+  height: 16px;
+  background: linear-gradient(180deg, var(--primary), var(--accent));
+  border-radius: 2px;
+}
+
+/* --- 三库卡片：升级hover --- */
+#page-home .lib-card {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  backdrop-filter: none !important;
+  box-shadow: var(--shadow) !important;
+  border-radius: 16px !important;
+  transition: all 0.2s ease;
+}
+#page-home .lib-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent) !important;
+  box-shadow: var(--shadow-hover) !important;
+}
+#page-home .lib-card .lib-go { color: var(--accent-dark); }
+
+/* --- 学习路线卡片 --- */
+#page-home .route-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  transition: all 0.2s ease;
+}
+#page-home .route-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--accent);
+}
+
+/* --- 页面切换动画 --- */
+.page {
+  animation: pageIn 0.3s ease;
+}
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 按钮点击反馈 --- */
+button, .quick-item, .lib-card, .route-card, .sidebar-link, .nav-link {
+  -webkit-tap-highlight-color: transparent;
+}
+button:active, .quick-item:active, .lib-card:active, .route-card:active {
+  transform: scale(0.98);
+}
+
+/* --- 搜索结果样式同步 --- */
+#page-home .global-search-results {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-hover);
+  margin-bottom: 16px;
+}
+
+/* ============================================================
+   移动端适配（首页）
+   ============================================================ */
+@media (max-width: 768px) {
+  #page-home .home-hero { padding: 20px; border-radius: 16px; }
+  #page-home .home-hero-text h2 { font-size: 20px; }
+  #page-home .home-stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  #page-home .home-stats .stat-card { padding: 14px 12px; gap: 8px; }
+  #page-home .home-stats .stat-card .stat-num { font-size: 22px; }
+  #page-home .home-stats .stat-card .stat-icon { font-size: 22px; }
+  #page-home .home-stats .stat-card .stat-label { font-size: 10px; }
+  #page-home .home-quick { grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 12px 6px; }
+  #page-home .home-quick .qi-icon { width: 36px; height: 36px; font-size: 17px; border-radius: 10px; }
+  #page-home .home-quick .qi-label { font-size: 10px; }
+  #page-home .home-tab-btn { font-size: 12px; padding: 12px 4px; }
+  #page-home .home-tab-content { padding: 12px; }
+  #page-home .home-section-title { font-size: 15px; }
+}
+@media (max-width: 480px) {
+  #page-home .home-stats { grid-template-columns: repeat(3, 1fr); }
+  #page-home .home-stats .stat-card { flex-direction: column; text-align: center; padding: 12px 6px; gap: 4px; }
+  #page-home .home-stats .stat-card .stat-num { font-size: 20px; }
+  #page-home .home-quick { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  #page-home .home-quick .quick-item { padding: 8px 2px; }
+}
+
+
+/* ============================================================
+   新生专区样式
+   ============================================================ */
+
+/* 首页新生横幅 */
+.freshman-banner {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8a 50%, #14b8a6 130%);
+  border-radius: 16px;
+  padding: 18px 24px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.freshman-banner::before {
+  content: "";
+  position: absolute;
+  top: -40%; right: -5%;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(20,184,166,0.3), transparent 65%);
+  pointer-events: none;
+}
+.freshman-banner:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(30,58,95,0.25);
+}
+.fb-left { display: flex; align-items: center; gap: 14px; position: relative; z-index: 1; }
+.fb-icon {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+.fb-text h3 { font-size: 17px; font-weight: 700; margin-bottom: 2px; }
+.fb-text p { font-size: 12px; opacity: 0.8; }
+.fb-right { display: flex; align-items: center; gap: 16px; position: relative; z-index: 1; }
+.fb-countdown { text-align: center; }
+.fb-num { font-size: 28px; font-weight: 800; line-height: 1; display: block; }
+.fb-label { font-size: 11px; opacity: 0.8; }
+.fb-arrow { font-size: 20px; opacity: 0.7; }
+
+/* 新生专区页面 */
+#page-freshman .freshman-hero {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8a 50%, #14b8a6 130%);
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+}
+#page-freshman .freshman-hero::before {
+  content: "";
+  position: absolute;
+  top: -50%; right: -10%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(20,184,166,0.25), transparent 65%);
+  pointer-events: none;
+}
+#page-freshman .freshman-hero h2 { font-size: 26px; font-weight: 700; margin-bottom: 6px; position: relative; z-index: 1; }
+#page-freshman .freshman-hero p { font-size: 14px; opacity: 0.85; position: relative; z-index: 1; }
+#page-freshman .freshman-hero .hero-countdown {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 16px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  padding: 10px 20px;
+  border-radius: 999px;
+  position: relative;
+  z-index: 1;
+}
+#page-freshman .freshman-hero .hero-countdown .num { font-size: 32px; font-weight: 800; }
+#page-freshman .freshman-hero .hero-countdown .unit { font-size: 14px; opacity: 0.9; }
+
+/* 通知滚动条 */
+.freshman-notice-bar {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.freshman-notice-bar .notice-tag {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.freshman-notice-bar .notice-scroll {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.freshman-notice-bar .notice-scroll span {
+  display: inline-block;
+  font-size: 13px;
+  color: var(--text-2);
+  animation: noticeScroll 20s linear infinite;
+  padding-right: 60px;
+}
+@keyframes noticeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* 四个快捷卡片 */
+.freshman-quick {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.fq-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow);
+}
+.fq-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-hover);
+}
+.fq-card .fq-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  background: linear-gradient(135deg, rgba(30,58,95,0.08), rgba(20,184,166,0.08));
+}
+.fq-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.fq-card p { font-size: 12px; color: var(--text-3); }
+
+/* 区块通用 */
+.freshman-section { margin-bottom: 28px; }
+.freshman-section .section-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.freshman-section .section-title::before {
+  content: "";
+  width: 3px; height: 18px;
+  background: linear-gradient(180deg, var(--primary), var(--accent));
+  border-radius: 2px;
+}
+
+/* 通知分类Tab */
+.notice-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.notice-tab {
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.notice-tab:hover { border-color: var(--accent); color: var(--accent-dark); }
+.notice-tab.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+/* 通知列表 */
+.notice-list { display: flex; flex-direction: column; gap: 10px; }
+.notice-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  transition: all 0.15s;
+  cursor: pointer;
+  position: relative;
+}
+.notice-item:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-hover);
+  transform: translateX(4px);
+}
+.notice-item.unread { border-left: 3px solid var(--accent); }
+.notice-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+.notice-badge.important { background: rgba(239,68,68,0.12); color: #dc2626; }
+.notice-badge.normal { background: rgba(30,58,95,0.1); color: var(--primary); }
+.notice-badge.activity { background: rgba(245,158,11,0.12); color: #d97706; }
+.notice-item h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: inline;
+}
+.notice-item p { font-size: 12px; color: var(--text-2); line-height: 1.6; margin-top: 4px; }
+.notice-meta {
+  display: flex;
+  gap: 14px;
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 8px;
+  align-items: center;
+}
+.notice-read {
+  margin-left: auto;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+.notice-read.unread { background: rgba(20,184,166,0.1); color: var(--accent-dark); }
+.notice-read.read { background: var(--bg); color: var(--text-3); }
+
+/* 垂直时间线 */
+.timeline-vertical {
+  position: relative;
+  padding-left: 28px;
+}
+.timeline-vertical::before {
+  content: "";
+  position: absolute;
+  left: 9px; top: 8px; bottom: 8px;
+  width: 2px;
+  background: var(--border);
+}
+.tl-item {
+  position: relative;
+  padding-bottom: 20px;
+}
+.tl-item:last-child { padding-bottom: 0; }
+.tl-dot {
+  position: absolute;
+  left: -28px; top: 4px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 3px solid var(--border);
+  z-index: 1;
+}
+.tl-item.done .tl-dot { border-color: var(--success); background: var(--success); }
+.tl-item.active .tl-dot { border-color: var(--accent); background: var(--accent); animation: pulse 2s infinite; }
+.tl-item.upcoming .tl-dot { border-color: var(--warning); }
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(20,184,166,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(20,184,166,0); }
+}
+.tl-content {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+}
+.tl-item.active .tl-content { border-color: var(--accent); }
+.tl-content h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.tl-content p { font-size: 12px; color: var(--text-2); line-height: 1.6; }
+.tl-countdown {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-dark);
+  background: rgba(20,184,166,0.1);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.tl-status {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.tl-status.done { background: rgba(16,185,129,0.1); color: #059669; }
+.tl-status.upcoming { background: rgba(245,158,11,0.1); color: #d97706; }
+
+/* 紧急联系 */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.contact-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  transition: all 0.2s;
+}
+.contact-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.contact-role {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff;
+  margin-bottom: 10px;
+}
+.contact-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.contact-card p { font-size: 12px; color: var(--text-2); line-height: 1.8; }
+
+/* 新生专区移动端 */
+@media (max-width: 768px) {
+  .freshman-banner { padding: 14px 16px; flex-wrap: wrap; gap: 10px; }
+  .fb-icon { width: 40px; height: 40px; font-size: 20px; }
+  .fb-text h3 { font-size: 15px; }
+  .fb-text p { font-size: 11px; }
+  .fb-num { font-size: 22px; }
+  #page-freshman .freshman-hero { padding: 22px; }
+  #page-freshman .freshman-hero h2 { font-size: 20px; }
+  .freshman-quick { grid-template-columns: repeat(2, 1fr); }
+  .contact-grid { grid-template-columns: 1fr; }
+  .notice-item { padding: 12px 14px; }
+}
+@media (max-width: 480px) {
+  .freshman-banner .fb-right { width: 100%; justify-content: space-between; }
+  .freshman-quick { gap: 10px; }
+  .fq-card { padding: 14px 10px; }
+  .fq-card .fq-icon { width: 44px; height: 44px; font-size: 22px; }
+}
+
+
+/* ============================================================
+   新生专区 - 通知管理功能样式
+   ============================================================ */
+
+/* 管理按钮 */
+.admin-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.admin-bar .section-title { margin-bottom: 0; }
+.admin-btn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.admin-btn:hover { border-color: var(--accent); color: var(--accent-dark); }
+.admin-btn.logout { border-color: rgba(239,68,68,0.3); color: #dc2626; }
+.admin-btn.logout:hover { background: rgba(239,68,68,0.08); }
+.admin-status {
+  font-size: 11px;
+  color: var(--accent-dark);
+  background: rgba(20,184,166,0.1);
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+/* 管理模式下通知项的操作按钮 */
+.notice-item .notice-actions {
+  display: none;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+.admin-mode .notice-item .notice-actions { display: flex; }
+.notice-actions button {
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-2);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.notice-actions .btn-edit:hover { border-color: var(--primary); color: var(--primary); }
+.notice-actions .btn-delete:hover { border-color: #dc2626; color: #dc2626; background: rgba(239,68,68,0.05); }
+
+/* 新增通知按钮 */
+.add-notice-btn {
+  width: 100%;
+  padding: 14px;
+  border: 2px dashed var(--border);
+  border-radius: 14px;
+  background: transparent;
+  color: var(--text-3);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  margin-top: 10px;
+  display: none;
+}
+.admin-mode .add-notice-btn { display: block; }
+.add-notice-btn:hover { border-color: var(--accent); color: var(--accent-dark); background: rgba(20,184,166,0.03); }
+
+/* 模态框通用 */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15,23,42,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 24px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: modalIn 0.25s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-box h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.modal-box .modal-desc {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-bottom: 18px;
+}
+.form-group { margin-bottom: 14px; }
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: inherit;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color: var(--accent); }
+.form-group textarea { resize: vertical; min-height: 80px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.modal-actions button {
+  flex: 1;
+  padding: 11px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  border: none;
+}
+.btn-cancel {
+  background: var(--bg);
+  color: var(--text-2);
+  border: 1px solid var(--border) !important;
+}
+.btn-cancel:hover { background: var(--border); }
+.btn-confirm {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff;
+}
+.btn-confirm:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-danger {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: #fff;
+}
+
+/* 身份选择网格 */
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.role-option {
+  padding: 10px 6px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--bg);
+}
+.role-option:hover { border-color: var(--accent); }
+.role-option.selected {
+  border-color: var(--accent);
+  background: rgba(20,184,166,0.08);
+  color: var(--accent-dark);
+  font-weight: 600;
+}
+.role-option .role-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+.role-option .role-name { font-size: 11px; }
+
+/* 密码错误提示 */
+.form-error {
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 6px;
+  display: none;
+}
+.form-error.show { display: block; }
+
+/* 管理模式提示条 */
+.admin-tip {
+  background: linear-gradient(135deg, rgba(30,58,95,0.08), rgba(20,184,166,0.08));
+  border: 1px solid rgba(20,184,166,0.2);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--text-2);
+  margin-bottom: 14px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+.admin-mode .admin-tip { display: flex; }
+
+/* 移动端 */
+@media (max-width: 480px) {
+  .role-grid { grid-template-columns: repeat(2, 1fr); }
+  .form-row { grid-template-columns: 1fr; }
+  .modal-box { padding: 18px; }
+}
+
+
+/* ============================================================
+   全站设计统一覆盖（把其他页面的紫色硬编码改成新配色）
+   ============================================================ */
+/* 覆盖其他页面的紫色渐变按钮/标签 */
+.filter-chip.active { background: var(--primary) !important; border-color: var(--primary) !important; }
+.item-cat { background: rgba(30,58,95,0.1) !important; color: var(--primary) !important; }
+.fav-toggle.active { background: linear-gradient(135deg, var(--primary), var(--accent)) !important; }
+.progress-bar-fill, .ct-bar-fill { background: linear-gradient(90deg, var(--primary), var(--accent)) !important; }
+/* 覆盖紫色链接色 */
+a, .item-go, .lib-go { color: var(--accent-dark); }
+/* 覆盖工具卡片hover */
+.tool-card:hover { border-color: var(--accent) !important; }
+/* 覆盖倒计时卡片 */
+.countdown-card { border-left: 3px solid var(--accent) !important; }
+
+/* ============================================================
+   信息收集页面样式
+   ============================================================ */
+.collect-hero {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8a 60%, #14b8a6 130%);
+  border-radius: 20px;
+  padding: 28px 32px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+}
+.collect-hero::before {
+  content: "";
+  position: absolute;
+  top: -50%; right: -10%;
+  width: 350px; height: 350px;
+  background: radial-gradient(circle, rgba(20,184,166,0.25), transparent 65%);
+}
+.collect-hero h2 { font-size: 24px; font-weight: 700; margin-bottom: 6px; position: relative; z-index: 1; }
+.collect-hero p { font-size: 13px; opacity: 0.85; position: relative; z-index: 1; }
+.collect-hero .hero-actions { margin-top: 16px; position: relative; z-index: 1; display: flex; gap: 10px; }
+.collect-hero .btn-primary {
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.collect-hero .btn-primary:hover { background: rgba(255,255,255,0.3); transform: translateY(-1px); }
+
+/* 收集表卡片列表 */
+.collect-list { display: flex; flex-direction: column; gap: 12px; }
+.collect-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transition: all 0.15s;
+  box-shadow: var(--shadow);
+}
+.collect-card:hover { border-color: var(--accent); box-shadow: var(--shadow-hover); transform: translateX(4px); }
+.collect-card .cc-info { flex: 1; }
+.collect-card .cc-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+.collect-card .cc-desc { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+.collect-card .cc-meta { display: flex; gap: 12px; font-size: 11px; color: var(--text-3); margin-top: 8px; align-items: center; }
+.collect-card .cc-status {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+}
+.cc-status.active { background: rgba(16,185,129,0.12); color: #059669; }
+.cc-status.closed { background: rgba(107,114,128,0.12); color: #6b7280; }
+.collect-card .cc-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.collect-card .cc-btn {
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-2);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.collect-card .cc-btn:hover { border-color: var(--accent); color: var(--accent-dark); }
+.collect-card .cc-btn.primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; border-color: transparent; }
+.collect-card .cc-btn.danger:hover { border-color: #dc2626; color: #dc2626; }
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--text-3);
+}
+.empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+.empty-state p { font-size: 14px; }
+
+/* 创建收集表弹窗 */
+.form-builder { margin-bottom: 14px; }
+.form-builder .fb-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.form-builder .fb-header label { margin: 0; font-size: 13px; font-weight: 700; }
+.field-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto auto;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+.field-row input, .field-row select {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: inherit;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+}
+.field-row input:focus, .field-row select:focus { border-color: var(--accent); }
+.field-row .field-required {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.field-row .field-del {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-3);
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.field-row .field-del:hover { border-color: #dc2626; color: #dc2626; }
+.add-field-btn {
+  width: 100%;
+  padding: 8px;
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-3);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.add-field-btn:hover { border-color: var(--accent); color: var(--accent-dark); }
+
+/* 填写表单页面 */
+.fill-form-container {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  max-width: 600px;
+  margin: 0 auto;
+}
+.fill-form-container h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.fill-form-container .form-desc { font-size: 13px; color: var(--text-2); margin-bottom: 20px; line-height: 1.6; }
+.fill-field { margin-bottom: 16px; }
+.fill-field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+.fill-field label .required-mark { color: #dc2626; margin-left: 2px; }
+.fill-field input, .fill-field select, .fill-field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: inherit;
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+.fill-field input:focus, .fill-field select:focus, .fill-field textarea:focus { border-color: var(--accent); }
+.fill-form-actions { display: flex; gap: 10px; margin-top: 24px; }
+.fill-form-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  transition: all 0.15s;
+}
+.btn-submit { background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; }
+.btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-back { background: var(--bg); color: var(--text-2); border: 1px solid var(--border) !important; }
+
+/* 结果表格 */
+.result-table-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.result-table th {
+  background: var(--bg);
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 700;
+  color: var(--text-2);
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+}
+.result-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+.result-table tr:last-child td { border-bottom: none; }
+.result-table tr:hover td { background: rgba(20,184,166,0.04); }
+.result-table-scroll { max-height: 400px; overflow-y: auto; overflow-x: auto; }
+.result-summary {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.result-summary .rs-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 18px;
+  text-align: center;
+}
+.result-summary .rs-num { font-size: 22px; font-weight: 800; color: var(--accent-dark); }
+.result-summary .rs-label { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+/* 管理提示条 */
+.admin-only-tip {
+  background: linear-gradient(135deg, rgba(30,58,95,0.06), rgba(20,184,166,0.06));
+  border: 1px solid rgba(20,184,166,0.2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 12px;
+  color: var(--text-2);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 移动端 */
+@media (max-width: 768px) {
+  .collect-hero { padding: 20px; }
+  .collect-hero h2 { font-size: 20px; }
+  .collect-card { flex-direction: column; align-items: flex-start; }
+  .collect-card .cc-actions { width: 100%; justify-content: flex-end; }
+  .field-row { grid-template-columns: 1fr 1fr; }
+  .field-row .field-required { grid-column: 1; }
+  .field-row .field-del { grid-column: 2; justify-self: end; }
+  .fill-form-container { padding: 18px; }
+}
+
 </style>
 </head>
 <body>
@@ -621,12 +1892,14 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
   </div>
   <nav class="sidebar-nav">
     <a class="sidebar-link active" data-page="home" onclick="switchPage('home');return false;"><span class="icon">🏠</span><span>首页</span></a>
+    <a class="sidebar-link" data-page="freshman" onclick="switchPage('freshman');return false;"><span class="icon">🎓</span><span>新生</span></a>
     <a class="sidebar-link" data-page="policy" onclick="switchPage('policy');return false;"><span class="icon">📋</span><span>政策库</span></a>
     <a class="sidebar-link" data-page="media" onclick="switchPage('media');return false;"><span class="icon">🎬</span><span>课程库</span></a>
     <a class="sidebar-link" data-page="cs" onclick="switchPage('cs');return false;"><span class="icon">💻</span><span>编程库</span></a>
     <a class="sidebar-link" data-page="tools" onclick="switchPage('tools');return false;"><span class="icon">⏱️</span><span>工具箱</span></a>
     <a class="sidebar-link" data-page="schedule" onclick="switchPage('schedule');return false;"><span class="icon">📅</span><span>课表</span></a>
     <a class="sidebar-link" data-page="class" onclick="switchPage('class');return false;"><span class="icon">🏫</span><span>班级</span></a>
+    <a class="sidebar-link" data-page="collect" onclick="switchPage('collect');return false;"><span class="icon">📝</span><span>收集</span></a>
     <a class="sidebar-link" data-page="music" onclick="switchPage('music');return false;"><span class="icon">🎵</span><span>音乐</span></a>
   </nav>
   <button class="theme-btn-panel" onclick="toggleTheme()" id="themeBtn" style="width:36px;height:36px;border-radius:10px;border:1px solid rgba(0,0,0,0.1);background:rgba(255,255,255,0.5);cursor:pointer;font-size:16px;backdrop-filter:blur(10px;">🌙</button>
@@ -637,136 +1910,366 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
 <div class="wrap">
 
   <!-- 首页 -->
+  <!-- 首页（方案A 重构版） -->
   <div class="page active" id="page-home">
-    <div class="dashboard-welcome">
-      <h2 id="welcomeName">👋 你好，新同学</h2>
-      <p>欢迎来到三班学习平台 · 阳光学院计算机科学与技术</p>
-      <button onclick="openProfileModal()" style="margin-top:10px;padding:6px 14px;font-size:12px;border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--text-2);cursor:pointer;">✏️ 编辑我的学习名片</button>
-    </div>
 
-    <div class="dashboard-stats">
-      <div class="stat-card"><div class="stat-icon">📚</div><div><div class="stat-num">57</div><div class="stat-label">学习资料</div></div></div>
-      <div class="stat-card"><div class="stat-icon">🎬</div><div><div class="stat-num">22</div><div class="stat-label">课程资源</div></div></div>
-      <div class="stat-card"><div class="stat-icon">⏰</div><div><div class="stat-num">8</div><div class="stat-label">倒计时</div></div></div>
-      <div class="stat-card"><div class="stat-icon">📢</div><div><div class="stat-num">3</div><div class="stat-label">班级通知</div></div></div>
-    </div>
-
-    <div class="search-bar">
-      <span class="icon">🔍</span>
-      <input type="text" id="globalSearchInput" placeholder="全局搜索：政策 / 课程 / 编程资源 / 知识点..." oninput="globalSearch(this.value)" onkeydown="if(event.key==='Enter'&&this.value.trim())goToFirstResult()">
-      <span class="search-scope">全部</span>
+    <!-- 顶部：欢迎 + 搜索 合并 -->
+    <div class="home-hero">
+      <div class="home-hero-text">
+        <h2 id="welcomeName">👋 你好，新同学</h2>
+        <p>阳光学院计算机科学与技术 · 三班</p>
+      </div>
+      <div class="search-bar home-search">
+        <span class="icon">🔍</span>
+        <input type="text" id="globalSearchInput" placeholder="搜索政策 / 课程 / 编程资源 / 知识点..." oninput="globalSearch(this.value)" onkeydown="if(event.key==='Enter'&&this.value.trim())goToFirstResult()">
+        <span class="search-scope">全部</span>
+      </div>
     </div>
     <div class="global-search-results" id="globalSearchResults" style="display:none;"></div>
 
-    <div class="dashboard-grid">
-      <div class="dashboard-card">
-        <h4>⚡ 快捷入口</h4>
-        <div class="quick-grid">
-          <div class="quick-item" onclick="switchPage('policy')"><div class="qi-icon">📋</div><div class="qi-label">政策库</div></div>
-          <div class="quick-item" onclick="switchPage('media')"><div class="qi-icon">🎬</div><div class="qi-label">课程库</div></div>
-          <div class="quick-item" onclick="switchPage('cs')"><div class="qi-icon">💻</div><div class="qi-label">编程库</div></div>
-          <div class="quick-item" onclick="switchPage('class')"><div class="qi-icon">🏫</div><div class="qi-label">班级服务</div></div>
-          <div class="quick-item" onclick="switchPage('schedule')"><div class="qi-icon">📅</div><div class="qi-label">我的课表</div></div>
-          <div class="quick-item" onclick="switchPage('tools')"><div class="qi-icon">⏱️</div><div class="qi-label">工具箱</div></div>
-          <div class="quick-item" onclick="switchPage('music')"><div class="qi-icon">🎵</div><div class="qi-label">音乐</div></div>
-          <div class="quick-item" onclick="switchPage('class');switchClassTab('guide')"><div class="qi-icon">🎓</div><div class="qi-label">新生指南</div></div>
+    <!-- 核心数据卡：渐变三色 -->
+    <div class="home-stats">
+      <div class="stat-card stat-blue"><div class="stat-icon">📚</div><div><div class="stat-num" data-target="82">0</div><div class="stat-label">学习资源</div></div></div>
+      <div class="stat-card stat-teal"><div class="stat-icon">⏰</div><div><div class="stat-num" data-target="8">0</div><div class="stat-label">倒计时</div></div></div>
+      <div class="stat-card stat-orange"><div class="stat-icon">📢</div><div><div class="stat-num" data-target="3">0</div><div class="stat-label">班级通知</div></div></div>
+    </div>
+
+    <!-- 快捷入口：一行6个 -->
+    <!-- 新生专区入口横幅 -->
+    <div class="freshman-banner" onclick="switchPage('freshman')">
+      <div class="fb-left">
+        <div class="fb-icon">🎓</div>
+        <div class="fb-text">
+          <h3>新生专区</h3>
+          <p>通知公告 · 报到流程 · 入学时间线 · 常见问题</p>
         </div>
       </div>
-      <div class="dashboard-card">
-        <h4>📢 最新通知</h4>
-        <div class="notice-mini" id="homeNoticeMini"></div>
+      <div class="fb-right">
+        <div class="fb-countdown">
+          <span class="fb-num" id="freshmanCountdown">--</span>
+          <span class="fb-label">天后报到</span>
+        </div>
+        <span class="fb-arrow">→</span>
       </div>
     </div>
 
-    <!-- 可视化区域：课表+作业进度+班委工作 -->
-    <div class="dashboard-grid">
-      <div class="dashboard-card">
-        <h4>📅 本周课表预览</h4>
+    <div class="home-quick">
+      <div class="quick-item" onclick="switchPage('policy')"><div class="qi-icon">📋</div><div class="qi-label">政策库</div></div>
+      <div class="quick-item" onclick="switchPage('media')"><div class="qi-icon">🎬</div><div class="qi-label">课程库</div></div>
+      <div class="quick-item" onclick="switchPage('cs')"><div class="qi-icon">💻</div><div class="qi-label">编程库</div></div>
+      <div class="quick-item" onclick="switchPage('tools')"><div class="qi-icon">⏱️</div><div class="qi-label">工具箱</div></div>
+      <div class="quick-item" onclick="switchPage('schedule')"><div class="qi-icon">📅</div><div class="qi-label">课表</div></div>
+      <div class="quick-item" onclick="switchPage('class')"><div class="qi-icon">🏫</div><div class="qi-label">班级</div></div>
+    </div>
+
+    <!-- Tab 区域：课表 / 通知 / 作业 -->
+    <div class="home-tabs-card">
+      <div class="home-tabs-nav">
+        <button class="home-tab-btn active" data-tab="schedule" onclick="switchHomeTab('schedule')">📅 今日课表</button>
+        <button class="home-tab-btn" data-tab="notice" onclick="switchHomeTab('notice')">📢 通知</button>
+        <button class="home-tab-btn" data-tab="homework" onclick="switchHomeTab('homework')">📝 作业</button>
+      </div>
+      <div class="home-tab-content active" id="home-tab-schedule">
         <div class="week-schedule" id="weekSchedulePreview"></div>
       </div>
-      <div class="dashboard-card">
-        <h4>📝 作业收集进度</h4>
+      <div class="home-tab-content" id="home-tab-notice">
+        <div class="notice-mini" id="homeNoticeMini"></div>
+      </div>
+      <div class="home-tab-content" id="home-tab-homework">
         <div class="homework-progress" id="homeworkProgress"></div>
       </div>
     </div>
 
-    <div class="dashboard-card" style="margin-bottom:16px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-        <h4 style="margin:0;">👥 班委工作进度（公开透明）</h4>
-        <button class="notice-btn" style="padding:6px 12px;font-size:12px;" onclick="showCommitteeManage()">⚙️ 管理</button>
+    <!-- 班委工作进度（精简） -->
+    <div class="home-committee">
+      <div class="home-section-head">
+        <h4>👥 班委工作进度（公开透明）</h4>
+        <button class="notice-btn" style="padding:4px 10px;font-size:11px;" onclick="showCommitteeManage()">⚙️ 管理</button>
       </div>
       <div class="committee-grid" id="committeeGrid"></div>
     </div>
 
-    <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;">📂 三库直达</h3>
-    <div class="lib-grid">
-      <a class="lib-card policy" href="#" onclick="switchPage('policy');return false;">
-        <div class="lib-icon">📋</div>
-        <h3>政策资料库</h3>
-        <p class="lib-desc">阳光学院官方政策 · 考研/考公/竞赛/证书官方链接 · 本学年行动时间线 · 搜索即查</p>
-        <div class="lib-meta">
-          <span class="lib-tag">入学资助</span>
-          <span class="lib-tag">考公考研</span>
-          <span class="lib-tag">竞赛证书</span>
-        </div>
-        <div class="lib-go">进入政策库 →</div>
-      </a>
-      <a class="lib-card media" href="#" onclick="switchPage('media');return false;">
-        <div class="lib-icon">🎬</div>
-        <h3>学习资源库</h3>
-        <p class="lib-desc">AI智能体课程 · 公考课程 · 个人成长课程 · 推荐学习路线 · 免费公开资源推荐</p>
-        <div class="lib-meta">
-          <span class="lib-tag">AI智能体</span>
-          <span class="lib-tag">公考</span>
-          <span class="lib-tag">个人成长</span>
-        </div>
-        <div class="lib-go">进入课程库 →</div>
-      </a>
-      <a class="lib-card cs" href="#" onclick="switchPage('cs');return false;">
-        <div class="lib-icon">💻</div>
-        <h3>计算机编程库</h3>
-        <p class="lib-desc">C语言/Python/算法/计组/计网学习资源 · B站免费课 · MOOC名校课 · LeetCode刷题</p>
-        <div class="lib-meta">
-          <span class="lib-tag">C语言</span>
-          <span class="lib-tag">Python</span>
-          <span class="lib-tag">算法</span>
-        </div>
-        <div class="lib-go">进入编程库 →</div>
-      </a>
+    <!-- 三库直达 -->
+    <div class="home-section">
+      <h3 class="home-section-title">📂 三库直达</h3>
+      <div class="lib-grid">
+        <a class="lib-card policy" href="#" onclick="switchPage('policy');return false;">
+          <div class="lib-icon">📋</div>
+          <h3>政策资料库</h3>
+          <p class="lib-desc">阳光学院官方政策 · 考研/考公/竞赛/证书官方链接 · 本学年行动时间线 · 搜索即查</p>
+          <div class="lib-meta">
+            <span class="lib-tag">入学资助</span>
+            <span class="lib-tag">考公考研</span>
+            <span class="lib-tag">竞赛证书</span>
+          </div>
+          <div class="lib-go">进入政策库 →</div>
+        </a>
+        <a class="lib-card media" href="#" onclick="switchPage('media');return false;">
+          <div class="lib-icon">🎬</div>
+          <h3>学习资源库</h3>
+          <p class="lib-desc">AI智能体课程 · 公考课程 · 个人成长课程 · 推荐学习路线 · 免费公开资源推荐</p>
+          <div class="lib-meta">
+            <span class="lib-tag">AI智能体</span>
+            <span class="lib-tag">公考</span>
+            <span class="lib-tag">个人成长</span>
+          </div>
+          <div class="lib-go">进入课程库 →</div>
+        </a>
+        <a class="lib-card cs" href="#" onclick="switchPage('cs');return false;">
+          <div class="lib-icon">💻</div>
+          <h3>计算机编程库</h3>
+          <p class="lib-desc">C语言/Python/算法/计组/计网学习资源 · B站免费课 · MOOC名校课 · LeetCode刷题</p>
+          <div class="lib-meta">
+            <span class="lib-tag">C语言</span>
+            <span class="lib-tag">Python</span>
+            <span class="lib-tag">算法</span>
+          </div>
+          <div class="lib-go">进入编程库 →</div>
+        </a>
+      </div>
     </div>
 
-    <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;">📅 本学年行动时间线</h3>
-    <div class="timeline">
-      <div class="tl-track" id="homeTimeline"></div>
+    <!-- 本学年行动时间线 -->
+    <div class="home-section">
+      <h3 class="home-section-title">📅 本学年行动时间线</h3>
+      <div class="timeline">
+        <div class="tl-track" id="homeTimeline"></div>
+      </div>
     </div>
 
-    <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;">🎯 推荐学习路线</h3>
-    <div class="route-grid">
-      <a class="route-card has-link" href="#" onclick="switchPage('cs');currentSearch.cs='C语言';document.querySelector('#page-cs .search-bar input').value='C语言';renderList('cs');return false;">
-        <h4>大一上 · 基础打牢</h4>
-        <div class="route-tags"><span class="route-tag">C语言</span><span class="route-tag">高数</span><span class="route-tag">四级</span></div>
-        <p>重点搞定C语言编程基础、高等数学上册、英语四级词汇。课余了解AI智能体工具，用AI提高学习效率。</p>
-        <div class="route-meta"><span>优先级：⭐⭐⭐</span><span>周期：3-4个月</span></div>
-        <div class="item-go">🔗 点击查看C语言课程 →</div>
-      </a>
-      <a class="route-card has-link" href="#" onclick="switchPage('policy');currentFilter.policy='竞赛';renderFilters('policyFilters',policyData,'cat');renderList('policy');return false;">
-        <h4>大一下 · 竞赛入门</h4>
-        <div class="route-tags"><span class="route-tag">蓝桥杯</span><span class="route-tag">数学建模</span><span class="route-tag">Python</span></div>
-        <p>参加蓝桥杯省赛（4月）、数学建模国赛（9月）。学习Python数据分析，开始接触AI智能体实战。</p>
-        <div class="route-meta"><span>优先级：⭐⭐⭐</span><span>周期：3-4个月</span></div>
-        <div class="item-go">🔗 点击查看竞赛信息 →</div>
-      </a>
-      <a class="route-card has-link" href="#" onclick="switchPage('media');return false;">
-        <h4>大二 · 能力分化</h4>
-        <div class="route-tags"><span class="route-tag">考公/考研</span><span class="route-tag">AI副业</span><span class="route-tag">专业深化</span></div>
-        <p>确定方向：考公路线开始了解行测申论，考研路线开始数学英语基础。探索AI智能体接单，培养副业能力。</p>
-        <div class="route-meta"><span>优先级：⭐⭐</span><span>周期：全年</span></div>
-        <div class="item-go">🔗 点击查看课程资源 →</div>
-      </a>
+    <!-- 推荐学习路线 -->
+    <div class="home-section">
+      <h3 class="home-section-title">🎯 推荐学习路线</h3>
+      <div class="route-grid">
+        <a class="route-card has-link" href="#" onclick="switchPage('cs');currentSearch.cs='C语言';document.querySelector('#page-cs .search-bar input').value='C语言';renderList('cs');return false;">
+          <h4>大一上 · 基础打牢</h4>
+          <div class="route-tags"><span class="route-tag">C语言</span><span class="route-tag">高数</span><span class="route-tag">四级</span></div>
+          <p>重点搞定C语言编程基础、高等数学上册、英语四级词汇。课余了解AI智能体工具，用AI提高学习效率。</p>
+          <div class="route-meta"><span>优先级：⭐⭐⭐</span><span>周期：3-4个月</span></div>
+          <div class="item-go">🔗 点击查看C语言课程 →</div>
+        </a>
+        <a class="route-card has-link" href="#" onclick="switchPage('policy');currentFilter.policy='竞赛';renderFilters('policyFilters',policyData,'cat');renderList('policy');return false;">
+          <h4>大一下 · 竞赛入门</h4>
+          <div class="route-tags"><span class="route-tag">蓝桥杯</span><span class="route-tag">数学建模</span><span class="route-tag">Python</span></div>
+          <p>参加蓝桥杯省赛（4月）、数学建模国赛（9月）。学习Python数据分析，开始接触AI智能体实战。</p>
+          <div class="route-meta"><span>优先级：⭐⭐⭐</span><span>周期：3-4个月</span></div>
+          <div class="item-go">🔗 点击查看竞赛信息 →</div>
+        </a>
+        <a class="route-card has-link" href="#" onclick="switchPage('media');return false;">
+          <h4>大二 · 能力分化</h4>
+          <div class="route-tags"><span class="route-tag">考公/考研</span><span class="route-tag">AI副业</span><span class="route-tag">专业深化</span></div>
+          <p>确定方向：考公路线开始了解行测申论，考研路线开始数学英语基础。探索AI智能体接单，培养副业能力。</p>
+          <div class="route-meta"><span>优先级：⭐⭐</span><span>周期：全年</span></div>
+          <div class="item-go">🔗 点击查看课程资源 →</div>
+        </a>
+      </div>
     </div>
+
   </div>
 
   <!-- 政策库 -->
+  <!-- 新生专区 -->
+  <div class="page" id="page-freshman">
+
+    <!-- 顶部Hero -->
+    <div class="freshman-hero">
+      <h2>🎓 新生专区</h2>
+      <p>阳光学院计算机科学与技术 · 三班 · 2026级</p>
+      <div class="hero-countdown">
+        <span class="num" id="freshmanHeroCountdown">--</span>
+        <span class="unit">天后正式报到</span>
+      </div>
+    </div>
+
+    <!-- 通知滚动条 -->
+    <div class="freshman-notice-bar">
+      <span class="notice-tag">📢 最新通知</span>
+      <div class="notice-scroll">
+        <span>【重要】2026级新生报到时间：9月6日 8:00-17:00，地点：图书馆前广场 &nbsp;&nbsp;|&nbsp;&nbsp; 【提醒】请于9月5日前完成网上报到及缴费 &nbsp;&nbsp;|&nbsp;&nbsp; 【活动】新生班会定于9月6日晚19:00在教学楼301召开 &nbsp;&nbsp;|&nbsp;&nbsp; 【重要】2026级新生报到时间：9月6日 8:00-17:00，地点：图书馆前广场 &nbsp;&nbsp;|&nbsp;&nbsp; 【提醒】请于9月5日前完成网上报到及缴费 &nbsp;&nbsp;|&nbsp;&nbsp; 【活动】新生班会定于9月6日晚19:00在教学楼301召开</span>
+      </div>
+    </div>
+
+    <!-- 四个快捷入口 -->
+    <div class="freshman-quick">
+      <div class="fq-card" onclick="alert('报到流程：1.网上报到 2.抵达学校 3.资格审核 4.领取物资 5.入住宿舍')">
+        <div class="fq-icon">📋</div>
+        <h4>报到流程</h4>
+        <p>五步完成报到</p>
+      </div>
+      <div class="fq-card" onclick="alert('物资清单：录取通知书、身份证、档案、证件照、衣物、电子产品、常用药品...')">
+        <div class="fq-icon">🎒</div>
+        <h4>物资清单</h4>
+        <p>入学必备物品</p>
+      </div>
+      <div class="fq-card" onclick="switchPage('class');switchClassTab('guide')">
+        <div class="fq-icon">🗺️</div>
+        <h4>校园指南</h4>
+        <p>地图/食堂/宿舍</p>
+      </div>
+      <div class="fq-card" onclick="document.getElementById('faqSection').scrollIntoView({behavior:'smooth'})">
+        <div class="fq-icon">❓</div>
+        <h4>常见问题</h4>
+        <p>FAQ快速解答</p>
+      </div>
+    </div>
+
+    <!-- 通知公告 -->
+    <!-- 通知公告 -->
+    <div class="freshman-section" id="noticeSection">
+      <div class="admin-bar">
+        <h3 class="section-title">📢 通知公告</h3>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="admin-status" id="adminStatus" style="display:none;">👤 <span id="adminRoleName"></span></span>
+          <button class="admin-btn" id="adminLoginBtn" onclick="openAdminLogin()">⚙️ 管理</button>
+          <button class="admin-btn" id="changePwdBtn" style="display:none;" onclick="openChangePassword()">🔑 改密码</button>
+          <button class="admin-btn logout" id="adminLogoutBtn" style="display:none;" onclick="logoutAdmin()">退出管理</button>
+        </div>
+      </div>
+      <div class="admin-tip">
+        <span>🔓</span>
+        <span>管理模式已开启：可以新增、编辑、删除通知。操作仅保存在本设备。</span>
+      </div>
+      <div class="notice-tabs">
+        <button class="notice-tab active" onclick="filterFreshmanNotice(this,'all')">全部</button>
+        <button class="notice-tab" onclick="filterFreshmanNotice(this,'important')">重要</button>
+        <button class="notice-tab" onclick="filterFreshmanNotice(this,'academic')">教务</button>
+        <button class="notice-tab" onclick="filterFreshmanNotice(this,'activity')">活动</button>
+        <button class="notice-tab" onclick="filterFreshmanNotice(this,'class')">班委</button>
+      </div>
+      <div class="notice-list" id="freshmanNoticeList"></div>
+      <button class="add-notice-btn" onclick="openNoticeForm()">➕ 新增通知</button>
+    </div>
+
+    <!-- 入学时间线 -->
+    <div class="freshman-section">
+      <h3 class="section-title">📅 入学时间线</h3>
+      <div class="timeline-vertical">
+        <div class="tl-item done">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <h4>8月20日 录取通知书发放</h4>
+            <p>录取通知书已通过EMS寄出，请注意查收。内含录取通知书、入学指南、缴费须知等材料。</p>
+            <span class="tl-status done">✓ 已完成</span>
+          </div>
+        </div>
+        <div class="tl-item done">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <h4>8月25日 新生班级群建立</h4>
+            <p>班级QQ群已建立，请同学们及时入群，修改群名片为"姓名+学号"。临时班委已公布。</p>
+            <span class="tl-status done">✓ 已完成</span>
+          </div>
+        </div>
+        <div class="tl-item active">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <h4>9月3日-9月5日 网上报到及缴费</h4>
+            <p>登录迎新系统完成个人信息确认、学费缴纳、宿舍选择。请在截止时间前完成，以免影响现场报到。</p>
+            <span class="tl-countdown">进行中 · 截止9月5日</span>
+          </div>
+        </div>
+        <div class="tl-item upcoming">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <h4>9月6日 现场报到</h4>
+            <p>时间：8:00-17:00；地点：图书馆前广场；流程：资格审核→领取物资→入住宿舍→班级见面会。</p>
+            <span class="tl-status upcoming">即将开始</span>
+          </div>
+        </div>
+        <div class="tl-item upcoming">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <h4>9月7日 开学典礼暨入学教育</h4>
+            <p>上午9:00在校体育馆举行开学典礼，下午进行专业教育、校规校纪教育等入学教育活动。</p>
+            <span class="tl-status upcoming">即将开始</span>
+          </div>
+        </div>
+        <div class="tl-item upcoming">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <h4>9月8日-9月20日 军训</h4>
+            <p>为期两周的军事训练，地点：学校田径场。请准备运动鞋、防晒用品、水杯等。军训成绩计入学分。</p>
+            <span class="tl-status upcoming">即将开始</span>
+          </div>
+        </div>
+        <div class="tl-item upcoming">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <h4>9月21日 正式上课</h4>
+            <p>按照课表正式开始上课，请提前确认教室位置、教材准备。第一周为试听周，可进行选课调整。</p>
+            <span class="tl-status upcoming">即将开始</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 常见问题FAQ -->
+    <div class="freshman-section" id="faqSection">
+      <h3 class="section-title">❓ 常见问题</h3>
+      <div class="notice-list">
+        <div class="notice-item" onclick="this.querySelector('.faq-answer').style.display = this.querySelector('.faq-answer').style.display === 'none' ? 'block' : 'none'">
+          <h4>Q：报到需要带哪些材料？</h4>
+          <div class="faq-answer" style="display:none;margin-top:8px;font-size:12px;color:var(--text-2);line-height:1.8;">
+            A：录取通知书原件、身份证原件及复印件、高考准考证、个人档案（如有）、一寸/二寸证件照（各10张）、党团组织关系材料、缴费凭证。建议将所有材料放入一个文件袋，标注姓名。
+          </div>
+        </div>
+        <div class="notice-item" onclick="this.querySelector('.faq-answer').style.display = this.querySelector('.faq-answer').style.display === 'none' ? 'block' : 'none'">
+          <h4>Q：宿舍是几人间？有空调吗？</h4>
+          <div class="faq-answer" style="display:none;margin-top:8px;font-size:12px;color:var(--text-2);line-height:1.8;">
+            A：学生宿舍为4-6人间，配备空调、独立卫生间、热水器、书桌、衣柜、网络接口。床上用品可自行携带或在学校超市购买。宿舍门禁时间：工作日23:00，周末23:30。
+          </div>
+        </div>
+        <div class="notice-item" onclick="this.querySelector('.faq-answer').style.display = this.querySelector('.faq-answer').style.display === 'none' ? 'block' : 'none'">
+          <h4>Q：食堂有几个？消费水平如何？</h4>
+          <div class="faq-answer" style="display:none;margin-top:8px;font-size:12px;color:var(--text-2);line-height:1.8;">
+            A：学校有3个食堂（东区、西区、中心），提供各地风味窗口。早餐5-8元，午餐/晚餐10-15元，日均消费约25-35元。支持校园卡、微信、支付宝支付。
+          </div>
+        </div>
+        <div class="notice-item" onclick="this.querySelector('.faq-answer').style.display = this.querySelector('.faq-answer').style.display === 'none' ? 'block' : 'none'">
+          <h4>Q：可以转专业吗？什么条件？</h4>
+          <div class="faq-answer" style="display:none;margin-top:8px;font-size:12px;color:var(--text-2);line-height:1.8;">
+            A：大一第二学期可申请转专业，条件：第一学期成绩排名专业前30%，无挂科记录，通过目标专业考核。具体流程以教务处当年通知为准。建议入学后先了解本专业，再决定是否转专业。
+          </div>
+        </div>
+        <div class="notice-item" onclick="this.querySelector('.faq-answer').style.display = this.querySelector('.faq-answer').style.display === 'none' ? 'block' : 'none'">
+          <h4>Q：军训要注意什么？可以请假吗？</h4>
+          <div class="faq-answer" style="display:none;margin-top:8px;font-size:12px;color:var(--text-2);line-height:1.8;">
+            A：军训为期两周，计入必修学分。注意：穿运动鞋、多喝水、做好防晒、保证睡眠。因身体原因不能参加军训的，需提供县级以上医院证明，向辅导员申请免训或缓训。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 紧急联系 -->
+    <div class="freshman-section">
+      <h3 class="section-title">📞 紧急联系</h3>
+      <div class="contact-grid">
+        <div class="contact-card">
+          <span class="contact-role">辅导员</span>
+          <h4>XXX 老师</h4>
+          <p>📱 电话：138-XXXX-XXXX</p>
+          <p>🏢 办公室：行政楼302</p>
+          <p>💬 QQ：XXXXXXXXX</p>
+        </div>
+        <div class="contact-card">
+          <span class="contact-role">班长</span>
+          <h4>XXX 同学</h4>
+          <p>📱 电话：139-XXXX-XXXX</p>
+          <p>🏠 宿舍：X号楼XXX室</p>
+          <p>💬 QQ：XXXXXXXXX</p>
+        </div>
+        <div class="contact-card">
+          <span class="contact-role">校园服务</span>
+          <h4>24小时服务热线</h4>
+          <p>🏥 校医院：0591-XXXXXXX</p>
+          <p>🔧 后勤维修：0591-XXXXXXX</p>
+          <p>🚔 保卫处：0591-XXXXXXX</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
   <div class="page" id="page-policy">
     <div class="search-bar">
       <span class="icon">🔍</span>
@@ -840,22 +2343,7 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
     <!-- 新生指南 -->
     <div class="class-content active" id="class-guide">
       <div class="guide-section">
-        <h4 class="guide-title">❤️ 学姐有话说</h4>
-        <div class="guide-tips" style="background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.2);">
-          <p style="font-size:14px;line-height:1.8;text-align:center;">欢迎加入阳光学院大家庭～这份攻略是学姐整理的干货，希望能帮到你们！有任何问题都可以找学姐哦～</p>
-        </div>
-      </div>
-
-      <div class="guide-section">
-        <h4 class="guide-title">📅 报到时间</h4>
-        <div class="guide-grid">
-          <div class="guide-card"><div class="guide-icon">🌊</div><strong>滨海校区</strong><p>9月4日（大一新生）<br>9月7日正式上课</p></div>
-          <div class="guide-card"><div class="guide-icon">🏫</div><strong>福州校本部</strong><p>9月3日（大一新生）<br>9月5-6日（大二～大四）<br>9月7日正式上课</p></div>
-        </div>
-      </div>
-
-      <div class="guide-section">
-        <h4 class="guide-title">📋 报到流程（通用）</h4>
+        <h4 class="guide-title">📋 报到流程</h4>
         <div class="guide-steps">
           <div class="guide-step"><span class="step-num">1</span><div><strong>到达学校</strong><p>按录取通知书指定日期到校，从正门进入</p></div></div>
           <div class="guide-step"><span class="step-num">2</span><div><strong>找到院系报到处</strong><p>计算机与信息工程学院报到处，出示录取通知书</p></div></div>
@@ -866,49 +2354,14 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
       </div>
 
       <div class="guide-section">
-        <h4 class="guide-title">📋 2026级报到流程（最新）</h4>
-        <div class="guide-steps">
-          <div class="guide-step"><span class="step-num">1</span><div><strong>预报注册</strong><p>动动手指，入学到位！阳光迎新预报系统上线，提前完成线上登记</p></div></div>
-          <div class="guide-step"><span class="step-num">2</span><div><strong>关注通知</strong><p>关注2026级新生QQ群通知，提前了解楼栋分配、所需材料等信息</p></div></div>
-          <div class="guide-step"><span class="step-num">3</span><div><strong>办理入住</strong><p>持录取通知书等材料到所在宿舍楼办理入住手续</p></div></div>
-          <div class="guide-step"><span class="step-num">4</span><div><strong>设置报到系统</strong><p>校内总咨询台 / 滨海校区A区书院及B区体育馆</p></div></div>
-          <div class="guide-step"><span class="step-num">5</span><div><strong>院系报到</strong><p>各二级学院设置展示点，完成报到手续后办理入住</p></div></div>
-        </div>
-      </div>
-
-      <div class="guide-section">
-        <h4 class="guide-title">📍 校区地址</h4>
-        <div class="guide-tips">
-          <p><strong>校本部：</strong>福建省马尾区登龙路99号阳光学院</p>
-        </div>
-      </div>
-
-      <div class="guide-section">
-        <h4 class="guide-title">📦 快递驿站</h4>
-        <div class="guide-steps">
-          <div class="guide-step"><span class="step-num">🅰️</span><div><strong>崇德苑5菜鸟驿站</strong><p>崇德苑5宿舍楼北侧一楼 → 可寄达：明德苑、尚德苑、崇德苑</p></div></div>
-          <div class="guide-step"><span class="step-num">🅱️</span><div><strong>立德苑1地下驿站</strong><p>立德苑1宿舍楼地下车库，五期食堂南侧地库入口 → 可寄达：立德苑、明德苑</p></div></div>
-          <div class="guide-step"><span class="step-num">🅲️</span><div><strong>修德苑2驿站</strong><p>修德苑2北楼一楼 → 可寄达：修德苑</p></div></div>
-        </div>
-      </div>
-
-      <div class="guide-section">
-        <h4 class="guide-title">🎓 专业分布</h4>
-        <div class="guide-grid">
-          <div class="guide-card"><div class="guide-icon">🌊</div><strong>滨海校区</strong><p>专升本（金融学、会计学、行政管理、商务英语）大一新生<br>普本（智能制造工程、休闲体育、运动康复、音乐学、舞蹈学）</p></div>
-          <div class="guide-card"><div class="guide-icon">🏫</div><strong>福州校本部</strong><p>专升本（金融学、会计学、行政管理、商务英语）大二～大四<br>普本（智能制造工程、休闲体育、运动康复、音乐学、舞蹈学）</p></div>
-        </div>
-      </div>
-
-      <div class="guide-section">
         <h4 class="guide-title">🏫 校园生活指南</h4>
         <div class="guide-grid">
           <div class="guide-card"><div class="guide-icon">🍜</div><strong>食堂</strong><p>东区/西区食堂，支持校园卡和微信支付，人均10-15元</p></div>
           <div class="guide-card"><div class="guide-icon">📚</div><strong>图书馆</strong><p>8:00-22:00开放，凭校园卡进入，有自习室和电子阅览室</p></div>
-          <div class="guide-card"><div class="guide-icon">📦</div><strong>快递点</strong><p>见上方「快递驿站」详情</p></div>
+          <div class="guide-card"><div class="guide-icon">📦</div><strong>快递点</strong><p>菜鸟驿站在生活区，取件码短信通知</p></div>
           <div class="guide-card"><div class="guide-icon">🏥</div><strong>校医院</strong><p>在校内，小病可直接看，急诊打120</p></div>
           <div class="guide-card"><div class="guide-icon">🏃</div><strong>运动</strong><p>田径场、篮球场、体育馆、健身房（部分收费）</p></div>
-          <div class="guide-card"><div class="guide-icon">🚌</div><strong>交通</strong><p>滨海：地铁/公交可达，校外市政道路停车<br>校本部：公交至阳光学院站点</p></div>
+          <div class="guide-card"><div class="guide-icon">🚌</div><strong>交通</strong><p>校门口有公交站，到市区约30分钟，地铁需换乘</p></div>
         </div>
       </div>
 
@@ -934,15 +2387,6 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
           <label><input type="checkbox"> 换洗衣物、拖鞋、洗漱用品</label>
           <label><input type="checkbox"> 床上用品（可到校购买）</label>
           <label><input type="checkbox"> 常用药品（感冒药、肠胃药、创可贴）</label>
-        </div>
-      </div>
-
-      <div class="guide-section">
-        <h4 class="guide-title">❓ 常见问题</h4>
-        <div class="guide-tips">
-          <p><strong>Q：可以提前把快递寄到学校吗？</strong><br>A：可以！根据自己的宿舍位置，选择最方便的快递驿站。</p>
-          <p style="margin-top:10px;"><strong>Q：报到可以开车入校吗？</strong><br>A：可以，服从现场指挥有序进校停车；滨海校区车辆不能进校，可停在校外市政道路。</p>
-          <p style="margin-top:10px;"><strong>Q：如何乘坐交通工具到达对应校区？</strong><br>A：滨海校区可乘地铁/公交至附近站点再步行或打车；校本部可乘公交至阳光学院站点，具体路线可在地图搜索。</p>
         </div>
       </div>
     </div>
@@ -992,6 +2436,48 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
   </div>
 
   <!-- 音乐 -->
+  <!-- 信息收集 -->
+  <div class="page" id="page-collect">
+    <div class="collect-hero">
+      <h2>📝 信息收集</h2>
+      <p>老师发布收集表，学生在线填写，自动整理导出</p>
+      <div class="hero-actions" id="collectHeroActions">
+        <!-- 管理员按钮由JS动态显示 -->
+      </div>
+    </div>
+
+    <div class="admin-only-tip" id="collectAdminTip" style="display:none;">
+      <span>🔐</span>
+      <span>管理员模式：可创建收集表、查看结果、导出数据。学生只能填写开放中的表格。</span>
+    </div>
+
+    <!-- 视图：列表 / 填写 / 结果 -->
+    <div id="collectListView">
+      <div class="collect-list" id="collectList"></div>
+      <div class="empty-state" id="collectEmpty" style="display:none;">
+        <div class="empty-icon">📋</div>
+        <p>暂无收集表</p>
+      </div>
+    </div>
+
+    <div id="collectFillView" style="display:none;">
+      <div class="fill-form-container" id="collectFillForm"></div>
+    </div>
+
+    <div id="collectResultView" style="display:none;">
+      <div class="result-summary" id="collectResultSummary"></div>
+      <div style="display:flex;gap:10px;margin-bottom:14px;">
+        <button class="cc-btn primary" onclick="exportCollectCSV()">📥 导出CSV（Excel可打开）</button>
+        <button class="cc-btn" onclick="showCollectList()">← 返回列表</button>
+      </div>
+      <div class="result-table-wrap">
+        <div class="result-table-scroll">
+          <table class="result-table" id="collectResultTable"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="page" id="page-music">
     <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;">🎵 音乐播放器</h3>
     <div class="music-player">
@@ -1269,6 +2755,7 @@ function switchPage(name) {
   document.querySelector(`.sidebar-link[data-page="${name}"]`).classList.add('active');
   document.getElementById('page-' + name).classList.add('active');
   window.scrollTo({top:0, behavior:'smooth'});
+  if (name === 'collect') showCollectList();
 }
 
 // ===== 渲染 =====
@@ -2577,5 +4064,867 @@ window.onerror = function(msg,url,line,col,err){
   document.body.prepend(e);
 };
 </script>
+
+<script>
+/* === 方案A：首页Tab切换 + 数字滚动动画 === */
+function switchHomeTab(tabName) {
+  var btns = document.querySelectorAll('#page-home .home-tab-btn');
+  var contents = document.querySelectorAll('#page-home .home-tab-content');
+  btns.forEach(function(b) { b.classList.toggle('active', b.dataset.tab === tabName); });
+  contents.forEach(function(c) { c.classList.toggle('active', c.id === 'home-tab-' + tabName); });
+}
+
+function animateCountUp() {
+  var nums = document.querySelectorAll('#page-home .stat-num[data-target]');
+  nums.forEach(function(el) {
+    var target = parseInt(el.dataset.target, 10);
+    var duration = 1200;
+    var start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target);
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+/* 页面加载完成后启动数字动画 */
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', animateCountUp);
+} else {
+  animateCountUp();
+}
+
+/* 切换回首页时重新播放数字动画 */
+var _origSwitchPage = window.switchPage;
+window.switchPage = function(page) {
+  if (_origSwitchPage) _origSwitchPage(page);
+  if (page === 'home') {
+    setTimeout(animateCountUp, 100);
+  }
+};
+</script>
+
+
+<script>
+/* ============================================================
+   新生专区 - 通知管理功能（仅老师/班干部可管理）
+   ============================================================ */
+
+// ===== 配置 =====
+var ADMIN_PASSWORD_KEY = 'freshman_admin_password';
+var DEFAULT_ADMIN_PASSWORD = 'admin2026'; // 默认密码，首次登录后可修改
+var NOTICES_KEY = 'freshman_notices';
+var ADMIN_SESSION_KEY = 'freshman_admin_session';
+
+// ===== 默认通知数据 =====
+var DEFAULT_NOTICES = [
+  {id: 1, cat: 'important', title: '关于2026级新生报到安排的通知', content: '报到时间：9月6日 8:00-17:00；报到地点：图书馆前广场；请携带录取通知书、身份证及相关材料。', author: '学工处', date: '2026-08-28', read: false},
+  {id: 2, cat: 'academic', title: '新生选课系统开放通知', content: '选课时间：9月3日-9月5日；选课系统：教务管理系统；请在规定时间内完成公共选修课选课。', author: '教务处', date: '2026-08-27', read: false},
+  {id: 3, cat: 'activity', title: '新生开学典礼暨入学教育安排', content: '时间：9月7日上午9:00；地点：校体育馆；请全体新生准时参加，着正装或校服。', author: '校团委', date: '2026-08-26', read: true},
+  {id: 4, cat: 'class', title: '新生班级群及临时班委通知', content: '班级QQ群：XXXXXXX（入群请备注姓名+学号）；临时班委名单已公布，请同学们积极配合。', author: '辅导员', date: '2026-08-25', read: true},
+  {id: 5, cat: 'important', title: '关于缴纳学费及住宿费的通知', content: '缴费截止时间：9月5日；缴费方式：校园统一支付平台；请按时完成缴费，以免影响报到注册。', author: '财务处', date: '2026-08-24', read: true},
+  {id: 6, cat: 'academic', title: '新生体检安排通知', content: '体检时间：9月8日-9月9日；体检地点：校医院；请空腹参加，携带身份证及体检表。', author: '校医院', date: '2026-08-23', read: true}
+];
+
+// ===== 状态 =====
+var fmFilter = 'all';
+var fmEditId = null;
+var fmDelId = null;
+var fmRole = '辅导员';
+
+// ===== 工具函数 =====
+function getNotices() {
+  var stored = localStorage.getItem(NOTICES_KEY);
+  if (stored) {
+    try { return JSON.parse(stored); } catch(e) {}
+  }
+  localStorage.setItem(NOTICES_KEY, JSON.stringify(DEFAULT_NOTICES));
+  return DEFAULT_NOTICES;
+}
+
+function saveNotices(notices) {
+  localStorage.setItem(NOTICES_KEY, JSON.stringify(notices));
+}
+
+function getAdminPassword() {
+  return localStorage.getItem(ADMIN_PASSWORD_KEY) || DEFAULT_ADMIN_PASSWORD;
+}
+
+function isAdmin() {
+  return sessionStorage.getItem(ADMIN_SESSION_KEY) !== null;
+}
+
+function getAdminRole() {
+  return sessionStorage.getItem(ADMIN_SESSION_KEY) || '';
+}
+
+function formatDate() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function catLabel(cat) {
+  var map = {important:'重要', academic:'教务', activity:'活动', class:'班委'};
+  return map[cat] || cat;
+}
+
+function catBadgeClass(cat) {
+  var map = {important:'important', academic:'normal', activity:'activity', class:'normal'};
+  return map[cat] || 'normal';
+}
+
+// ===== 渲染通知列表 =====
+function renderFreshmanNotices() {
+  var list = document.getElementById('freshmanNoticeList');
+  if (!list) return;
+  var notices = getNotices();
+  var filtered = fmFilter === 'all' ? notices : notices.filter(function(n) { return n.cat === fmFilter; });
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-3);font-size:13px;">暂无通知</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(function(n) {
+    return '<div class="notice-item ' + (n.read ? '' : 'unread') + '" data-cat="' + n.cat + '" data-id="' + n.id + '">' +
+      '<span class="notice-badge ' + catBadgeClass(n.cat) + '">' + catLabel(n.cat) + '</span>' +
+      '<h4>' + escapeHtml(n.title) + '</h4>' +
+      '<p>' + escapeHtml(n.content) + '</p>' +
+      '<div class="notice-meta">' +
+        '<span>' + escapeHtml(n.author) + '</span>' +
+        '<span>' + n.date + '</span>' +
+        '<span class="notice-read ' + (n.read ? 'read' : 'unread') + '">' + (n.read ? '已读' : '未读') + '</span>' +
+      '</div>' +
+      '<div class="notice-actions">' +
+        '<button class="btn-edit" onclick="event.stopPropagation();editNotice(' + n.id + ')">✏️ 编辑</button>' +
+        '<button class="btn-delete" onclick="event.stopPropagation();deleteNotice(' + n.id + ')">🗑️ 删除</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  // 绑定点击标记已读
+  list.querySelectorAll('.notice-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      var id = parseInt(this.dataset.id);
+      markAsRead(id);
+    });
+  });
+}
+
+function escapeHtml(str) {
+  var div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function markAsRead(id) {
+  var notices = getNotices();
+  var notice = notices.find(function(n) { return n.id === id; });
+  if (notice && !notice.read) {
+    notice.read = true;
+    saveNotices(notices);
+    renderFreshmanNotices();
+  }
+}
+
+// ===== 通知分类筛选 =====
+function filterFreshmanNotice(btn, cat) {
+  fmFilter = cat;
+  var tabs = btn.parentElement.querySelectorAll('.notice-tab');
+  tabs.forEach(function(t) { t.classList.remove('active'); });
+  btn.classList.add('active');
+  renderFreshmanNotices();
+}
+
+// ===== 管理员登录 =====
+function openAdminLogin() {
+  document.getElementById('adminPassword').value = '';
+  document.getElementById('loginError').classList.remove('show');
+  fmOpenModal('adminLoginModal');
+}
+
+function fmSelectRole(el) {
+  document.querySelectorAll('#roleGrid .role-option').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  fmRole = el.dataset.role;
+}
+
+function verifyAdmin() {
+  var pwd = document.getElementById('adminPassword').value;
+  if (pwd === getAdminPassword()) {
+    sessionStorage.setItem(ADMIN_SESSION_KEY, fmRole);
+    fmCloseModal('adminLoginModal');
+    enterAdminMode();
+  } else {
+    document.getElementById('loginError').classList.add('show');
+  }
+}
+
+function logoutAdmin() {
+  sessionStorage.removeItem(ADMIN_SESSION_KEY);
+  exitAdminMode();
+}
+
+function enterAdminMode() {
+  var section = document.getElementById('noticeSection');
+  if (section) section.classList.add('admin-mode');
+  document.getElementById('adminLoginBtn').style.display = 'none';
+  document.getElementById('changePwdBtn').style.display = 'inline-flex';
+  document.getElementById('adminLogoutBtn').style.display = 'inline-flex';
+  document.getElementById('adminStatus').style.display = 'inline-block';
+  document.getElementById('adminRoleName').textContent = getAdminRole();
+  renderFreshmanNotices();
+}
+
+function exitAdminMode() {
+  var section = document.getElementById('noticeSection');
+  if (section) section.classList.remove('admin-mode');
+  document.getElementById('adminLoginBtn').style.display = 'inline-flex';
+  document.getElementById('changePwdBtn').style.display = 'none';
+  document.getElementById('adminLogoutBtn').style.display = 'none';
+  document.getElementById('adminStatus').style.display = 'none';
+  renderFreshmanNotices();
+}
+
+// ===== 通知增删改 =====
+function openNoticeForm() {
+  fmEditId = null;
+  document.getElementById('noticeFormTitle').textContent = '➕ 新增通知';
+  document.getElementById('noticeTitle').value = '';
+  document.getElementById('noticeContent').value = '';
+  document.getElementById('noticeCat').value = 'important';
+  document.getElementById('noticeAuthor').value = getAdminRole() || '';
+  fmOpenModal('noticeFormModal');
+}
+
+function editNotice(id) {
+  var notices = getNotices();
+  var notice = notices.find(function(n) { return n.id === id; });
+  if (!notice) return;
+  fmEditId = id;
+  document.getElementById('noticeFormTitle').textContent = '✏️ 编辑通知';
+  document.getElementById('noticeTitle').value = notice.title;
+  document.getElementById('noticeContent').value = notice.content;
+  document.getElementById('noticeCat').value = notice.cat;
+  document.getElementById('noticeAuthor').value = notice.author;
+  fmOpenModal('noticeFormModal');
+}
+
+function saveNotice() {
+  var title = document.getElementById('noticeTitle').value.trim();
+  var content = document.getElementById('noticeContent').value.trim();
+  var cat = document.getElementById('noticeCat').value;
+  var author = document.getElementById('noticeAuthor').value.trim() || getAdminRole();
+
+  if (!title || !content) {
+    alert('请填写标题和内容');
+    return;
+  }
+
+  var notices = getNotices();
+  if (fmEditId) {
+    var notice = notices.find(function(n) { return n.id === fmEditId; });
+    if (notice) {
+      notice.title = title;
+      notice.content = content;
+      notice.cat = cat;
+      notice.author = author;
+    }
+  } else {
+    var newId = notices.length > 0 ? Math.max.apply(null, notices.map(function(n) { return n.id; })) + 1 : 1;
+    notices.unshift({
+      id: newId,
+      cat: cat,
+      title: title,
+      content: content,
+      author: author,
+      date: formatDate(),
+      read: false
+    });
+  }
+  saveNotices(notices);
+  fmCloseModal('noticeFormModal');
+  renderFreshmanNotices();
+}
+
+function deleteNotice(id) {
+  fmDelId = id;
+  fmOpenModal('deleteConfirmModal');
+}
+
+function confirmDelete() {
+  var notices = getNotices().filter(function(n) { return n.id !== fmDelId; });
+  saveNotices(notices);
+  fmCloseModal('deleteConfirmModal');
+  renderFreshmanNotices();
+}
+
+// ===== 模态框通用 =====
+function fmOpenModal(id) {
+  document.getElementById(id).classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function fmCloseModal(id) {
+  document.getElementById(id).classList.remove('active');
+  document.body.style.overflow = '';
+}
+// 点击遮罩关闭
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('modal-overlay')) {
+    e.target.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+});
+
+// ===== 报到倒计时 =====
+function updateFreshmanCountdown() {
+  var now = new Date();
+  var year = now.getFullYear();
+  var reportDate = new Date(year, 8, 6);
+  if (now > reportDate) reportDate = new Date(year + 1, 8, 6);
+  var diff = Math.ceil((reportDate - now) / (1000 * 60 * 60 * 24));
+  var el1 = document.getElementById('freshmanCountdown');
+  var el2 = document.getElementById('freshmanHeroCountdown');
+  if (el1) el1.textContent = diff;
+  if (el2) el2.textContent = diff;
+}
+
+// ===== 初始化 =====
+document.addEventListener('DOMContentLoaded', function() {
+  updateFreshmanCountdown();
+  renderFreshmanNotices();
+  if (isAdmin()) {
+    enterAdminMode();
+  }
+});
+// 兼容直接执行
+if (document.readyState !== 'loading') {
+  updateFreshmanCountdown();
+  renderFreshmanNotices();
+  if (isAdmin()) enterAdminMode();
+}
+
+// ===== 修改密码 =====
+function openChangePassword() {
+  document.getElementById('oldPassword').value = '';
+  document.getElementById('newPassword').value = '';
+  document.getElementById('confirmPassword').value = '';
+  document.getElementById('pwdError').classList.remove('show');
+  fmOpenModal('changePasswordModal');
+}
+
+function changePassword() {
+  var oldPwd = document.getElementById('oldPassword').value;
+  var newPwd = document.getElementById('newPassword').value;
+  var confirmPwd = document.getElementById('confirmPassword').value;
+  var errorEl = document.getElementById('pwdError');
+
+  if (!oldPwd || !newPwd || !confirmPwd) {
+    errorEl.textContent = '❌ 请填写所有字段';
+    errorEl.classList.add('show');
+    return;
+  }
+  if (oldPwd !== getAdminPassword()) {
+    errorEl.textContent = '❌ 旧密码错误';
+    errorEl.classList.add('show');
+    return;
+  }
+  if (newPwd.length < 4) {
+    errorEl.textContent = '❌ 新密码至少4位字符';
+    errorEl.classList.add('show');
+    return;
+  }
+  if (newPwd !== confirmPwd) {
+    errorEl.textContent = '❌ 两次输入的新密码不一致';
+    errorEl.classList.add('show');
+    return;
+  }
+
+  localStorage.setItem(ADMIN_PASSWORD_KEY, newPwd);
+  fmCloseModal('changePasswordModal');
+  fmOpenModal('pwdSuccessModal');
+}
+
+/* ============================================================
+   信息收集功能
+   ============================================================ */
+var COLLECT_FORMS_KEY = 'collect_forms';
+var COLLECT_SUBMISSIONS_KEY = 'collect_submissions';
+var currentCollectFormId = null;
+
+// 获取所有收集表
+function getCollectForms() {
+  var stored = localStorage.getItem(COLLECT_FORMS_KEY);
+  if (stored) { try { return JSON.parse(stored); } catch(e) {} }
+  return [];
+}
+function saveCollectForms(forms) {
+  localStorage.setItem(COLLECT_FORMS_KEY, JSON.stringify(forms));
+}
+
+// 获取所有提交
+function getCollectSubmissions() {
+  var stored = localStorage.getItem(COLLECT_SUBMISSIONS_KEY);
+  if (stored) { try { return JSON.parse(stored); } catch(e) {} }
+  return [];
+}
+function saveCollectSubmissions(subs) {
+  localStorage.setItem(COLLECT_SUBMISSIONS_KEY, JSON.stringify(subs));
+}
+
+// 渲染收集列表
+function renderCollectList() {
+  var forms = getCollectForms();
+  var listEl = document.getElementById('collectList');
+  var emptyEl = document.getElementById('collectEmpty');
+  var adminMode = isAdmin();
+
+  // 显示/隐藏管理员按钮
+  var heroActions = document.getElementById('collectHeroActions');
+  var adminTip = document.getElementById('collectAdminTip');
+  if (adminMode) {
+    heroActions.innerHTML = '<button class="btn-primary" onclick="openCreateForm()">➕ 创建收集表</button>';
+    adminTip.style.display = 'flex';
+  } else {
+    heroActions.innerHTML = '';
+    adminTip.style.display = 'none';
+  }
+
+  if (forms.length === 0) {
+    listEl.innerHTML = '';
+    emptyEl.style.display = 'block';
+    return;
+  }
+  emptyEl.style.display = 'none';
+
+  listEl.innerHTML = forms.map(function(f) {
+    var subs = getCollectSubmissions().filter(function(s) { return s.formId === f.id; });
+    var statusText = f.status === 'active' ? '进行中' : '已关闭';
+    var statusClass = f.status;
+    var actions = '';
+    if (adminMode) {
+      actions = '<div class="cc-actions">' +
+        '<button class="cc-btn primary" onclick="viewCollectResult(' + f.id + ')">📊 查看结果(' + subs.length + ')</button>' +
+        '<button class="cc-btn" onclick="toggleCollectForm(' + f.id + ')">' + (f.status === 'active' ? '🔒 关闭' : '🔓 开启') + '</button>' +
+        '<button class="cc-btn danger" onclick="deleteCollectForm(' + f.id + ')">🗑️ 删除</button>' +
+      '</div>';
+    } else if (f.status === 'active') {
+      var mySub = subs.find(function(s) { return s.studentId === getStudentId(); });
+      actions = '<div class="cc-actions">' +
+        '<button class="cc-btn primary" onclick="fillCollectForm(' + f.id + ')">' + (mySub ? '✏️ 修改我的填写' : '✍️ 去填写') + '</button>' +
+      '</div>';
+    } else {
+      actions = '<div class="cc-actions"><span style="font-size:11px;color:var(--text-3);">已关闭</span></div>';
+    }
+
+    return '<div class="collect-card">' +
+      '<div class="cc-info">' +
+        '<div class="cc-title"><span class="cc-status ' + statusClass + '">' + statusText + '</span>' + escapeHtml(f.title) + '</div>' +
+        '<div class="cc-desc">' + escapeHtml(f.description || '暂无说明') + '</div>' +
+        '<div class="cc-meta">' +
+          '<span>📋 ' + f.fields.length + '个字段</span>' +
+          '<span>📝 ' + subs.length + '人已填</span>' +
+          '<span>📅 ' + f.createdAt + '</span>' +
+        '</div>' +
+      '</div>' +
+      actions +
+    '</div>';
+  }).join('');
+}
+
+// 学生ID（用localStorage生成一个唯一ID）
+function getStudentId() {
+  var id = localStorage.getItem('student_id');
+  if (!id) {
+    id = 'stu_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+    localStorage.setItem('student_id', id);
+  }
+  return id;
+}
+
+// 创建收集表弹窗
+var formFields = [];
+function openCreateForm() {
+    formFields = [
+    {name: '姓名', type: 'text', required: true},
+    {name: '学号', type: 'text', required: true},
+    {name: '手机号', type: 'tel', required: true}
+  ];
+  document.getElementById('createFormTitle').value = '';
+  document.getElementById('createFormDesc').value = '';
+  renderFormBuilder();
+  fmOpenModal('createFormModal');
+}
+
+function renderFormBuilder() {
+  var container = document.getElementById('formBuilderFields');
+  container.innerHTML = formFields.map(function(f, idx) {
+    return '<div class="field-row">' +
+      '<input type="text" placeholder="字段名" value="' + escapeHtml(f.name) + '" onchange="updateField(' + idx + ',\'name\',this.value)">' +
+      '<select onchange="updateField(' + idx + ',\'type\',this.value)">' +
+        '<option value="text"' + (f.type==='text'?' selected':'') + '>单行文本</option>' +
+        '<option value="number"' + (f.type==='number'?' selected':'') + '>数字</option>' +
+        '<option value="tel"' + (f.type==='tel'?' selected':'') + '>电话</option>' +
+        '<option value="date"' + (f.type==='date'?' selected':'') + '>日期</option>' +
+        '<option value="textarea"' + (f.type==='textarea'?' selected':'') + '>多行文本</option>' +
+      '</select>' +
+      '<label class="field-required"><input type="checkbox"' + (f.required?' checked':'') + ' onchange="updateField(' + idx + ',\'required\',this.checked)"> 必填</label>' +
+      '<button class="field-del" onclick="removeField(' + idx + ')">✕</button>' +
+    '</div>';
+  }).join('') + '<button class="add-field-btn" onclick="addField()">➕ 添加字段</button>';
+}
+
+function addField() {
+  formFields.push({name: '', type: 'text', required: false});
+  renderFormBuilder();
+}
+function removeField(idx) {
+  formFields.splice(idx, 1);
+  renderFormBuilder();
+}
+function updateField(idx, key, val) {
+  formFields[idx][key] = val;
+}
+
+function saveCreateForm() {
+  var title = document.getElementById('createFormTitle').value.trim();
+  var desc = document.getElementById('createFormDesc').value.trim();
+  if (!title) { alert('请输入收集表名称'); return; }
+  var validFields = formFields.filter(function(f) { return f.name.trim(); });
+  if (validFields.length === 0) { alert('至少添加一个字段'); return; }
+
+  var forms = getCollectForms();
+  var newId = forms.length > 0 ? Math.max.apply(null, forms.map(function(f) { return f.id; })) + 1 : 1;
+  forms.unshift({
+    id: newId,
+    title: title,
+    description: desc,
+    fields: validFields,
+    status: 'active',
+    createdBy: getAdminRole() || '管理员',
+    createdAt: formatDate()
+  });
+  saveCollectForms(forms);
+  fmCloseModal('createFormModal');
+  renderCollectList();
+}
+
+function toggleCollectForm(id) {
+  var forms = getCollectForms();
+  var form = forms.find(function(f) { return f.id === id; });
+  if (form) {
+    form.status = form.status === 'active' ? 'closed' : 'active';
+    saveCollectForms(forms);
+    renderCollectList();
+  }
+}
+
+function deleteCollectForm(id) {
+  if (!confirm('确定删除这个收集表吗？所有填写数据也会被删除。')) return;
+  var forms = getCollectForms().filter(function(f) { return f.id !== id; });
+  saveCollectForms(forms);
+  var subs = getCollectSubmissions().filter(function(s) { return s.formId !== id; });
+  saveCollectSubmissions(subs);
+  renderCollectList();
+}
+
+// 填写表单
+function fillCollectForm(id) {
+  currentCollectFormId = id;
+  var form = getCollectForms().find(function(f) { return f.id === id; });
+  if (!form) return;
+  var mySub = getCollectSubmissions().find(function(s) { return s.formId === id && s.studentId === getStudentId(); });
+  var existingData = mySub ? mySub.data : {};
+
+  var html = '<h3>' + escapeHtml(form.title) + '</h3>' +
+    '<div class="form-desc">' + escapeHtml(form.description || '请如实填写以下信息') + '</div>';
+
+  form.fields.forEach(function(f, idx) {
+    var val = existingData[f.name] || '';
+    var inputEl = '';
+    if (f.type === 'textarea') {
+      inputEl = '<textarea rows="3" id="fill_field_' + idx + '" placeholder="请输入' + escapeHtml(f.name) + '">' + escapeHtml(val) + '</textarea>';
+    } else {
+      inputEl = '<input type="' + f.type + '" id="fill_field_' + idx + '" placeholder="请输入' + escapeHtml(f.name) + '" value="' + escapeHtml(val) + '">';
+    }
+    html += '<div class="fill-field">' +
+      '<label>' + escapeHtml(f.name) + (f.required ? '<span class="required-mark">*</span>' : '') + '</label>' +
+      inputEl +
+    '</div>';
+  });
+
+  html += '<div class="fill-form-actions">' +
+    '<button class="btn-back" onclick="showCollectList()">← 返回</button>' +
+    '<button class="btn-submit" onclick="submitCollectForm()">✓ 提交</button>' +
+  '</div>';
+
+  document.getElementById('collectFillForm').innerHTML = html;
+  document.getElementById('collectListView').style.display = 'none';
+  document.getElementById('collectFillView').style.display = 'block';
+  document.getElementById('collectResultView').style.display = 'none';
+}
+
+function submitCollectForm() {
+  var form = getCollectForms().find(function(f) { return f.id === currentCollectFormId; });
+  if (!form) return;
+  var data = {};
+  for (var i = 0; i < form.fields.length; i++) {
+    var f = form.fields[i];
+    var val = document.getElementById('fill_field_' + i).value.trim();
+    if (f.required && !val) {
+      alert('请填写必填项：' + f.name);
+      return;
+    }
+    data[f.name] = val;
+  }
+
+  var subs = getCollectSubmissions();
+  var existingIdx = subs.findIndex(function(s) { return s.formId === currentCollectFormId && s.studentId === getStudentId(); });
+  if (existingIdx >= 0) {
+    subs[existingIdx].data = data;
+    subs[existingIdx].submittedAt = new Date().toLocaleString('zh-CN');
+  } else {
+    subs.push({
+      formId: currentCollectFormId,
+      studentId: getStudentId(),
+      data: data,
+      submittedAt: new Date().toLocaleString('zh-CN')
+    });
+  }
+  saveCollectSubmissions(subs);
+  alert('提交成功！');
+  showCollectList();
+}
+
+// 查看结果
+function viewCollectResult(id) {
+  currentCollectFormId = id;
+  var form = getCollectForms().find(function(f) { return f.id === id; });
+  if (!form) return;
+  var subs = getCollectSubmissions().filter(function(s) { return s.formId === id; });
+
+  // 统计
+  document.getElementById('collectResultSummary').innerHTML =
+    '<div class="rs-item"><div class="rs-num">' + subs.length + '</div><div class="rs-label">已提交人数</div></div>' +
+    '<div class="rs-item"><div class="rs-num">' + form.fields.length + '</div><div class="rs-label">收集字段</div></div>' +
+    '<div class="rs-item"><div class="rs-num">' + form.title + '</div><div class="rs-label">收集表名称</div></div>';
+
+  // 表格
+  var thead = '<tr><th>#</th>';
+  form.fields.forEach(function(f) { thead += '<th>' + escapeHtml(f.name) + '</th>'; });
+  thead += '<th>提交时间</th></tr>';
+
+  var tbody = subs.map(function(s, idx) {
+    var row = '<tr><td>' + (idx + 1) + '</td>';
+    form.fields.forEach(function(f) {
+      row += '<td>' + escapeHtml(s.data[f.name] || '-') + '</td>';
+    });
+    row += '<td>' + escapeHtml(s.submittedAt) + '</td></tr>';
+    return row;
+  }).join('');
+
+  document.getElementById('collectResultTable').innerHTML = '<thead>' + thead + '</thead><tbody>' + (tbody || '<tr><td colspan="' + (form.fields.length + 2) + '" style="text-align:center;padding:30px;color:var(--text-3);">暂无数据</td></tr>') + '</tbody>';
+
+  document.getElementById('collectListView').style.display = 'none';
+  document.getElementById('collectFillView').style.display = 'none';
+  document.getElementById('collectResultView').style.display = 'block';
+}
+
+// 导出CSV
+function exportCollectCSV() {
+  var form = getCollectForms().find(function(f) { return f.id === currentCollectFormId; });
+  if (!form) return;
+  var subs = getCollectSubmissions().filter(function(s) { return s.formId === currentCollectFormId; });
+  if (subs.length === 0) { alert('暂无数据可导出'); return; }
+
+  // CSV表头
+  var headers = ['序号'].concat(form.fields.map(function(f) { return f.name; })).concat(['提交时间']);
+  var csvContent = '\uFEFF' + headers.map(function(h) { return '"' + h.replace(/"/g, '""') + '"'; }).join(',') + '\n';
+
+  subs.forEach(function(s, idx) {
+    var row = [idx + 1].concat(form.fields.map(function(f) { return s.data[f.name] || ''; })).concat([s.submittedAt]);
+    csvContent += row.map(function(cell) { return '"' + String(cell).replace(/"/g, '""') + '"'; }).join(',') + '\n';
+  });
+
+  var blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = form.title + '_' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function showCollectList() {
+  document.getElementById('collectListView').style.display = 'block';
+  document.getElementById('collectFillView').style.display = 'none';
+  document.getElementById('collectResultView').style.display = 'none';
+  renderCollectList();
+}
+
+// 初始化（不立即渲染，等页面切换时渲染）
+</script>
+
+<!-- 管理员登录模态框 -->
+<div class="modal-overlay" id="adminLoginModal">
+  <div class="modal-box">
+    <h3>🔐 管理员登录</h3>
+    <p class="modal-desc">仅辅导员和班干部可管理通知。请选择身份并输入管理密码。</p>
+    <div class="form-group">
+      <label>选择身份</label>
+      <div class="role-grid" id="roleGrid">
+        <div class="role-option selected" data-role="辅导员" onclick="fmSelectRole(this)">
+          <span class="role-icon">👨‍🏫</span>
+          <span class="role-name">辅导员</span>
+        </div>
+        <div class="role-option" data-role="班长" onclick="fmSelectRole(this)">
+          <span class="role-icon">👑</span>
+          <span class="role-name">班长</span>
+        </div>
+        <div class="role-option" data-role="团支书" onclick="fmSelectRole(this)">
+          <span class="role-icon">🚩</span>
+          <span class="role-name">团支书</span>
+        </div>
+        <div class="role-option" data-role="学习委员" onclick="fmSelectRole(this)">
+          <span class="role-icon">📚</span>
+          <span class="role-name">学习委员</span>
+        </div>
+        <div class="role-option" data-role="生活委员" onclick="fmSelectRole(this)">
+          <span class="role-icon">🏠</span>
+          <span class="role-name">生活委员</span>
+        </div>
+        <div class="role-option" data-role="文体委员" onclick="fmSelectRole(this)">
+          <span class="role-icon">🎨</span>
+          <span class="role-name">文体委员</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>管理密码</label>
+      <input type="password" id="adminPassword" placeholder="请输入管理密码" onkeydown="if(event.key==='Enter')verifyAdmin()">
+      <div class="form-error" id="loginError">❌ 密码错误，请重试</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="fmCloseModal('adminLoginModal')">取消</button>
+      <button class="btn-confirm" onclick="verifyAdmin()">登录</button>
+    </div>
+  </div>
+</div>
+
+<!-- 通知编辑/新增模态框 -->
+<div class="modal-overlay" id="noticeFormModal">
+  <div class="modal-box">
+    <h3 id="noticeFormTitle">➕ 新增通知</h3>
+    <p class="modal-desc">填写通知信息，发布后全班可见。</p>
+    <div class="form-group">
+      <label>通知标题</label>
+      <input type="text" id="noticeTitle" placeholder="例如：关于新生报到的通知">
+    </div>
+    <div class="form-group">
+      <label>通知内容</label>
+      <textarea id="noticeContent" placeholder="请输入通知详细内容..."></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>分类</label>
+        <select id="noticeCat">
+          <option value="important">重要</option>
+          <option value="academic">教务</option>
+          <option value="activity">活动</option>
+          <option value="class">班委</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>发布人</label>
+        <input type="text" id="noticeAuthor" placeholder="例如：学工处">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="fmCloseModal('noticeFormModal')">取消</button>
+      <button class="btn-confirm" onclick="saveNotice()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 删除确认模态框 -->
+<div class="modal-overlay" id="deleteConfirmModal">
+  <div class="modal-box" style="max-width:360px;text-align:center;">
+    <h3 style="justify-content:center;">⚠️ 确认删除</h3>
+    <p class="modal-desc" style="margin-bottom:20px;">确定要删除这条通知吗？删除后无法恢复。</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="fmCloseModal('deleteConfirmModal')">取消</button>
+      <button class="btn-danger" onclick="confirmDelete()">删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- 修改密码模态框 -->
+<div class="modal-overlay" id="changePasswordModal">
+  <div class="modal-box" style="max-width:380px;">
+    <h3>🔑 修改管理密码</h3>
+    <p class="modal-desc">请输入旧密码验证身份，然后设置新密码。</p>
+    <div class="form-group">
+      <label>旧密码</label>
+      <input type="password" id="oldPassword" placeholder="请输入当前管理密码">
+    </div>
+    <div class="form-group">
+      <label>新密码</label>
+      <input type="password" id="newPassword" placeholder="至少4位字符">
+    </div>
+    <div class="form-group">
+      <label>确认新密码</label>
+      <input type="password" id="confirmPassword" placeholder="再次输入新密码" onkeydown="if(event.key==='Enter')changePassword()">
+      <div class="form-error" id="pwdError"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="fmCloseModal('changePasswordModal')">取消</button>
+      <button class="btn-confirm" onclick="changePassword()">确认修改</button>
+    </div>
+  </div>
+</div>
+
+<!-- 密码修改成功提示 -->
+<div class="modal-overlay" id="pwdSuccessModal">
+  <div class="modal-box" style="max-width:320px;text-align:center;">
+    <div style="font-size:48px;margin-bottom:10px;">✅</div>
+    <h3 style="justify-content:center;">密码修改成功</h3>
+    <p class="modal-desc" style="margin-bottom:16px;">新密码已生效，请妥善保管。</p>
+    <div class="modal-actions">
+      <button class="btn-confirm" onclick="fmCloseModal('pwdSuccessModal')">知道了</button>
+    </div>
+  </div>
+
+<!-- 创建收集表模态框 -->
+<div class="modal-overlay" id="createFormModal">
+  <div class="modal-box" style="max-width:560px;">
+    <h3>➕ 创建收集表</h3>
+    <p class="modal-desc">设置收集表名称、说明和需要收集的字段</p>
+    <div class="form-group">
+      <label>收集表名称</label>
+      <input type="text" id="createFormTitle" placeholder="例如：新生信息采集">
+    </div>
+    <div class="form-group">
+      <label>说明（可选）</label>
+      <input type="text" id="createFormDesc" placeholder="例如：请填写以下信息，用于班级管理">
+    </div>
+    <div class="form-group">
+      <label>字段设置</label>
+      <div class="form-builder">
+        <div id="formBuilderFields"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="fmCloseModal('createFormModal')">取消</button>
+      <button class="btn-confirm" onclick="saveCreateForm()">创建</button>
+    </div>
+  </div>
+</div>
+</div>
 </body>
 </html>
