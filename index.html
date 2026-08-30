@@ -2949,7 +2949,9 @@ function renderList(type) {
     const isGuide = !!d.guide;
     const hasDetail = !!d.detail;
     const cardTag = hasDetail ? 'div' : ((url || isGuide) ? 'a' : 'div');
-    const hrefAttr = hasDetail ? '' : (url ? `href="${url}" target="_blank" rel="noopener noreferrer"` : (isGuide ? `href="javascript:void(0)" onclick="openGuide('${d.guide}');return false;"` : ''));
+    const cardAttr = hasDetail
+      ? `onclick="var el=this.querySelector('.item-detail');if(el){el.classList.toggle('show');var btn=this.querySelector('.item-detail-toggle');if(btn)btn.textContent=el.classList.contains('show')?'📖 详细解读 ▾':'📖 详细解读 ▸'}"`
+      : (url ? `href="${url}" target="_blank" rel="noopener noreferrer"` : (isGuide ? `href="javascript:void(0)" onclick="openGuide('${d.guide}');return false;"` : ''));
     const favKey = type + ':' + d.title;
     const isFav = isFavorited(type, d.title);
     const favBtn = `<button class="item-fav ${isFav?'active':''}" onclick="event.stopPropagation();toggleFavorite('${type}','${d.title.replace(/'/g,"\\'")}');this.classList.toggle('active')" title="收藏">${isFav?'⭐':'☆'}</button>`;
@@ -2957,14 +2959,14 @@ function renderList(type) {
     const descHtml = highlightText(d.desc, search);
     let bottomHtml;
     if (hasDetail) {
-      bottomHtml = `<div class="item-detail-toggle" onclick="var el=this.nextElementSibling;el.classList.toggle('show');this.textContent=el.classList.contains('show')?'📖 详细解读 ▾':'📖 详细解读 ▸'">📖 详细解读 ▸</div><div class="item-detail">${d.detail}</div>`;
+      bottomHtml = `<div class="item-detail-toggle" onclick="event.stopPropagation();var el=this.nextElementSibling;el.classList.toggle('show');this.textContent=el.classList.contains('show')?'📖 详细解读 ▾':'📖 详细解读 ▸'">📖 详细解读 ▸</div><div class="item-detail">${d.detail}</div>`;
       if (url) bottomHtml += `<a href="${url}" target="_blank" rel="noopener noreferrer" class="item-go" style="text-decoration:none;display:block;">🔗 点击访问官网 →</a>`;
       else if (isGuide) bottomHtml += `<a href="javascript:void(0)" onclick="openGuide('${d.guide}');return false;" class="item-go" style="text-decoration:none;display:block;">📖 点击查看全文 →</a>`;
     } else {
       bottomHtml = url ? '<div class="item-go">🔗 点击访问官网 →</div>' : (isGuide ? '<div class="item-go">📖 点击查看全文 →</div>' : '');
     }
     return `
-    <${cardTag} class="item-card ${(!hasDetail&&url)?'has-link':''}" ${hrefAttr}>
+    <${cardTag} class="item-card ${hasDetail?'has-link':''}" ${cardAttr}>
       ${favBtn}
       <div class="item-head">
         <h4>${titleHtml}</h4>
@@ -2972,7 +2974,7 @@ function renderList(type) {
       </div>
       <div class="item-desc">${descHtml}</div>
       <div class="item-tags">${d.tags.map(t => `<span class="item-tag">${highlightText(t, search)}</span>`).join('')}</div>
-      <div class="item-meta">${getSourceBadge(d.source)}<span>📅 ${d.date}</span></div>
+      <div class="item-meta">${getSourceBadge(d.source)}${d.date ? '<span>📅 '+d.date+'</span>' : ''}</div>
       ${bottomHtml}
     </${cardTag}>`;
   }).join('') : '<div class="empty"><div class="icon">🔍</div><p>没有找到匹配的内容，试试其他关键词？</p></div>';
