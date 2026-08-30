@@ -313,24 +313,38 @@ async function aiCreateForm() {
   if (!prompt) { alert('请输入描述'); return; }
   document.getElementById('aiFormResult').style.display = 'none';
   document.getElementById('aiApplyBtn').style.display = 'none';
-  document.getElementById('aiFormResult').innerHTML = '<div class="loading"></div> AI 生成中...';
+  document.getElementById('aiFormResult').innerHTML = '<div class="loading"></div> AI 生成中...（首次冷启动可能 30-60 秒）';
   document.getElementById('aiFormResult').style.display = 'block';
+  var start = Date.now();
   try {
+    var controller = new AbortController();
+    var timeout = setTimeout(function() { controller.abort(); }, 120000);
     var resp = await fetch(FORMS_API + '/api/ai/create-form', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({prompt: prompt})
+      body: JSON.stringify({prompt: prompt}),
+      signal: controller.signal
     });
+    clearTimeout(timeout);
     var data = await resp.json();
+    var elapsed = ((Date.now() - start) / 1000).toFixed(1);
     if (data.fields) {
       aiFormData = {title: data.title || 'AI 生成表单', description: data.description || '', fields: data.fields};
-      document.getElementById('aiFormResult').innerHTML = JSON.stringify(data.fields, null, 2);
+      document.getElementById('aiFormResult').innerHTML = '<div style="color:#166534;margin-bottom:8px">✅ 生成成功（' + elapsed + 's）</div>' +
+        '<div style="background:#f0fdf4;padding:8px;border-radius:6px;font-size:13px"><b>标题：</b>' + (aiFormData.title || '-') + '</div>' +
+        '<div style="background:#f0fdf4;padding:8px;border-radius:6px;font-size:13px;margin-top:4px"><b>字段数：</b>' + aiFormData.fields.length + '</div>' +
+        '<pre style="background:#f8fafc;padding:10px;border-radius:6px;font-size:12px;margin-top:8px;overflow-x:auto">' + JSON.stringify(data.fields, null, 2) + '</pre>';
       document.getElementById('aiApplyBtn').style.display = 'inline-block';
     } else {
-      document.getElementById('aiFormResult').innerHTML = '生成失败：' + (data.error || '未知错误');
+      document.getElementById('aiFormResult').innerHTML = '<div style="color:#991b1b">❌ 生成失败（' + elapsed + 's）</div>' +
+        '<div style="background:#fef2f2;padding:8px;border-radius:6px;font-size:13px;margin-top:4px"><b>错误：</b>' + (data.error || 'AI 未返回字段') + '</div>' +
+        (data.raw ? '<pre style="background:#f8fafc;padding:10px;border-radius:6px;font-size:11px;margin-top:8px;overflow-x:auto;max-height:200px">AI 原始响应：' + escapeHtml(data.raw) + '</pre>' : '');
     }
   } catch(e) {
-    document.getElementById('aiFormResult').innerHTML = '请求失败：' + e;
+    var elapsed = ((Date.now() - start) / 1000).toFixed(1);
+    document.getElementById('aiFormResult').innerHTML = '<div style="color:#991b1b">❌ 请求失败（' + elapsed + 's）</div>' +
+      '<div style="background:#fef2f2;padding:8px;border-radius:6px;font-size:13px;margin-top:4px">' + e.message + '</div>' +
+      '<div style="font-size:12px;color:#666;margin-top:8px">如果超时：9b 冷启动慢，请重试。如果连接失败：检查网络。</div>';
   }
 }
 function aiApplyForm() {
@@ -364,6 +378,7 @@ async function aiOrganize() {
   }
 }
 
+function escapeHtml(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
 if (adminLoggedIn) showApp();
 </script>
 <!-- 创建表单弹窗 -->
