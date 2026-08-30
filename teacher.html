@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>老师后台 - 三班学习平台</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f7fa;color:#1a1a1a}
+.login-page{display:flex;justify-content:center;align-items:center;min-height:100vh;background:linear-gradient(135deg,#667eea,#764ba2)}
+.login-box{background:#fff;padding:40px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.2);width:100%;max-width:400px}
+.login-box h1{text-align:center;margin-bottom:8px;color:#333}
+.login-box p{text-align:center;color:#888;margin-bottom:30px}
+.login-box input{width:100%;padding:14px;border:2px solid #e0e0e0;border-radius:10px;font-size:15px;margin-bottom:16px}
+.login-box button{width:100%;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer}
+.app{display:none;max-width:1200px;margin:0 auto;padding:20px}
+.header{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:20px;border-radius:16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.header h1{font-size:1.3em}
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:10px 20px;background:#fff;border:2px solid #e0e0e0;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;transition:all .2s}
+.tab.active{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-color:transparent}
+.tab:hover:not(.active){border-color:#667eea}
+.panel{display:none}
+.panel.active{display:block}
+.card{background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.card h3{margin-bottom:12px;color:#333}
+.btn{padding:10px 16px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-right:8px}
+.btn-primary{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+.btn-success{background:linear-gradient(135deg,#11998e,#38ef7d);color:#fff}
+.btn-danger{background:#ef4444;color:#fff}
+.btn-secondary{background:#e5e7eb;color:#333}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-weight:600;margin-bottom:6px;font-size:14px}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:10px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px}
+.field-builder{background:#f8f9fa;padding:16px;border-radius:8px;margin-bottom:12px}
+.field-row{display:flex;gap:8px;margin-bottom:8px;align-items:center}
+.field-row input{flex:1}
+.field-row select{width:120px}
+.field-row button{padding:8px 12px;background:#ef4444;color:#fff;border:none;border-radius:6px;cursor:pointer}
+.ai-box{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:2px solid #bae6fd;padding:16px;border-radius:10px;margin-bottom:16px}
+.ai-box h4{color:#0369a1;margin-bottom:8px}
+.ai-box textarea{width:100%;padding:10px;border:2px solid #bae6fd;border-radius:8px;font-size:14px;min-height:80px;margin-bottom:8px}
+.ai-result{background:#fff;padding:12px;border-radius:8px;margin-top:8px;font-size:13px;white-space:pre-wrap;font-family:monospace;display:none}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:10px;text-align:left;border-bottom:1px solid #e5e7eb}
+th{background:#f8f9fa;font-weight:600}
+.truncate{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge{display:inline-block;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:600}
+.badge-open{background:#dcfce7;color:#166534}
+.badge-closed{background:#fee2e2;color:#991b1b}
+.empty{text-align:center;padding:40px;color:#999}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.loading{display:inline-block;width:16px;height:16px;border:2px solid #f3f3f3;border-top:2px solid #667eea;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="login-page" id="loginPage">
+  <div class="login-box">
+    <h1>🔐 老师后台</h1>
+    <p>三班学习平台 - 管理员登录</p>
+    <input type="password" id="password" placeholder="请输入密码" onkeydown="if(event.key==='Enter')login()">
+    <button onclick="login()">登录</button>
+  </div>
+</div>
+<div class="app" id="app">
+  <div class="header">
+    <h1>📋 老师后台</h1>
+    <button class="btn btn-secondary" onclick="logout()">退出</button>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('forms')">📝 收集表</div>
+    <div class="tab" onclick="switchTab('tasks')">📌 任务</div>
+    <div class="tab" onclick="switchTab('ai')">🤖 AI 辅助</div>
+  </div>
+  <div class="panel active" id="panel-forms">
+    <div class="card">
+      <h3>📝 收集表管理</h3>
+      <button class="btn btn-primary" onclick="openCreateForm()">➕ 创建收集表</button>
+      <button class="btn btn-secondary" onclick="loadForms()">🔄 刷新</button>
+    </div>
+    <div id="formsList"></div>
+  </div>
+  <div class="panel" id="panel-tasks">
+    <div class="card">
+      <h3>📌 任务发布</h3>
+      <button class="btn btn-primary" onclick="openCreateTask()">➕ 发布任务</button>
+      <button class="btn btn-secondary" onclick="loadTasks()">🔄 刷新</button>
+    </div>
+    <div id="tasksList"></div>
+  </div>
+  <div class="panel" id="panel-ai">
+    <div class="ai-box">
+      <h4>🤖 AI 辅助创建表单</h4>
+      <p style="font-size:13px;color:#64748b;margin-bottom:12px">用自然语言描述需求，AI 自动生成表单字段</p>
+      <textarea id="aiFormPrompt" placeholder="例如：收集学生姓名、学号、手机号、家庭住址、是否住宿"></textarea>
+      <button class="btn btn-primary" onclick="aiCreateForm()">✨ 生成表单</button>
+      <button class="btn btn-success" id="aiApplyBtn" style="display:none" onclick="aiApplyForm()">✅ 应用到收集表</button>
+    </div>
+    <div class="ai-result" id="aiFormResult"></div>
+    <div class="ai-box">
+      <h4>📊 AI 整理提交数据</h4>
+      <p style="font-size:13px;color:#64748b;margin-bottom:12px">选择表单，AI 自动整理学生提交</p>
+      <select id="aiOrganizeForm" style="width:100%;padding:10px;border:2px solid #bae6fd;border-radius:8px;margin-bottom:8px"></select>
+      <button class="btn btn-primary" onclick="aiOrganize()">✨ AI 整理</button>
+    </div>
+    <div class="ai-result" id="aiOrganizeResult"></div>
+  </div>
+</div>
+<script>
+var FORMS_API = 'https://1234mac-studio.tail830780.ts.net';
+var adminLoggedIn = localStorage.getItem('teacher_logged_in') === '1';
+var currentFormId = null;
+var aiFormData = null;
+
+function login() {
+  var pwd = document.getElementById('password').value;
+  if (pwd === 'admin2026') {
+    localStorage.setItem('teacher_logged_in', '1');
+    adminLoggedIn = true;
+    showApp();
+  } else {
+    alert('密码错误');
+  }
+}
+function logout() {
+  localStorage.removeItem('teacher_logged_in');
+  adminLoggedIn = false;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('password').value = '';
+}
+function showApp() {
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  loadForms();
+  loadTasks();
+  loadFormsForAI();
+}
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+// ============ 收集表管理 ============
+async function loadForms() {
+  var resp = await fetch(FORMS_API + '/api/forms');
+  var data = await resp.json();
+  var forms = data.forms || [];
+  var html = forms.map(function(f) {
+    var statusBadge = f.status === 'open' 
+      ? '<span class="badge badge-open">进行中</span>' 
+      : '<span class="badge badge-closed">已关闭</span>';
+    return '<div class="card">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
+        '<h3>' + statusBadge + ' ' + f.title + '</h3>' +
+        '<div>' +
+          '<button class="btn btn-secondary" onclick="viewForm(\'' + f.id + '\')">👁️ 查看</button>' +
+          '<button class="btn ' + (f.status === 'open' ? 'btn-secondary' : 'btn-success') + '" onclick="toggleForm(\'' + f.id + '\')">' + (f.status === 'open' ? '🔒 关闭' : '🔓 开启') + '</button>' +
+          '<button class="btn btn-danger" onclick="deleteForm(\'' + f.id + '\')">🗑️ 删除</button>' +
+        '</div>' +
+      '</div>' +
+      '<p style="color:#666;font-size:14px">' + (f.description || '暂无说明') + '</p>' +
+      '<p style="color:#888;font-size:12px;margin-top:8px">📋 ' + f.fields.length + '个字段 | 📅 ' + (f.created_at || '').substring(0, 10) + '</p>' +
+    '</div>';
+  }).join('');
+  document.getElementById('formsList').innerHTML = html || '<div class="empty"><div class="empty-icon">📋</div><p>暂无收集表</p></div>';
+}
+
+var formFields = [];
+function openCreateForm() {
+  formFields = [
+    {name: '姓名', type: 'text', required: true},
+    {name: '学号', type: 'text', required: true},
+    {name: '手机号', type: 'tel', required: true}
+  ];
+  document.getElementById('createFormTitle').value = '';
+  document.getElementById('createFormDesc').value = '';
+  renderFormBuilder();
+  document.getElementById('createFormModal').style.display = 'flex';
+}
+function renderFormBuilder() {
+  document.getElementById('formBuilderFields').innerHTML = formFields.map(function(f, idx) {
+    return '<div class="field-row">' +
+      '<input type="text" placeholder="字段名" value="' + f.name + '" onchange="updateField(' + idx + ',\'name\',this.value)">' +
+      '<select onchange="updateField(' + idx + ',\'type\',this.value)">' +
+        '<option value="text"' + (f.type==='text'?' selected':'') + '>单行文本</option>' +
+        '<option value="number"' + (f.type==='number'?' selected':'') + '>数字</option>' +
+        '<option value="tel"' + (f.type==='tel'?' selected':'') + '>电话</option>' +
+        '<option value="date"' + (f.type==='date'?' selected':'') + '>日期</option>' +
+        '<option value="textarea"' + (f.type==='textarea'?' selected':'') + '>多行文本</option>' +
+      '</select>' +
+      '<label style="font-size:13px"><input type="checkbox"' + (f.required?' checked':'') + ' onchange="updateField(' + idx + ',\'required\',this.checked)"> 必填</label>' +
+      '<button onclick="removeField(' + idx + ')">✕</button>' +
+    '</div>';
+  }).join('') + '<button class="btn btn-secondary" onclick="addField()">➕ 添加字段</button>';
+}
+function addField() { formFields.push({name: '', type: 'text', required: false}); renderFormBuilder(); }
+function removeField(idx) { formFields.splice(idx, 1); renderFormBuilder(); }
+function updateField(idx, key, val) { formFields[idx][key] = val; }
+
+async function saveCreateForm() {
+  var title = document.getElementById('createFormTitle').value.trim();
+  var desc = document.getElementById('createFormDesc').value.trim();
+  if (!title) { alert('请输入标题'); return; }
+  var validFields = formFields.filter(function(f) { return f.name.trim(); });
+  if (validFields.length === 0) { alert('至少添加一个字段'); return; }
+  var resp = await fetch(FORMS_API + '/api/forms', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({title: title, description: desc, fields: validFields})
+  });
+  var data = await resp.json();
+  if (data.success) {
+    document.getElementById('createFormModal').style.display = 'none';
+    loadForms();
+  }
+}
+
+async function toggleForm(id) {
+  var resp = await fetch(FORMS_API + '/api/forms');
+  var data = await resp.json();
+  var form = data.forms.find(function(f) { return f.id === id; });
+  if (!form) return;
+  var newStatus = form.status === 'open' ? 'closed' : 'open';
+  await fetch(FORMS_API + '/api/forms/' + id + '/status?status=' + newStatus, {method: 'PUT'});
+  loadForms();
+}
+async function deleteForm(id) {
+  if (!confirm('确定删除？')) return;
+  await fetch(FORMS_API + '/api/forms/' + id, {method: 'DELETE'});
+  loadForms();
+}
+
+async function viewForm(id) {
+  var resp = await fetch(FORMS_API + '/api/forms/' + id + '/submissions');
+  var data = await resp.json();
+  var subs = data.submissions || [];
+  var html = '<div class="card"><h3>📊 提交结果 (' + subs.length + '人)</h3>';
+  if (subs.length === 0) {
+    html += '<div class="empty">暂无提交</div>';
+  } else {
+    html += '<table><tr><th>#</th><th>学号</th><th>姓名</th><th>提交时间</th><th>操作</th></tr>';
+    subs.forEach(function(s, i) {
+      html += '<tr><td>' + (i+1) + '</td><td>' + (s.student_id || '-') + '</td><td>' + (s.student_name || '-') + '</td><td>' + (s.created_at || '').substring(0, 16) + '</td><td><button class="btn btn-secondary" onclick="viewDetail(\'' + id + '\',' + s.id + ')">详情</button></td></tr>';
+    });
+    html += '</table>';
+  }
+  html += '<button class="btn btn-success" onclick="exportCSV(\'' + id + '\')" style="margin-top:12px">📊 导出 CSV</button>';
+  html += '<button class="btn btn-secondary" onclick="loadForms()" style="margin-top:12px">← 返回</button></div>';
+  document.getElementById('formsList').innerHTML = html;
+}
+function viewDetail(formId, subId) {
+  alert('功能开发中');
+}
+function exportCSV(id) {
+  window.open(FORMS_API + '/api/forms/' + id + '/export', '_blank');
+}
+
+// ============ 任务发布 ============
+async function loadTasks() {
+  var resp = await fetch(FORMS_API + '/api/tasks');
+  var data = await resp.json();
+  var tasks = data.tasks || [];
+  var html = tasks.map(function(t) {
+    return '<div class="card">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+        '<h3>📌 ' + t.title + '</h3>' +
+        '<button class="btn btn-danger" onclick="deleteTask(\'' + t.id + '\')">🗑️</button>' +
+      '</div>' +
+      '<p style="color:#666">' + (t.description || '暂无描述') + '</p>' +
+      '<p style="color:#888;font-size:12px;margin-top:8px">📅 截止：' + (t.deadline || '无') + ' | 📝 ' + (t.form_id ? '关联表单' : '无表单') + '</p>' +
+    '</div>';
+  }).join('');
+  document.getElementById('tasksList').innerHTML = html || '<div class="empty"><div class="empty-icon">📌</div><p>暂无任务</p></div>';
+}
+function openCreateTask() {
+  document.getElementById('taskTitle').value = '';
+  document.getElementById('taskDesc').value = '';
+  document.getElementById('taskDeadline').value = '';
+  document.getElementById('taskFormId').value = '';
+  loadFormsForTask();
+  document.getElementById('createTaskModal').style.display = 'flex';
+}
+async function saveCreateTask() {
+  var title = document.getElementById('taskTitle').value.trim();
+  var desc = document.getElementById('taskDesc').value.trim();
+  var deadline = document.getElementById('taskDeadline').value;
+  var formId = document.getElementById('taskFormId').value;
+  if (!title) { alert('请输入标题'); return; }
+  var resp = await fetch(FORMS_API + '/api/tasks', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({title: title, description: desc, deadline: deadline, form_id: formId || null})
+  });
+  var data = await resp.json();
+  if (data.success) {
+    document.getElementById('createTaskModal').style.display = 'none';
+    loadTasks();
+  }
+}
+async function deleteTask(id) {
+  if (!confirm('确定删除？')) return;
+  await fetch(FORMS_API + '/api/tasks/' + id, {method: 'DELETE'});
+  loadTasks();
+}
+
+// ============ AI 辅助 ============
+async function aiCreateForm() {
+  var prompt = document.getElementById('aiFormPrompt').value.trim();
+  if (!prompt) { alert('请输入描述'); return; }
+  document.getElementById('aiFormResult').style.display = 'none';
+  document.getElementById('aiApplyBtn').style.display = 'none';
+  document.getElementById('aiFormResult').innerHTML = '<div class="loading"></div> AI 生成中...';
+  document.getElementById('aiFormResult').style.display = 'block';
+  try {
+    var resp = await fetch(FORMS_API + '/api/ai/create-form', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({prompt: prompt})
+    });
+    var data = await resp.json();
+    if (data.fields) {
+      aiFormData = {title: data.title || 'AI 生成表单', description: data.description || '', fields: data.fields};
+      document.getElementById('aiFormResult').innerHTML = JSON.stringify(data.fields, null, 2);
+      document.getElementById('aiApplyBtn').style.display = 'inline-block';
+    } else {
+      document.getElementById('aiFormResult').innerHTML = '生成失败：' + (data.error || '未知错误');
+    }
+  } catch(e) {
+    document.getElementById('aiFormResult').innerHTML = '请求失败：' + e;
+  }
+}
+function aiApplyForm() {
+  if (!aiFormData) return;
+  formFields = aiFormData.fields;
+  document.getElementById('createFormTitle').value = aiFormData.title;
+  document.getElementById('createFormDesc').value = aiFormData.description;
+  renderFormBuilder();
+  document.getElementById('createFormModal').style.display = 'flex';
+}
+async function loadFormsForAI() {
+  var resp = await fetch(FORMS_API + '/api/forms');
+  var data = await resp.json();
+  var forms = data.forms || [];
+  document.getElementById('aiOrganizeForm').innerHTML = forms.map(function(f) {
+    return '<option value="' + f.id + '">' + f.title + '</option>';
+  }).join('');
+}
+async function aiOrganize() {
+  var formId = document.getElementById('aiOrganizeForm').value;
+  if (!formId) { alert('请选择表单'); return; }
+  document.getElementById('aiOrganizeResult').style.display = 'none';
+  document.getElementById('aiOrganizeResult').innerHTML = '<div class="loading"></div> AI 整理中...';
+  document.getElementById('aiOrganizeResult').style.display = 'block';
+  try {
+    var resp = await fetch(FORMS_API + '/api/forms/' + formId + '/organize', {method: 'POST'});
+    var data = await resp.json();
+    document.getElementById('aiOrganizeResult').innerHTML = '✅ AI 整理完成！已整理 ' + (data.organized || 0) + ' 条记录。';
+  } catch(e) {
+    document.getElementById('aiOrganizeResult').innerHTML = '失败：' + e;
+  }
+}
+
+if (adminLoggedIn) showApp();
+</script>
+<!-- 创建表单弹窗 -->
+<div id="createFormModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center">
+  <div style="background:#fff;padding:24px;border-radius:16px;width:90%;max-width:500px;max-height:90vh;overflow-y:auto">
+    <h3 style="margin-bottom:16px">➕ 创建收集表</h3>
+    <div class="form-group"><label>标题</label><input id="createFormTitle" placeholder="例如：学生信息收集"></div>
+    <div class="form-group"><label>说明</label><textarea id="createFormDesc" rows="2" placeholder="填写说明"></textarea></div>
+    <div class="form-group"><label>字段</label><div class="field-builder" id="formBuilderFields"></div></div>
+    <button class="btn btn-primary" onclick="saveCreateForm()">✅ 保存</button>
+    <button class="btn btn-secondary" onclick="document.getElementById('createFormModal').style.display='none'">取消</button>
+  </div>
+</div>
+<!-- 创建任务弹窗 -->
+<div id="createTaskModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center">
+  <div style="background:#fff;padding:24px;border-radius:16px;width:90%;max-width:500px">
+    <h3 style="margin-bottom:16px">📌 发布任务</h3>
+    <div class="form-group"><label>标题</label><input id="taskTitle" placeholder="例如：收集学生联系方式"></div>
+    <div class="form-group"><label>描述</label><textarea id="taskDesc" rows="3" placeholder="任务说明"></textarea></div>
+    <div class="form-group"><label>截止时间</label><input type="date" id="taskDeadline"></div>
+    <div class="form-group"><label>关联表单</label><select id="taskFormId"><option value="">无</option></select></div>
+    <button class="btn btn-primary" onclick="saveCreateTask()">✅ 发布</button>
+    <button class="btn btn-secondary" onclick="document.getElementById('createTaskModal').style.display='none'">取消</button>
+  </div>
+</div>
+</body>
+</html>
