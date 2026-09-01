@@ -533,7 +533,7 @@ body.dark .sidebar-link.active { color:#a5b4fc; }
 .hw-bar { height:8px; background:#f3f4f6; border-radius:4px; overflow:hidden; }
 .hw-bar-fill { height:100%; border-radius:4px; transition:width 0.5s ease; }
 
-/* 班委工作进度 */
+/* 班级工作进度 */
 .committee-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; }
 .committee-card { padding:14px; border-radius:12px; background:#f9fafb; border:1px solid #f3f4f6; }
 .committee-role { font-size:13px; font-weight:700; color:#374151; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
@@ -645,7 +645,7 @@ body.dark .hero, body.dark .search-bar, body.dark .lib-card, body.dark .tool-car
 [data-theme="dark"] #page-home .home-stats .stat-card { color: #fff !important; }
 [data-theme="dark"] #page-home .home-stats .stat-num { color: #fff !important; }
 [data-theme="dark"] #page-home .home-stats .stat-label { color: rgba(255,255,255,0.85) !important; }
-/* 暗色模式下班委子卡片 */
+/* 暗色模式下班级子卡片 */
 [data-theme="dark"] #page-home .committee-grid > div {
   background: rgba(255,255,255,0.05) !important;
   border-color: var(--border) !important;
@@ -852,7 +852,7 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- 班委进度：精简 --- */
+/* --- 班级进度：精简 --- */
 #page-home .home-committee {
   background: var(--card);
   border: 1px solid var(--border);
@@ -1980,10 +1980,10 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
       </div>
     </div>
 
-    <!-- 班委工作进度（精简） -->
+    <!-- 班级工作进度（精简） -->
     <div class="home-committee">
       <div class="home-section-head">
-        <h4>👥 班委工作进度（公开透明）</h4>
+        <h4>👥 班级工作进度（公开透明）</h4>
         <button class="notice-btn" style="padding:4px 10px;font-size:11px;" onclick="showCommitteeManage()">⚙️ 管理</button>
       </div>
       <div class="committee-grid" id="committeeGrid"></div>
@@ -2134,7 +2134,7 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
         <button class="notice-tab" onclick="filterFreshmanNotice(this,'important')">重要</button>
         <button class="notice-tab" onclick="filterFreshmanNotice(this,'academic')">教务</button>
         <button class="notice-tab" onclick="filterFreshmanNotice(this,'activity')">活动</button>
-        <button class="notice-tab" onclick="filterFreshmanNotice(this,'class')">班委</button>
+        <button class="notice-tab" onclick="filterFreshmanNotice(this,'class')">班级</button>
       </div>
       <div class="notice-list" id="freshmanNoticeList"></div>
       <button class="add-notice-btn" onclick="openNoticeForm()">➕ 新增通知</button>
@@ -2156,7 +2156,7 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
           <div class="tl-dot"></div>
           <div class="tl-content">
             <h4>8月25日 新生班级群建立</h4>
-            <p>班级QQ群已建立，请同学们及时入群，修改群名片为"姓名+学号"。临时班委已公布。</p>
+            <p>班级QQ群已建立，请同学们及时入群，修改群名片为"姓名+学号"。</p>
             <span class="tl-status done">✓ 已完成</span>
           </div>
         </div>
@@ -2245,14 +2245,14 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
       <h3 class="section-title">📞 紧急联系</h3>
       <div class="contact-grid">
         <div class="contact-card">
-          <span class="contact-role">辅导员</span>
+          <span class="contact-role">老师</span>
           <h4>XXX 老师</h4>
           <p>📱 电话：138-XXXX-XXXX</p>
           <p>🏢 办公室：行政楼302</p>
           <p>💬 QQ：XXXXXXXXX</p>
         </div>
         <div class="contact-card">
-          <span class="contact-role">班长</span>
+          <span class="contact-role">同学</span>
           <h4>XXX 同学</h4>
           <p>📱 电话：139-XXXX-XXXX</p>
           <p>🏠 宿舍：X号楼XXX室</p>
@@ -2426,7 +2426,7 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
       </div>
       <div class="form-group">
         <label>发布人</label>
-        <input type="text" id="noticeAuthor" placeholder="例如：学习委员 姓名">
+        <input type="text" id="noticeAuthor" placeholder="例如：姓名">
       </div>
       <div class="modal-actions">
         <button class="modal-btn secondary" onclick="closeNoticeModal()">取消</button>
@@ -2603,6 +2603,7 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
 
   <div class="footer">
     三班学习平台 · 阳光学院计算机三班 · 仅供学习交流 · 政策链接均来自官方渠道
+    <div style="margin-top:6px;font-size:11px;color:var(--text-3);opacity:0.75;">站长：黄锦浩</div>
   </div>
 </div>
 </div>
@@ -2611,11 +2612,11 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
 // ===== 数据 =====
 const guideContent = {
   "guide_c_lang": { title: "C语言" + "学习导航指南", html: "<h3>C 语言程序设计 - 课程学习导航指南</h3>\n<h4>📚 课程定位</h4>\n<ul>\n<li>大一核心必修课（⭐⭐⭐⭐⭐），编程入门与所有专业课基础</li>\n<li>考研/考公必考科目，影响后续数据结构、操作系统等课程学习</li>\n</ul>\n<h4>🎯 学什么</h4>\n<ul>\n<li>C 语言语法、指针、结构体、文件操作等核心知识点</li>\n<li>参考教材：*C Primer Plus*/*C 语言程序设计（谭浩强）*（待学校确认最新版）</li>\n<blockquote>\n<p><b>备注</b>：本校具体教材章节安排，待课程大纲确认</p>\n</ul>\n</blockquote>\n<h4>💪 为什么重要</h4>\n<ul>\n<li>计科专业最重要的基础课之一，决定后续编程能力</li>\n<li>考公岗位常见计算机类专业要求，部分岗位要求 C 语言基础</li>\n<li>考研复试常考察 C 语言面试题目</li>\n</ul>\n<h4>📖 怎么学</h4>\n<ul>\n<li><b>推荐学习顺序</b>：基础语法→指针→结构体→文件操作→综合练习题</li>\n<li><b>实操建议</b>：每学一章立即上机实践，不要只看不写</li>\n<li><b>避坑指南</b>：切勿只抄代码不自己写，必须亲手敲一遍！</li>\n</ul>\n<h4>🎓 配套资源</h4>\n<h5>网课资源（从 02 学习资源库提取）</h5>\n<table>\n<tr><th>资源</th><th>平台</th><th>说明</th></tr>\n<tr><td>翁恺 C 语言</td><td>B 站</td><td>免费高清，适合零基础入门</td></tr>\n<tr><td>宋浩高数</td><td>MOOC</td><td>配合 C 语言学数学基础</td></tr>\n</table>\n<h5>学习工具（从 03 资料库提取）</h5>\n<ul>\n<li><b>每日一题</b>：每日推送编程/算法题，保持手感</li>\n<li><b>四级背单词</b>：同步准备英语四级（12 月考）</li>\n<li><b>番茄专注钟</b>：25+5 模式规划自习时间</li>\n<li><b>代码记事本</b>：临时记录代码片段</li>\n</ul>\n<h4>⏰ 四年规划（cs_curriculum_analysis）</h4>\n<ul>\n<li><b>大一上</b>：重点攻克 C 语言 + 高数 + 英语四级</li>\n<li><b>大二起</b>：C 语言作为后续数据结构/操作系统基础</li>\n<li><b>大四</b>：考公/就业时，C 语言是面试常见考题</li>\n</ul>\n<h4>⚠️ 常见误区</h4>\n<p>1. ❌ 只看不练→必须动手编程</p>\n<p>2. ❌ 死记硬背→理解逻辑更重要</p>\n<p>3. ❌ 忽视错误检查→学会调试才是真本事</p>\n<hr>\n<p>*注：待补充内容标为\"待学校课程大纲确认\"*</p>" },
-  "guide_ds": { title: "数据结构" + "学习导航指南", html: "<h3>数据结构与算法 — 课程学习导航指南</h3>\n<h4>📌 课程定位与重要性</h4>\n<ul>\n<li><b>专业课之王</b>⭐⭐⭐⭐⭐：计科核心基础，考研<b>408 必考</b>四门之一，就业面试必考（cs_curriculum_analysis/课程体系）</li>\n<li><b>考研价值</b>：数据结构 + 算法是 408 中相对易拿分科目，决定复试算法机试能力</li>\n</ul>\n<h4>📚 学什么 & 怎么配合学</h4>\n<ul>\n<li><b>内容框架</b>：数组/链表/栈队列/树/图/排序/查找/ Hash（待学校课程大纲确认具体章节）</li>\n<li><b>学习节奏</b>：理论 + 刷题并行。每节课后当日刷<b>每日一题</b>，错题记入<b>错题本</b>（03-资料库工具：6/9 项）</li>\n</ul>\n<h4>🎥 推荐资源（02-资源库精选）</h4>\n<table>\n<tr><th>类型</th><th>推荐条目</th></tr>\n<tr><td>B 站免费课</td><td>翁恺 C 语言、哈工大计网/组成原理视频</td></tr>\n<tr><td>MOOC</td><td>中国大学 MOOC：宋浩高数、名校公开课算法</td></tr>\n<tr><td>进阶网课</td><td>猴帝-AI 智能体线上课（19 集，含基础算法）</td></tr>\n</table>\n<h4>🚀 学习仓工具配合用法</h4>\n<ul>\n<li><b>每日习惯</b>：<code>番茄专注钟</code> 25min 刷题 + <code>大事倒计时</code> 追踪考试</li>\n<li><b>统计复盘</b>：每周看<code>学习统计</code>调整计划，考前用<code>真题仓库</code>刷题（期中/期末/考研题）</li>\n<li><b>数据同步</b>：个人数据本地存储，定期备份</li>\n</ul>\n<h4>⚠️ 常见误区</h4>\n<p>❌ 只看书不刷题 → ✅ 每节课后刷 1 道算法题</p>\n<p>❌ 盲目抄代码 → ✅ 理解时间复杂度、动手写逻辑</p>\n<h4>📈 四年规划衔接（大二重点）</h4>\n<ul>\n<li><b>大一</b>：C 语言基础 + 高数四级</li>\n<li><b>大二</b>：<b>数据结构核心期</b>，配合计组/计网同步复习 408</li>\n<li><b>大三</b>：考公/考研分流，数据结构持续强化</li>\n<li><b>大四</b>：毕业设计+冲刺</li>\n</ul>\n<blockquote>\n<p>备注：具体教材版本、章节安排、本校老师教学要求请<b>待学校课程大纲确认</b>。</p>\n</blockquote>" },
-  "guide_co": { title: "计算机组成原理" + "学习导航指南", html: "<h3>计算机组成原理 - 学习导航指南</h3>\n<h4>一、课程定位</h4>\n<ul>\n<li><b>考研核心</b>：408统考科目之一，计科专业四大主干课（与数据结构、操作系统、计算机网络并列）[1]</li>\n<li><b>非考研学生</b>：定位\"及格就行\"，不影响考公/就业 [2]</li>\n<li><b>重要性</b>：理解计算机底层工作原理的关键课程</li>\n</ul>\n<h4>二、学什么</h4>\n<p>待学校课程大纲确认（暂无具体教材章节明细）。主要涉及 CPU 指令系统、存储层次结构、数据通路等计算机硬件与软件接口内容。</p>\n<h4>三、怎么学</h4>\n<ul>\n<li><b>课件 + 网课结合</b>：</li>\n</ul>\n<p>  - B 站哈工大组成原理课程 [3]</p>\n<p>  - 中国大学 MOOC 哈工大计算机专业课 [3]</p>\n<ul>\n<li><b>动手实践</b>：配合实验室模拟工具，理解数据通路时序</li>\n<li><b>真题训练</b>：利用学习仓真题仓库（期中期末/考研真题）[4]</li>\n</ul>\n<h4>四、常见误区</h4>\n<ul>\n<li>❌ 死记硬背硬件参数而不联系底层原理</li>\n<li>❌ 忽略指令系统与汇编编程关联</li>\n<li>✅ 建议结合 AImac 平台实践，以用促学</li>\n</ul>" },
+  "guide_ds": { title: "数据结构" + "学习导航指南", html: "<h3>数据结构与算法 — 课程学习导航指南</h3>\n<h4>📌 课程定位与重要性</h4>\n<ul>\n<li><b>专业课之王</b>⭐⭐⭐⭐⭐：计科核心基础，考研<b>408 必考</b>四门之一，就业面试必考（cs_curriculum_analysis/课程体系）</li>\n<li><b>考研价值</b>：数据结构 + 算法是 408 中相对易拿分科目，决定复试算法机试能力</li>\n</ul>\n<h4>📚 学什么 & 怎么配合学</h4>\n<ul>\n<li><b>内容框架</b>：数组/链表/栈队列/树/图/排序/查找/ Hash（待学校课程大纲确认具体章节）</li>\n<li><b>学习节奏</b>：理论 + 刷题并行。每节课后当日刷<b>每日一题</b>，错题记入<b>错题本</b>（03-资料库工具：6/9 项）</li>\n</ul>\n<h4>🎥 推荐资源（02-资源库精选）</h4>\n<table>\n<tr><th>类型</th><th>推荐条目</th></tr>\n<tr><td>B 站免费课</td><td>翁恺 C 语言、哈工大计网/组成原理视频</td></tr>\n<tr><td>MOOC</td><td>中国大学 MOOC：宋浩高数、名校公开课算法</td></tr>\n\n</table>\n<h4>🚀 学习仓工具配合用法</h4>\n<ul>\n<li><b>每日习惯</b>：<code>番茄专注钟</code> 25min 刷题 + <code>大事倒计时</code> 追踪考试</li>\n<li><b>统计复盘</b>：每周看<code>学习统计</code>调整计划，考前用<code>真题仓库</code>刷题（期中/期末/考研题）</li>\n<li><b>数据同步</b>：个人数据本地存储，定期备份</li>\n</ul>\n<h4>⚠️ 常见误区</h4>\n<p>❌ 只看书不刷题 → ✅ 每节课后刷 1 道算法题</p>\n<p>❌ 盲目抄代码 → ✅ 理解时间复杂度、动手写逻辑</p>\n<h4>📈 四年规划衔接（大二重点）</h4>\n<ul>\n<li><b>大一</b>：C 语言基础 + 高数四级</li>\n<li><b>大二</b>：<b>数据结构核心期</b>，配合计组/计网同步复习 408</li>\n<li><b>大三</b>：考公/考研分流，数据结构持续强化</li>\n<li><b>大四</b>：毕业设计+冲刺</li>\n</ul>\n<blockquote>\n<p>备注：具体教材版本、章节安排、本校老师教学要求请<b>待学校课程大纲确认</b>。</p>\n</blockquote>" },
+  "guide_co": { title: "计算机组成原理" + "学习导航指南", html: "<h3>计算机组成原理 - 学习导航指南</h3>\n<h4>一、课程定位</h4>\n<ul>\n<li><b>考研核心</b>：408统考科目之一，计科专业四大主干课（与数据结构、操作系统、计算机网络并列）[1]</li>\n<li><b>非考研学生</b>：定位\"及格就行\"，不影响考公/就业 [2]</li>\n<li><b>重要性</b>：理解计算机底层工作原理的关键课程</li>\n</ul>\n<h4>二、学什么</h4>\n<p>待学校课程大纲确认（暂无具体教材章节明细）。主要涉及 CPU 指令系统、存储层次结构、数据通路等计算机硬件与软件接口内容。</p>\n<h4>三、怎么学</h4>\n<ul>\n<li><b>课件 + 网课结合</b>：</li>\n</ul>\n<p>  - B 站哈工大组成原理课程 [3]</p>\n<p>  - 中国大学 MOOC 哈工大计算机专业课 [3]</p>\n<ul>\n<li><b>动手实践</b>：配合实验室模拟工具，理解数据通路时序</li>\n<li><b>真题训练</b>：利用学习仓真题仓库（期中期末/考研真题）[4]</li>\n</ul>\n<h4>四、常见误区</h4>\n<ul>\n<li>❌ 死记硬背硬件参数而不联系底层原理</li>\n<li>❌ 忽略指令系统与汇编编程关联</li>\n<li>✅ 建议结合动手实践，以用促学</li>\n</ul>" },
   "guide_os": { title: "操作系统" + "学习导航指南", html: "<h3>操作系统课程学习导航指南</h3>\n<h4>📌 课程定位与重要性</h4>\n<ul>\n<li><b>大二核心专业课</b>，考研 408 四门必考科目之一（数据结构、计组、操作系统、计算机网络）[课程体系]</li>\n<li>理解计算机系统运行核心：进程/线程管理、内存管理、文件系统、设备管理等概念 [教材待确认]</li>\n<li><b>及格原则</b>：不考研的同学可\"及格就行\"，不影响考公就业；考研者需重点掌握 [cs_curriculum_analysis]</li>\n</ul>\n<h4>📖 学什么（基于来源）</h4>\n<p>课程涵盖操作系统核心模块。具体知识点明细待教材目录确认，建议先了解进程调度、内存分配等基本概念的重要性。</p>\n<h4>🎯 学习路线与资源</h4>\n<h5>免费网课资源</h5>\n<ul>\n<li><b>B 站</b>：哈工大计算机专业课系列 [02-学习资源库]</li>\n<li><b>中国大学 MOOC</b>：名校计算机操作系统公开课（icourse163.org）[02-学习资源库]</li>\n</ul>\n<h5>辅助工具（三班学习仓）[03-计算机学习资料库]</h5>\n<ul>\n<li>🍅番茄钟专注自习 + ⏳大事倒计时（跟踪复习节点）</li>\n<li>📝代码/临时记事本（记录课堂笔记）</li>\n<li>📊学习统计 + 🎯绩点计算器（评估学习效果）</li>\n</ul>\n<h4>🚫 常见误区</h4>\n<ul>\n<li>\"必须精通底层\"：非考研方向可重理解概念而非实现细节</li>\n<li>\"只背大题\"：操作系统重在理解系统设计思想</li>\n<li>\"不重视计组联动\"：408 四门关联，需综合复习</li>\n</ul>\n<h4>💡 不同发展方向建议</h4>\n<table>\n<tr><th>方向</th><th>重点</th><th>资源侧重</th></tr>\n<tr><td>考研（408）</td><td>四大核心概念 + 真题练习</td><td>B 站专业课系列 + 题库刷题</td></tr>\n<tr><td>就业开发</td><td>结合系统编程实践</td><td>学习仓网课 + Linux 实战项目</td></tr>\n<tr><td>考公/其他</td><td>基础理解即可</td><td>MOOC 入门课 + 课堂笔记</td></tr>\n</table>\n<blockquote>\n<p><b>说明</b>：本指南严格依据三源文件 [课程体系/cscurriculum_analysis/02-学习资源库/03-资料库] 编写。知识点明细、具体章节安排待教材目录确认。</p>\n</blockquote>" },
   "guide_net": { title: "计算机网络" + "学习导航指南", html: "<h3>计算机网络课程学习导航指南</h3>\n<h4>📚 课程定位与重要性</h4>\n<ul>\n<li><b>考研 408 核心科目之一</b>（另三门：数据结构、计组、操作系统），大二必须学好</li>\n<li><b>Web/网络开发基础</b>，后续专业课程和项目实战的前置知识</li>\n<li>计科专业大二必学核心课，与计组/操作系统并列考研重点</li>\n</ul>\n<h4>🎯 学习目标</h4>\n<p>掌握分层思想（OSI/TCP-IP 模型）、基本协议理解、抓包实践技能；<b>知识点明细待教材目录确认</b>。</p>\n<h4>🛠️ 学习资源</h4>\n<ul>\n<li><b>网课</b>：B 站哈工大计算机网络/组成原理（免费公开）</li>\n<li><b>平台</b>：中国大学MOOC（同专业课程）、计算机学习资料库（17 门精选网课）</li>\n<li><b>工具</b>：学习资料库内的代码记事本、真题仓库模拟</li>\n</ul>\n<h4>📖 学习方法</h4>\n<ul>\n<li><b>抓包实践</b>：结合 Wireshark/浏览器开发者工具验证协议流程</li>\n<li><b>分层理解</b>：从物理层到应用层逐层学习，避免死记硬背</li>\n<li><b>真题辅助</b>：利用资料库期中期末/考研真题刷题</li>\n</ul>\n<h4>⚠️ 常见误区</h4>\n<ul>\n<li>❌ 只背结论不抓包验证 → ✅ 结合实践加深理解</li>\n<li>❌ 忽视分层思想 → ✅ 先理解模型再学具体协议</li>\n<li>❌ 考研党轻度过于细节 → ✅ 408 及格即可，抓框架为主</li>\n</ul>\n<h4>🗺️ 路线定位</h4>\n<table>\n<tr><th><b>目标</b></th><th><b>建议</b></th></tr>\n<tr><td><b>考研</b></td><td>重点突破：IP/TCP/DNS/HTTP等核心协议，结合真题复习</td></tr>\n<tr><td><b>考公</b></td><td>了解即可，不影响上岸，抓基础概念</td></tr>\n<tr><td><b>就业</b></td><td>Web/后端方向需深入，实践项目优先</td></tr>\n</table>\n<blockquote>\n<p>注：具体章节明细以任课教师教材目录为准。</p>\n</blockquote>" },
-  "guide_policy": { title: "政策资料" + "学习导航指南", html: "<h3>阳光学院计科三班 政策详细解读（2026.08）</h3>\n<h4>📊 一图看懂政策库</h4>\n<table>\n<tr><th>分类</th><th>关键条目</th><th>对你有用程度</th></tr>\n<tr><td>考公/选调生</td><td>熊海楠上岸案例、国考/省考入口</td><td>⭐⭐⭐</td></tr>\n<tr><td>考研</td><td>2026 国家线、考研模拟考奖学金</td><td>⭐⭐⭐</td></tr>\n<tr><td>竞赛</td><td>教育部 A 类 3 大赛、蓝桥杯国赛奖项</td><td>⭐⭐⭐⭐</td></tr>\n<tr><td>就业</td><td>福建省毕业生就业创业网、毕业实习动员</td><td>⭐⭐⭐</td></tr>\n<tr><td>计算机学院</td><td>专业介绍/通知公告/AI 大会</td><td>⭐⭐⭐</td></tr>\n<tr><td>招生参考</td><td>投档线/章程</td><td>⭐⭐</td></tr>\n<tr><td>本地文件</td><td>校历/助学贷款/医保等</td><td>⭐⭐⭐</td></tr>\n</table>\n<hr>\n<h4>一、考公/选调生相关</h4>\n<h5>1.1 选调生上岸案例</h5>\n<ul>\n<li><b>是什么</b>：熊海楠（2025 届法学专业）成功上岸南平市党政类选调生。</li>\n<li><b>对计科三班用处</b>：证明本校同学可参考备考路径，拓展职业选择。</li>\n<li><b>怎么用</b>：点击链接查看备考经历，联系学院了解公考课程资源。</li>\n</ul>\n<h5>1.2 考公相关政策入口</h5>\n<ul>\n<li><b>是什么</b>：国家公务员局、中国人事考试网、福建省教育考试院官方政策发布平台 [36-38]。</li>\n<li><b>对计科三班用处</b>：获取考试真题、报考信息、备考资料。</li>\n<li><b>怎么用</b>：收藏 http://www.scs.gov.cn/ 和 http://www.cpta.com.cn/，刷题用影音库真题合集。</li>\n</ul>\n<hr>\n<h4>二、考研相关</h4>\n<h5>2.1 2026 年考研国家线</h5>\n<ul>\n<li><b>是什么</b>：2026 年分数线及复试录取政策，调剂服务系统入口。</li>\n<li><b>对计科三班用处</b>：评估上岸概率，了解调剂机会。</li>\n<li><b>怎么用</b>：2026-02-28 更新，点击 https://yz.chsi.com.cn/ 查看（关注时间点后刷新）。</li>\n</ul>\n<h5>2.2 阳光学院考研模拟考奖学金</h5>\n<ul>\n<li><b>是什么</b>：考研过程性奖学金政策，2025-2026 学年获奖名单公示。</li>\n<li><b>对计科三班用处</b>：提前激励，备考期间可按要求争取奖学金。</li>\n<li><b>怎么用</b>：点击 https://xsc.ygu.edu.cn/info/1039/10819.htm 查看细则并关注报名。</li>\n</ul>\n<hr>\n<h4>三、竞赛相关</h4>\n<h5>3.1 教育部 A 类竞赛官方入口</h5>\n<h5>🟢 中国大学生计算机设计大赛（第 19 届）</h5>\n<ul>\n<li><b>是什么</b>：软件设计、大数据、AI 应用等全品类竞赛。</li>\n<li><b>对计科三班用处</b>：教育部 A 类，含金量高，提升简历竞争力。</li>\n<li><b>怎么用</b>：2026-08-01 更新，点击 https://jsjds.blcu.edu.cn/ 报名。</li>\n</ul>\n<h5>🟢 团体程序设计天梯赛（GPLT）</h5>\n<ul>\n<li><b>是什么</b>：教育部计算机教指委主办，考察程序设计能力。</li>\n<li><b>对计科三班用处</b>：锻炼算法能力，适合 ACM/ICPC 备赛选手。</li>\n<li><b>怎么用</b>：https://gplt.patest.cn/，4 月更新后关注报名通知。</li>\n</ul>\n<h5>🟢 全国高校计算机能力挑战赛（NCCCU）</h5>\n<ul>\n<li><b>是什么</b>：进入学科竞赛排行榜观察目录。</li>\n<li><b>对计科三班用处</b>：拓宽竞赛视野，积累项目经验。</li>\n<li><b>怎么用</b>：https://www.ncccu.org.cn/，2026-08-01 更新。</li>\n</ul>\n<h5>3.2 蓝桥杯获奖记录（本校参考）</h5>\n<ul>\n<li><b>是什么</b>：第十七届蓝桥杯斩获 5 项国奖、4 人晋级国赛。</li>\n<li><b>对计科三班用处</b>：说明学院竞赛氛围好，参与可增强信心。</li>\n<li><b>怎么用</b>：查看获奖详情激励自己，关注学院报名通知。</li>\n</ul>\n<h5>3.3 挑战杯省级奖项</h5>\n<ul>\n<li><b>是什么</b>：第十四届福建省大学生创业计划竞赛 2 项省级奖。</li>\n<li><b>对计科三班用处</b>：了解创业方向，可组队参与（结合辅修/社团）。</li>\n<li><b>怎么用</b>：点击 https://d.xiumius.cn/board/v5/6glUK/712106958@L.Quer 查看案例。</li>\n</ul>\n<h5>3.4 学科竞赛分享会</h5>\n<ul>\n<li><b>是什么</b>：学长学姐经验分享（本地文件：2026 年学科竞赛分享会.pdf）。</li>\n<li><b>对计科三班用处</b>：快速入门竞赛，了解组队/备赛流程。</li>\n<li><b>怎么用</b>：联系辅导员获取文件，重点看选什么赛项、如何准备。</li>\n</ul>\n<hr>\n<h4>四、就业相关</h4>\n<h5>4.1 福建省毕业生就业创业公共服务网</h5>\n<ul>\n<li><b>是什么</b>：原 fjbys.gov.cn 停用，替换为官网。</li>\n<li><b>对计科三班用处</b>：实习信息、企业内推、招聘会汇总。</li>\n<li><b>怎么用</b>：https://www.fj99.org.cn/bys（定期浏览）。</li>\n</ul>\n<h5>4.2 毕业实习动员（4 个专业）</h5>\n<ul>\n<li><b>是什么</b>：机器人/通信/物联网/电子信息四大工程系实习动员。</li>\n<li><b>对计科三班用处</b>：了解毕业实习流程、要求，确保顺利毕业。</li>\n<li><b>怎么用</b>：点击 4 个系别链接，按学院通知提前准备材料。</li>\n</ul>\n<h5>4.3 访企拓岗（校企合作）</h5>\n<ul>\n<li><b>是什么</b>：校级 + 计算机学院合作企业渠道。</li>\n<li><b>对计科三班用处</b>：可能有实习/就业推荐机会。</li>\n<li><b>怎么用</b>：访问阳光学院新闻和学院页面，留意内推入口。</li>\n</ul>\n<hr>\n<h4>五、计算机/人工智能学院</h4>\n<h5>5.1 学院简介与专业介绍</h5>\n<ul>\n<li><b>是什么</b>：4 个专业（计算机/数据科学/AI/网络工程）。</li>\n<li><b>对计科三班用处</b>：选辅修、转专业可参考课程规划。</li>\n<li><b>怎么用</b>：点击各链接对比课程体系，关注学院通知 [140-143]。</li>\n</ul>\n<h5>5.2 最新通知</h5>\n<ul>\n<li><b>是什么</b>：竞赛/考研/就业/评优等通知汇总页。</li>\n<li><b>对计科三班用处</b>：第一时间获取关键政策信息。</li>\n<li><b>怎么用</b>：https://xxgc.ygu.edu.cn/tzgg/zxtz.htm 每月必查（设浏览器书签）。</li>\n</ul>\n<h5>5.3 2026 亚太人工智能教育大会</h5>\n<ul>\n<li><b>是什么</b>：阳光学院承办，联合主办。</li>\n<li><b>对计科三班用处</b>：展示学院 AI 领域影响力，AI 方向同学可关注。</li>\n<li><b>怎么用</b>：链接 https://news.ygu.edu.cn/info/1003/11593.htm 了解后续活动（2026-05-26）。</li>\n</ul>\n<h5>5.4 E 修小站志愿服务</h5>\n<ul>\n<li><b>是什么</b>：电脑维修志愿服务平台。</li>\n<li><b>对计科三班用处</b>：丰富履历，实践技能（适合计算机类同学）。</li>\n<li><b>怎么用</b>：https://xxgc.ygu.edu.cn/dtgz/txhd.htm 报名参与活动。</li>\n</ul>\n<hr>\n<h4>六、招生参考（往届数据）</h4>\n<h5>6.1 本科与专升本录取</h5>\n<ul>\n<li><b>是什么</b>：2026 普通本科 + 专升本招生计划、章程、投档分。</li>\n<li><b>对计科三班用处</b>：了解往年分数线，评估报考难度。</li>\n<li><b>怎么用</b>：点击链接收藏（招生季重点关注）[168-177]。</li>\n</ul>\n<hr>\n<h4>七、本地政策文件（必读）</h4>\n<table>\n<tr><th>文件</th><th>用途</th><th>优先级 ⭐⭐⭐</th></tr>\n<tr><td>2026-2027 学年校历通知.pdf</td><td>放假/教学安排</td><td>✅ 必看</td></tr>\n<tr><td>生源地助学贷款指南.pdf</td><td>贷款申请流程</td><td>✅ 必看（需资金的同学）</td></tr>\n<tr><td>资助政策明白卡.pdf</td><td>国家/省资助汇总</td><td>✅ 必看（家庭困难同学）</td></tr>\n</table>\n<table>\n<tr><th>文件</th><th>用途</th><th>⭐⭐</th></tr>\n<tr><td>圆梦之路宣传册.pdf、医保信.pdf、辅修方案.docx</td><td>资助详解/医保/辅修</td><td>建议阅读</td></tr>\n<tr><td>新生开学清单.docx、竞赛分享会.pdf</td><td>入学准备/经验</td><td>参考用</td></tr>\n</table>\n<blockquote>\n<p>📂 位置：双库/政策库/政策文件/796752490-计算机新生群/2026-08/</p>\n</blockquote>\n<hr>\n<h4>八、定期更新建议</h4>\n<ul>\n<li><b>每月</b>：学院通知公告、阳光新闻（设书签）</li>\n<li><b>每学期</b>：校历（开课前）、竞赛报名通知</li>\n<li><b>每年 3 月</b>：考研国家线，1 月：专升本政策</li>\n<li><b>方式</b>：运行 fetch-policies.py 抓取，替换 auto-policies.js 后部署。</li>\n</ul>\n<hr>\n<h4>❓ 常见疑问</h4>\n<h5>Q1：考公从大几开始准备？</h5>\n<p>政策库明确展示选调生案例、国考省考入口 [36-39]，但未说明具体大几开始（待补充）。</p>\n<h5>Q2：竞赛如何入门？</h5>\n<p>建议看学科竞赛分享会.pdf、参加 E 修志愿服务、关注教育部 A 类竞赛公告。但竞赛报名时间点需查阅最新通知（政策库未明确给出各赛项截止日，待更新）。</p>\n<h5>Q3：考研奖学金怎么拿？</h5>\n<p>阳光学院提供过程性奖学金政策，但具体申请资格/流程来自链接细则，需点击查看详情（2026-07-01 公示名单可作参考）。</p>\n<hr>\n<blockquote>\n<p>⚠️ <b>标注说明</b>：共 12 处\"待补充\"——包括竞赛报名截止日、考公准备时间、奖学金申请资格等细节均来自源文件但源文件未明确给出。</p>\n</blockquote>" },
+  "guide_policy": { title: "政策资料" + "学习导航指南", html: "<h3>阳光学院计科三班 政策详细解读（2026.08）</h3>\n<h4>📊 一图看懂政策库</h4>\n<table>\n<tr><th>分类</th><th>关键条目</th><th>对你有用程度</th></tr>\n<tr><td>考公/选调生</td><td>熊海楠上岸案例、国考/省考入口</td><td>⭐⭐⭐</td></tr>\n<tr><td>考研</td><td>2026 国家线、考研模拟考奖学金</td><td>⭐⭐⭐</td></tr>\n<tr><td>竞赛</td><td>教育部 A 类 3 大赛、蓝桥杯国赛奖项</td><td>⭐⭐⭐⭐</td></tr>\n<tr><td>就业</td><td>福建省毕业生就业创业网、毕业实习动员</td><td>⭐⭐⭐</td></tr>\n<tr><td>计算机学院</td><td>专业介绍/通知公告/AI 大会</td><td>⭐⭐⭐</td></tr>\n<tr><td>招生参考</td><td>投档线/章程</td><td>⭐⭐</td></tr>\n<tr><td>本地文件</td><td>校历/助学贷款/医保等</td><td>⭐⭐⭐</td></tr>\n</table>\n<hr>\n<h4>一、考公/选调生相关</h4>\n<h5>1.1 选调生上岸案例</h5>\n<ul>\n<li><b>是什么</b>：熊海楠（2025 届法学专业）成功上岸南平市党政类选调生。</li>\n<li><b>对计科三班用处</b>：证明本校同学可参考备考路径，拓展职业选择。</li>\n<li><b>怎么用</b>：点击链接查看备考经历，联系学院了解公考课程资源。</li>\n</ul>\n<h5>1.2 考公相关政策入口</h5>\n<ul>\n<li><b>是什么</b>：国家公务员局、中国人事考试网、福建省教育考试院官方政策发布平台 [36-38]。</li>\n<li><b>对计科三班用处</b>：获取考试真题、报考信息、备考资料。</li>\n<li><b>怎么用</b>：收藏 http://www.scs.gov.cn/ 和 http://www.cpta.com.cn/，刷题用影音库真题合集。</li>\n</ul>\n<hr>\n<h4>二、考研相关</h4>\n<h5>2.1 2026 年考研国家线</h5>\n<ul>\n<li><b>是什么</b>：2026 年分数线及复试录取政策，调剂服务系统入口。</li>\n<li><b>对计科三班用处</b>：评估上岸概率，了解调剂机会。</li>\n<li><b>怎么用</b>：2026-02-28 更新，点击 https://yz.chsi.com.cn/ 查看（关注时间点后刷新）。</li>\n</ul>\n<h5>2.2 阳光学院考研模拟考奖学金</h5>\n<ul>\n<li><b>是什么</b>：考研过程性奖学金政策，2025-2026 学年获奖名单公示。</li>\n<li><b>对计科三班用处</b>：提前激励，备考期间可按要求争取奖学金。</li>\n<li><b>怎么用</b>：点击 https://xsc.ygu.edu.cn/info/1039/10819.htm 查看细则并关注报名。</li>\n</ul>\n<hr>\n<h4>三、竞赛相关</h4>\n<h5>3.1 教育部 A 类竞赛官方入口</h5>\n<h5>🟢 中国大学生计算机设计大赛（第 19 届）</h5>\n<ul>\n<li><b>是什么</b>：软件设计、大数据、AI 应用等全品类竞赛。</li>\n<li><b>对计科三班用处</b>：教育部 A 类，含金量高，提升简历竞争力。</li>\n<li><b>怎么用</b>：2026-08-01 更新，点击 https://jsjds.blcu.edu.cn/ 报名。</li>\n</ul>\n<h5>🟢 团体程序设计天梯赛（GPLT）</h5>\n<ul>\n<li><b>是什么</b>：教育部计算机教指委主办，考察程序设计能力。</li>\n<li><b>对计科三班用处</b>：锻炼算法能力，适合 ACM/ICPC 备赛选手。</li>\n<li><b>怎么用</b>：https://gplt.patest.cn/，4 月更新后关注报名通知。</li>\n</ul>\n<h5>🟢 全国高校计算机能力挑战赛（NCCCU）</h5>\n<ul>\n<li><b>是什么</b>：进入学科竞赛排行榜观察目录。</li>\n<li><b>对计科三班用处</b>：拓宽竞赛视野，积累项目经验。</li>\n<li><b>怎么用</b>：https://www.ncccu.org.cn/，2026-08-01 更新。</li>\n</ul>\n<h5>3.2 蓝桥杯获奖记录（本校参考）</h5>\n<ul>\n<li><b>是什么</b>：第十七届蓝桥杯斩获 5 项国奖、4 人晋级国赛。</li>\n<li><b>对计科三班用处</b>：说明学院竞赛氛围好，参与可增强信心。</li>\n<li><b>怎么用</b>：查看获奖详情激励自己，关注学院报名通知。</li>\n</ul>\n<h5>3.3 挑战杯省级奖项</h5>\n<ul>\n<li><b>是什么</b>：第十四届福建省大学生创业计划竞赛 2 项省级奖。</li>\n<li><b>对计科三班用处</b>：了解创业方向，可组队参与（结合辅修/社团）。</li>\n<li><b>怎么用</b>：点击 https://d.xiumius.cn/board/v5/6glUK/712106958@L.Quer 查看案例。</li>\n</ul>\n<h5>3.4 学科竞赛分享会</h5>\n<ul>\n<li><b>是什么</b>：学长学姐经验分享（本地文件：2026 年学科竞赛分享会.pdf）。</li>\n<li><b>对计科三班用处</b>：快速入门竞赛，了解组队/备赛流程。</li>\n<li><b>怎么用</b>：联系辅导员获取文件，重点看选什么赛项、如何准备。</li>\n</ul>\n<hr>\n<h4>四、就业相关</h4>\n<h5>4.1 福建省毕业生就业创业公共服务网</h5>\n<ul>\n<li><b>是什么</b>：原 fjbys.gov.cn 停用，替换为官网。</li>\n<li><b>对计科三班用处</b>：实习信息、企业内推、招聘会汇总。</li>\n<li><b>怎么用</b>：https://www.fj99.org.cn/bys（定期浏览）。</li>\n</ul>\n<h5>4.2 毕业实习动员（4 个专业）</h5>\n<ul>\n<li><b>是什么</b>：机器人/通信/物联网/电子信息四大工程系实习动员。</li>\n<li><b>对计科三班用处</b>：了解毕业实习流程、要求，确保顺利毕业。</li>\n<li><b>怎么用</b>：点击 4 个系别链接，按学院通知提前准备材料。</li>\n</ul>\n<h5>4.3 访企拓岗（校企合作）</h5>\n<ul>\n<li><b>是什么</b>：校级 + 计算机学院合作企业渠道。</li>\n<li><b>对计科三班用处</b>：可能有实习/就业推荐机会。</li>\n<li><b>怎么用</b>：访问阳光学院新闻和学院页面，留意内推入口。</li>\n</ul>\n<hr>\n<h4>五、计算机/人工智能学院</h4>\n<h5>5.1 学院简介与专业介绍</h5>\n<ul>\n<li><b>是什么</b>：4 个专业（计算机/数据科学/AI/网络工程）。</li>\n<li><b>对计科三班用处</b>：选辅修、转专业可参考课程规划。</li>\n<li><b>怎么用</b>：点击各链接对比课程体系，关注学院通知 [140-143]。</li>\n</ul>\n<h5>5.2 最新通知</h5>\n<ul>\n<li><b>是什么</b>：竞赛/考研/就业/评优等通知汇总页。</li>\n<li><b>对计科三班用处</b>：第一时间获取关键政策信息。</li>\n<li><b>怎么用</b>：https://xxgc.ygu.edu.cn/tzgg/zxtz.htm 每月必查（设浏览器书签）。</li>\n</ul>\n<h5>5.3 2026 亚太人工智能教育大会</h5>\n<ul>\n<li><b>是什么</b>：阳光学院承办，联合主办。</li>\n<li><b>对计科三班用处</b>：展示学院 AI 领域影响力，AI 方向同学可关注。</li>\n<li><b>怎么用</b>：链接 https://news.ygu.edu.cn/info/1003/11593.htm 了解后续活动（2026-05-26）。</li>\n</ul>\n<h5>5.4 E 修小站志愿服务</h5>\n<ul>\n<li><b>是什么</b>：电脑维修志愿服务平台。</li>\n<li><b>对计科三班用处</b>：丰富履历，实践技能（适合计算机类同学）。</li>\n<li><b>怎么用</b>：https://xxgc.ygu.edu.cn/dtgz/txhd.htm 报名参与活动。</li>\n</ul>\n<hr>\n<h4>六、招生参考（往届数据）</h4>\n<h5>6.1 本科与专升本录取</h5>\n<ul>\n<li><b>是什么</b>：2026 普通本科 + 专升本招生计划、章程、投档分。</li>\n<li><b>对计科三班用处</b>：了解往年分数线，评估报考难度。</li>\n<li><b>怎么用</b>：点击链接收藏（招生季重点关注）[168-177]。</li>\n</ul>\n<hr>\n<h4>七、本地政策文件（必读）</h4>\n<table>\n<tr><th>文件</th><th>用途</th><th>优先级 ⭐⭐⭐</th></tr>\n<tr><td>2026-2027 学年校历通知.pdf</td><td>放假/教学安排</td><td>✅ 必看</td></tr>\n<tr><td>生源地助学贷款指南.pdf</td><td>贷款申请流程</td><td>✅ 必看（需资金的同学）</td></tr>\n<tr><td>资助政策明白卡.pdf</td><td>国家/省资助汇总</td><td>✅ 必看（家庭困难同学）</td></tr>\n</table>\n<table>\n<tr><th>文件</th><th>用途</th><th>⭐⭐</th></tr>\n<tr><td>圆梦之路宣传册.pdf、医保信.pdf、辅修方案.docx</td><td>资助详解/医保/辅修</td><td>建议阅读</td></tr>\n<tr><td>新生开学清单.docx、竞赛分享会.pdf</td><td>入学准备/经验</td><td>参考用</td></tr>\n</table>\n<blockquote>\n<p>📂 位置：校内资料库（政策文件/2026-08/）</p>\n</blockquote>\n<hr>\n<h4>八、定期更新建议</h4>\n<ul>\n<li><b>每月</b>：学院通知公告、阳光新闻（设书签）</li>\n<li><b>每学期</b>：校历（开课前）、竞赛报名通知</li>\n<li><b>每年 3 月</b>：考研国家线，1 月：专升本政策</li>\n<li><b>方式</b>：运行 fetch-policies.py 抓取，替换 auto-policies.js 后部署。</li>\n</ul>\n<hr>\n<h4>❓ 常见疑问</h4>\n<h5>Q1：考公从大几开始准备？</h5>\n<p>政策库明确展示选调生案例、国考省考入口 [36-39]，但未说明具体大几开始（待补充）。</p>\n<h5>Q2：竞赛如何入门？</h5>\n<p>建议看学科竞赛分享会.pdf、参加 E 修志愿服务、关注教育部 A 类竞赛公告。但竞赛报名时间点需查阅最新通知（政策库未明确给出各赛项截止日，待更新）。</p>\n<h5>Q3：考研奖学金怎么拿？</h5>\n<p>阳光学院提供过程性奖学金政策，但具体申请资格/流程来自链接细则，需点击查看详情（2026-07-01 公示名单可作参考）。</p>\n<hr>\n<blockquote>\n<p>⚠️ <b>标注说明</b>：共 12 处\"待补充\"——包括竞赛报名截止日、考公准备时间、奖学金申请资格等细节均来自源文件但源文件未明确给出。</p>\n</blockquote>" },
 };
 
 
@@ -2676,14 +2677,7 @@ const mediaData = [
   {title:"操作系统（汤小丹）", cat:"核心课", desc:"西安电子科技大学汤小丹老师操作系统课程，进程、内存、文件系统", source:"中国大学MOOC", tags:["操作系统","汤小丹","西电","考研408"],detail:"<p><b>📌 是什么：</b>西安电子科技大学汤小丹老师操作系统课程，进程、内存、文件系统。</p><p><b>💡 对你有什么用：</b>408必考科目。汤小丹版本是操作系统经典教材配套课。</p><p><b>📋 怎么用：</b>中国大学MOOC搜「汤小丹操作系统」。大二学，重点理解进程调度+内存管理。</p>"},
   {title:"刘晓艳四级词汇课", cat:"英语", desc:"刘晓艳老师大学英语四级词汇课程，词根记忆法，适合四级备考", source:"B站免费", tags:["四级","英语","词汇","刘晓艳"],detail:"<p><b>📌 是什么：</b>刘晓艳老师大学英语四级词汇课程，词根记忆法，B站免费。</p><p><b>💡 对你有什么用：</b>大一必须过四级（500+）。词根记忆法比死背高效。考公岗位有英语要求。</p><p><b>📋 怎么用：</b>B站搜「刘晓艳四级词汇」。每天30分钟背词，配合真题刷阅读。</p>"},
   {title:"刘晓艳四级语法课", cat:"英语", desc:"刘晓艳老师大学英语四级语法课程，系统梳理语法体系", source:"B站免费", tags:["四级","英语","语法","刘晓艳"],detail:"<p><b>📌 是什么：</b>刘晓艳老师大学英语四级语法课程，系统梳理语法体系。</p><p><b>💡 对你有什么用：</b>四级阅读/翻译/写作都考语法。语法体系清晰=做题更稳。</p><p><b>📋 怎么用：</b>B站搜「刘晓艳四级语法」。大一上看完，配合真题练。</p>"},
-  {title:"考虫四级系统班", cat:"英语", desc:"考虫四级系统班，听力/阅读/写作/翻译全题型覆盖", source:"付费课程", tags:["四级","英语","考虫","系统班"],detail:"<p><b>📌 是什么：</b>考虫四级系统班，听力/阅读/写作/翻译全题型覆盖。付费课程。</p><p><b>💡 对你有什么用：</b>如果自学四级效率低，系统班有老师带练+批改+答疑。</p><p><b>📋 怎么用：</b>付费课程，按需购买。重点看题型技巧+模考批改。</p>"},
-  {title:"白先生AI流量体-老板的随身操盘手", cat:"AI智能体", desc:"AI智能体流量变现课程，含个人IP打造、内容生产、私域运营、变现路径", source:"付费课程", tags:["AI","流量","变现","IP"],detail:"<p><b>📌 是什么：</b>AI智能体流量变现课程，含个人IP打造、内容生产、私域运营、变现路径。</p><p><b>💡 对你有什么用：</b>如果你对自媒体/副业感兴趣，可了解AI在内容行业的变现逻辑。但核心还是先把学业搞好。</p><p><b>📋 怎么用：</b>付费课程。大一了解即可，大三考研/考公稳定后再考虑副业。</p>"},
-  {title:"秋叶AI智能体课程", cat:"AI智能体", desc:"秋叶团队AI智能体实战课程，Coze/扣子平台操作、智能体搭建、工作流设计", source:"付费课程", tags:["Coze","扣子","智能体","工作流"],detail:"<p><b>📌 是什么：</b>秋叶团队AI智能体实战课程，Coze/扣子平台操作、智能体搭建、工作流设计。付费课程。</p><p><b>💡 对你有什么用：</b>如果你想了解AI智能体的实际应用，Coze/扣子是最易上手的零代码平台。</p><p><b>📋 怎么用：</b>先用Coze官方免费平台练手（平台编程库里有），付费课按需。</p>"},
-  {title:"猴帝AI智能体线上课", cat:"AI智能体", desc:"猴帝AI智能体线上课程，从入门到实战，含多个行业案例拆解", source:"付费课程", tags:["AI","智能体","案例"],detail:"<p><b>📌 是什么：</b>猴帝AI智能体线上课程，从入门到实战，含多个行业案例拆解。付费课程。</p><p><b>💡 对你有什么用：</b>AI智能体是当前热门方向，了解有助于拓展职业视野。</p><p><b>📋 怎么用：</b>付费课程。大一先学好基础课，AI方向大三再深入。</p>"},
-  {title:"陈厂长AI智能体实战创业营", cat:"AI智能体", desc:"陈厂长AI智能体实战创业营，从0到1搭建AI智能体，含创业落地指导", source:"付费课程", tags:["AI","创业","智能体","实战"],detail:"<p><b>📌 是什么：</b>陈厂长AI智能体实战创业营，从0到1搭建AI智能体，含创业落地指导。付费课程。</p><p><b>💡 对你有什么用：</b>创业方向参考。计科学生有技术优势，AI+创业是可行路线。</p><p><b>📋 怎么用：</b>大三/大四有创业想法时再考虑。大一先把基础打牢。</p>"},
-  {title:"王大锤26蓝图公考青云宏志班", cat:"公考", desc:"王大锤公考全程班，行测+申论系统课程，含刷题、模考、答疑", source:"付费课程", tags:["公考","行测","申论","全程班"],detail:"<p><b>📌 是什么：</b>王大锤公考全程班，行测+申论系统课程，含刷题、模考、答疑。付费课程。</p><p><b>💡 对你有什么用：</b>考公全程系统课程。如果决定考公，全程班比自学效率高。</p><p><b>📋 怎么用：</b>大三下决定考公后再报。先做几套真题了解自己的水平，再决定是否需要全程班。</p>"},
   {title:"34省+国考真题合集", cat:"公考", desc:"全国34个省份+国家公务员考试历年真题汇总，含答案解析", source:"资料合集", tags:["真题","国考","省考","答案解析"],detail:"<p><b>📌 是什么：</b>全国34省+国家公务员考试历年真题汇总，含答案解析。</p><p><b>💡 对你有什么用：</b>考公刷题必备。真题是最好的备考材料，比模拟题靠谱。</p><p><b>📋 怎么用：</b>大三下开始刷真题。先做本省真题，再做国考。每套题做完认真复盘。</p>"},
-  {title:"大齐超级个体认知成长学习圈", cat:"个人成长", desc:"大齐超级个体认知成长学习圈，36集涵盖形象、法律、营养、自媒体、财务、减脂等", source:"付费课程", tags:["认知","成长","形象","法律","自媒体"],detail:"<p><b>📌 是什么：</b>大齐超级个体认知成长学习圈，36集涵盖形象、法律、营养、自媒体、财务、减脂等。付费课程。</p><p><b>💡 对你有什么用：</b>大学四年个人成长体系，包含法律/财务/形象等非学业能力。</p><p><b>📋 怎么用：</b>大一了解即可。时间有限，优先保证专业课+四级+基础课。</p>"},
   {title:"Coze扣子AI智能体平台", cat:"免费资源", desc:"字节跳动Coze扣子AI智能体搭建平台，免费使用，支持发布到多个平台", source:"官方平台", tags:["Coze","扣子","AI","免费"],detail:"<p><b>📌 是什么：</b>字节跳动Coze扣子AI智能体搭建平台，免费使用，支持发布到多个平台。</p><p><b>💡 对你有什么用：</b>零代码搭建AI Bot的最佳入门平台。计科学生有技术优势，可以快速上手AI应用开发。</p><p><b>📋 怎么用：</b>官网注册免费账号。先试官方模板，再自己搭一个（如课程问答Bot、学习助手）。</p>"},
   {title:"B站免费编程课程合集", cat:"免费资源", desc:"B站免费编程课程汇总，C/Python/Java/前端/算法全覆盖", source:"B站免费", tags:["B站","编程","免费","合集"],detail:"<p><b>📌 是什么：</b>B站免费编程课程汇总，C/Python/Java/前端/算法全覆盖。</p><p><b>💡 对你有什么用：</b>一站式免费编程学习资源。B站是国内最大的免费编程资源库。</p><p><b>📋 怎么用：</b>B站搜「编程」按播放量排序。推荐：翁恺C语言、黑马Python、尚硅谷Java。</p>"},
 ];
@@ -2711,11 +2705,11 @@ const csData = [
   {title:"Docker容器化", cat:"工具", desc:"Docker容器化部署工具，一次构建到处运行，适合项目部署", source:"官方文档", tags:["Docker","容器","部署","DevOps"],detail:"<p><b>📌 是什么：</b>Docker容器化部署工具，一次构建到处运行。</p><p><b>💡 对你有什么用：</b>大三/大四做项目部署必备。环境隔离/快速部署。</p><p><b>📋 怎么用：</b>大三再学。先掌握Linux基础，再学Docker。</p>"},
   {title:"Postman接口测试", cat:"工具", desc:"Postman API接口测试工具，支持REST/GraphQL，调试后端必备", source:"官方下载", tags:["Postman","API","接口测试","后端"],detail:"<p><b>📌 是什么：</b>Postman API接口测试工具，支持REST/GraphQL。</p><p><b>💡 对你有什么用：</b>后端开发/接口调试必备。大三做Web项目时必用。</p><p><b>📋 怎么用：</b>官网下载免费使用。大三学习Web开发时开始用。</p>"},
   {title:"Anaconda数据科学", cat:"工具", desc:"Anaconda Python数据科学发行版，含conda包管理，适合AI/数据分析", source:"官方下载", tags:["Anaconda","Python","数据科学","AI"],detail:"<p><b>📌 是什么：</b>Anaconda Python数据科学发行版，含conda包管理。</p><p><b>💡 对你有什么用：</b>AI/数据分析方向必备。环境管理比pip方便得多。</p><p><b>📋 怎么用：</b>官网下载。大三学AI/数据分析时安装。</p>"},
-  {title:"Ollama本地大模型", cat:"AI工具", desc:"Ollama本地大模型运行工具，支持Llama/Qwen/DeepSeek等，免费离线使用", source:"官方下载", tags:["Ollama","大模型","本地","免费"],detail:"<p><b>📌 是什么：</b>Ollama本地大模型运行工具，支持Llama/Qwen/DeepSeek等，免费离线使用。</p><p><b>💡 对你有什么用：</b>本地跑AI模型，不用联网、不用API key、完全免费。AImac系统主力工具。</p><p><b>📋 怎么用：</b>官网安装。运行 ollama pull qwen3.5:9b 即可使用。Sir的Mac上已装27b+9b。</p>"},
+  {title:"Ollama本地大模型", cat:"AI工具", desc:"Ollama本地大模型运行工具，支持Llama/Qwen/DeepSeek等，免费离线使用", source:"官方下载", tags:["Ollama","大模型","本地","免费"],detail:"<p><b>📌 是什么：</b>Ollama本地大模型运行工具，支持Llama/Qwen/DeepSeek等，免费离线使用。</p><p><b>💡 对你有什么用：</b>本地跑AI模型，不用联网、不用API key、完全免费。</p><p><b>📋 怎么用：</b>官网安装，运行 ollama pull qwen3.5:9b 即可使用。</p>"},
   {title:"Dify LLMOps平台", cat:"AI工具", desc:"Dify开源LLM应用开发平台，支持RAG、Agent、工作流，可私有化部署", source:"开源项目", tags:["Dify","LLM","RAG","Agent","开源"],detail:"<p><b>📌 是什么：</b>Dify开源LLM应用开发平台，支持RAG/Agent/工作流，可私有化部署。</p><p><b>💡 对你有什么用：</b>开源AI应用开发平台，不用花钱买SaaS。</p><p><b>📋 怎么用：</b>Docker部署。大三学AI应用开发时使用。</p>"},
   {title:"Coze扣子AI平台", cat:"AI工具", desc:"字节跳动Coze扣子AI智能体搭建平台，零代码创建AI Bot，支持多平台发布", source:"官方平台", tags:["Coze","扣子","AI","零代码"],detail:"<p><b>📌 是什么：</b>字节跳动Coze扣子AI智能体搭建平台，零代码创建AI Bot。</p><p><b>💡 对你有什么用：</b>零代码入门AI应用，计科学生有技术优势。</p><p><b>📋 怎么用：</b>官网注册免费账号。先试模板，再自己搭。</p>"},
   {title:"Hugging Face", cat:"AI资源", desc:"Hugging Face全球最大AI模型社区，模型、数据集、Spaces应用，免费使用", source:"官方平台", tags:["HuggingFace","模型","数据集","AI"],detail:"<p><b>📌 是什么：</b>全球最大AI模型社区，模型/数据集/Spaces应用，免费使用。</p><p><b>💡 对你有什么用：</b>AI模型下载首选。开源模型最全。</p><p><b>📋 怎么用：</b>搜「huggingface」+ 模型名。大三学AI时使用。</p>"},
-  {title:"ModelScope魔搭", cat:"AI资源", desc:"阿里达摩院ModelScope魔搭社区，国内AI模型平台，中文模型丰富", source:"官方平台", tags:["ModelScope","魔搭","AI","国内"],detail:"<p><b>📌 是什么：</b>阿里达摩院ModelScope魔搭社区，国内AI模型平台，中文模型丰富。</p><p><b>💡 对你有什么用：</b>国内访问速度快，中文模型多。Ollama国内替代方案。</p><p><b>📋 怎么用：</b>官网注册。下载模型需登录。Sir的Mac上用hf-mirror镜像加速下载。</p>"},
+  {title:"ModelScope魔搭", cat:"AI资源", desc:"阿里达摩院ModelScope魔搭社区，国内AI模型平台，中文模型丰富", source:"官方平台", tags:["ModelScope","魔搭","AI","国内"],detail:"<p><b>📌 是什么：</b>阿里达摩院ModelScope魔搭社区，国内AI模型平台，中文模型丰富。</p><p><b>💡 对你有什么用：</b>国内访问速度快，中文模型多。Ollama国内替代方案。</p><p><b>📋 怎么用：</b>官网注册。下载模型需登录。</p>"},
   {title:"AI绘画Midjourney", cat:"AI工具", desc:"Midjourney AI绘画工具，通过Discord使用，生成高质量图片", source:"付费平台", tags:["Midjourney","AI绘画","图片","付费"],detail:"<p><b>📌 是什么：</b>Midjourney AI绘画工具，通过Discord使用，生成高质量图片。付费。</p><p><b>💡 对你有什么用：</b>AI绘画质量最高。但需付费+Discord。</p><p><b>📋 怎么用：</b>需付费订阅。大一了解即可，不急。</p>"},
   {title:"Stable Diffusion", cat:"AI工具", desc:"Stable Diffusion开源AI绘画模型，可本地部署，免费使用", source:"开源项目", tags:["StableDiffusion","AI绘画","本地","开源"],detail:"<p><b>📌 是什么：</b>Stable Diffusion开源AI绘画模型，可本地部署，免费使用。</p><p><b>💡 对你有什么用：</b>免费本地AI绘画。开源可定制。</p><p><b>📋 怎么用：</b>需要GPU。大三有硬件条件时再学。</p>"},
 ];
@@ -2922,6 +2916,20 @@ function toggleShowFavs(type) {
   renderList(type);
 }
 
+// 把详细解读里的纯文本 URL 转成可点击链接
+function linkify(text) {
+  if (!text) return text;
+  const urlRe = /(?:^|[^"'>])(https?:\/\/[^\s<"']+)/g;
+  return text.replace(urlRe, function(match, url) {
+    // 去掉 URL 尾部混入的中文标点/文字
+    const clean = url.replace(/[，。；、：！？）】》…—·“”‘’\u3000]+$/g, '');
+    if (!clean) return match;
+    const tail = url.slice(clean.length);
+    return match.slice(0, match.length - url.length) +
+      '<a href="' + clean + '" target="_blank" rel="noopener noreferrer" style="color:var(--primary);text-decoration:underline;word-break:break-all;">' + clean + '</a>' + tail;
+  });
+}
+
 function renderList(type) {
   const dataMap = {policy:policyData, media:mediaData, cs:csData};
   const listId = {policy:'policyList', media:'mediaList', cs:'csList'};
@@ -2959,7 +2967,7 @@ function renderList(type) {
     const descHtml = highlightText(d.desc, search);
     let bottomHtml;
     if (hasDetail) {
-      bottomHtml = `<div class="item-detail-toggle" onclick="event.stopPropagation();var el=this.nextElementSibling;el.classList.toggle('show');this.textContent=el.classList.contains('show')?'📖 详细解读 ▾':'📖 详细解读 ▸'">📖 详细解读 ▸</div><div class="item-detail">${d.detail}</div>`;
+      bottomHtml = `<div class="item-detail-toggle" onclick="event.stopPropagation();var el=this.nextElementSibling;el.classList.toggle('show');this.textContent=el.classList.contains('show')?'📖 详细解读 ▾':'📖 详细解读 ▸'">📖 详细解读 ▸</div><div class="item-detail">${linkify(d.detail)}</div>`;
       if (url) bottomHtml += `<a href="${url}" target="_blank" rel="noopener noreferrer" class="item-go" style="text-decoration:none;display:block;">🔗 点击访问官网 →</a>`;
       else if (isGuide) bottomHtml += `<a href="javascript:void(0)" onclick="openGuide('${d.guide}');return false;" class="item-go" style="text-decoration:none;display:block;">📖 点击查看全文 →</a>`;
     } else {
@@ -3572,9 +3580,9 @@ function switchClassTab(name) {
 let notices = JSON.parse(localStorage.getItem('class_notices') || '[]');
 if (notices.length === 0) {
   notices = [
-    {id:1, title:'🎉 欢迎加入计算机三班！', content:'欢迎各位新同学！本平台由班级技术委员维护，提供学习资料、课表、通知等服务。有问题随时在班级群反馈。', author:'辅导员', time:'2026-08-24', important:true},
-    {id:2, title:'📅 第一次班会通知', content:'时间：8月28日 晚7:00\n地点：教学楼A301\n请全体同学准时参加，带好笔记本。', author:'班长', time:'2026-08-24', important:false},
-    {id:3, title:'📚 教材领取通知', content:'请于8月27日下午2:00-4:00到教材科领取本学期教材，带校园卡。', author:'学习委员', time:'2026-08-23', important:false}
+    {id:1, title:'🎉 欢迎加入计算机三班！', content:'欢迎各位新同学！本平台提供学习资料、课表、通知等服务，有问题随时在班级群反馈。', author:'班级平台', time:'2026-08-24', important:true},
+    {id:2, title:'📅 第一次班会通知', content:'时间：8月28日 晚7:00\n地点：教学楼A301\n请全体同学准时参加，带好笔记本。', author:'班级平台', time:'2026-08-24', important:false},
+    {id:3, title:'📚 教材领取通知', content:'请于8月27日下午2:00-4:00到教材科领取本学期教材，带校园卡。', author:'班级平台', time:'2026-08-23', important:false}
   ];
   localStorage.setItem('class_notices', JSON.stringify(notices));
 }
@@ -3773,21 +3781,21 @@ function renderHomeworkProgress() {
 }
 renderHomeworkProgress();
 
-// 班委工作进度（示例数据，开学后按实际班委替换）
+// 班级工作进度（示例数据）
 const committeeData = JSON.parse(localStorage.getItem('committee_data') || 'null') || [
-  {role: '📚 学习委员', name: '待定', tasks: [
+  {role: '📚 学习事务', name: '待定', tasks: [
     {name: '作业收集', progress: 70},
     {name: '学习资料整理', progress: 50},
   ]},
-  {role: '👑 班长', name: '待定', tasks: [
+  {role: '👑 班级事务', name: '待定', tasks: [
     {name: '班级信息统计', progress: 80},
     {name: '迎新活动筹备', progress: 30},
   ]},
-  {role: '🚩 团支书', name: '待定', tasks: [
+  {role: '🚩 团务事务', name: '待定', tasks: [
     {name: '团籍转接', progress: 60},
     {name: '团日活动策划', progress: 20},
   ]},
-  {role: '💰 生活委员', name: '待定', tasks: [
+  {role: '💰 生活事务', name: '待定', tasks: [
     {name: '班费收缴', progress: 90},
     {name: '宿舍卫生检查', progress: 40},
   ]},
@@ -3811,9 +3819,9 @@ function renderCommittee() {
 }
 renderCommittee();updateFavToggle();
 
-// 班委管理（占位，开学后实现）
+// 班级工作管理（占位，开学后实现）
 function showCommitteeManage() {
-  alert('⚙️ 班委管理功能\n\n开学后根据实际班委名单启用，支持：\n• 各班委更新工作进度\n• 同学查看公开事务\n• 班级监督反馈\n\n当前为示例数据，敬请期待。');
+  alert('⚙️ 班级工作功能\n\n开学后启用，支持：\n• 各负责人更新工作进度\n• 同学查看公开事务\n• 班级监督反馈\n\n当前为示例数据，敬请期待。');
 }
 
 // 飞书数据读取与渲染
@@ -3836,7 +3844,7 @@ function renderFeishuNotices() {
   if (!container || !feishuData || !feishuData.notices) return;
   const notices = feishuData.notices.slice(0, 5);
   if (notices.length === 0) {
-    container.innerHTML = '<div style="color:#9ca3af;font-size:12px;text-align:center;padding:20px;">暂无通知，班委可在飞书添加</div>';
+    container.innerHTML = '<div style="color:#9ca3af;font-size:12px;text-align:center;padding:20px;">暂无通知，可在飞书添加</div>';
     return;
   }
   container.innerHTML = notices.map(n => `
@@ -3853,7 +3861,7 @@ function renderFeishuHomework() {
   if (!container || !feishuData || !feishuData.homework) return;
   const hw = feishuData.homework;
   if (hw.length === 0) {
-    container.innerHTML = '<div style="color:#9ca3af;font-size:12px;text-align:center;padding:20px;">暂无作业，学习委员可在飞书添加</div>';
+    container.innerHTML = '<div style="color:#9ca3af;font-size:12px;text-align:center;padding:20px;">暂无作业，可在飞书添加</div>';
     return;
   }
   const colors = ['#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
@@ -4127,7 +4135,7 @@ var DEFAULT_NOTICES = [
   {id: 1, cat: 'important', title: '关于2026级新生报到安排的通知', content: '报到时间：9月6日 8:00-17:00；报到地点：图书馆前广场；请携带录取通知书、身份证及相关材料。', author: '学工处', date: '2026-08-28', read: false},
   {id: 2, cat: 'academic', title: '新生选课系统开放通知', content: '选课时间：9月3日-9月5日；选课系统：教务管理系统；请在规定时间内完成公共选修课选课。', author: '教务处', date: '2026-08-27', read: false},
   {id: 3, cat: 'activity', title: '新生开学典礼暨入学教育安排', content: '时间：9月7日上午9:00；地点：校体育馆；请全体新生准时参加，着正装或校服。', author: '校团委', date: '2026-08-26', read: true},
-  {id: 4, cat: 'class', title: '新生班级群及临时班委通知', content: '班级QQ群：XXXXXXX（入群请备注姓名+学号）；临时班委名单已公布，请同学们积极配合。', author: '辅导员', date: '2026-08-25', read: true},
+  {id: 4, cat: 'class', title: '新生班级群通知', content: '班级QQ群：XXXXXXX（入群请备注姓名+学号）。', author: '班级平台', date: '2026-08-25', read: true},
   {id: 5, cat: 'important', title: '关于缴纳学费及住宿费的通知', content: '缴费截止时间：9月5日；缴费方式：校园统一支付平台；请按时完成缴费，以免影响报到注册。', author: '财务处', date: '2026-08-24', read: true},
   {id: 6, cat: 'academic', title: '新生体检安排通知', content: '体检时间：9月8日-9月9日；体检地点：校医院；请空腹参加，携带身份证及体检表。', author: '校医院', date: '2026-08-23', read: true}
 ];
@@ -4170,7 +4178,7 @@ function formatDate() {
 }
 
 function catLabel(cat) {
-  var map = {important:'重要', academic:'教务', activity:'活动', class:'班委'};
+  var map = {important:'重要', academic:'教务', activity:'活动', class:'班级'};
   return map[cat] || cat;
 }
 
@@ -4788,7 +4796,7 @@ function exportCollectCSV() {
           <option value="important">重要</option>
           <option value="academic">教务</option>
           <option value="activity">活动</option>
-          <option value="class">班委</option>
+          <option value="class">班级</option>
         </select>
       </div>
       <div class="form-group">
