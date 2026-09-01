@@ -3833,7 +3833,7 @@ function loadFeishuData() {
 function renderFeishuNotices() {
   const container = document.getElementById('homeNoticeMini');
   if (!container || !feishuData || !feishuData.notices) return;
-  const notices = feishuData.notices.slice(0, 5);
+  const notices = feishuData.notices.slice(0, 8);
   if (notices.length === 0) {
     container.innerHTML = '<div style="color:#9ca3af;font-size:12px;text-align:center;padding:20px;">暂无通知，可在飞书添加</div>';
     return;
