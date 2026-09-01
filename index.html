@@ -2085,13 +2085,13 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
     <div class="freshman-notice-bar">
       <span class="notice-tag">📢 最新通知</span>
       <div class="notice-scroll">
-        <span>【重要】2026级新生报到时间：9月6日 8:00-17:00，地点：图书馆前广场 &nbsp;&nbsp;|&nbsp;&nbsp; 【提醒】请于9月5日前完成网上报到及缴费 &nbsp;&nbsp;|&nbsp;&nbsp; 【活动】新生班会定于9月6日晚19:00在教学楼301召开 &nbsp;&nbsp;|&nbsp;&nbsp; 【重要】2026级新生报到时间：9月6日 8:00-17:00，地点：图书馆前广场 &nbsp;&nbsp;|&nbsp;&nbsp; 【提醒】请于9月5日前完成网上报到及缴费 &nbsp;&nbsp;|&nbsp;&nbsp; 【活动】新生班会定于9月6日晚19:00在教学楼301召开</span>
+        <span>【重要】2026级新生报到：9月4日 8:00-17:00，地点：图书馆前广场 &nbsp;&nbsp;|&nbsp;&nbsp; 【注意】报到车辆不得入内，请乘坐公共交通或步行入校 &nbsp;&nbsp;|&nbsp;&nbsp; 【上课】正式上课：9月7日 &nbsp;&nbsp;|&nbsp;&nbsp; 【军训】军训安排待通知</span>
       </div>
     </div>
 
     <!-- 四个快捷入口 -->
     <div class="freshman-quick">
-      <div class="fq-card" onclick="alert('报到流程：1.网上报到 2.抵达学校 3.资格审核 4.领取物资 5.入住宿舍')">
+      <div class="fq-card" onclick="alert('报到流程：1.网上报到 2.抵达学校 3.资格审核 4.领取物资 5.入住宿舍\n\n注意：报到车辆不得入内')">
         <div class="fq-icon">📋</div>
         <h4>报到流程</h4>
         <p>五步完成报到</p>
@@ -2163,40 +2163,32 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
         <div class="tl-item active">
           <div class="tl-dot"></div>
           <div class="tl-content">
-            <h4>9月3日-9月5日 网上报到及缴费</h4>
-            <p>登录迎新系统完成个人信息确认、学费缴纳、宿舍选择。请在截止时间前完成，以免影响现场报到。</p>
-            <span class="tl-countdown">进行中 · 截止9月5日</span>
+            <h4>9月4日前 网上报到及缴费</h4>
+            <p>登录迎新系统完成个人信息确认、学费缴纳、宿舍选择。请在现场报到前完成，以免影响报到。</p>
+            <span class="tl-countdown">进行中 · 截止9月3日</span>
           </div>
         </div>
         <div class="tl-item upcoming">
           <div class="tl-dot"></div>
           <div class="tl-content">
-            <h4>9月6日 现场报到</h4>
-            <p>时间：8:00-17:00；地点：图书馆前广场；流程：资格审核→领取物资→入住宿舍→班级见面会。</p>
+            <h4>9月4日 现场报到</h4>
+            <p>时间：8:00-17:00；地点：图书馆前广场；流程：资格审核→领取物资→入住宿舍→班级见面会。注意：报到车辆不得入内，请乘坐公共交通或步行入校。</p>
             <span class="tl-status upcoming">即将开始</span>
           </div>
         </div>
         <div class="tl-item upcoming">
           <div class="tl-dot"></div>
           <div class="tl-content">
-            <h4>9月7日 开学典礼暨入学教育</h4>
-            <p>上午9:00在校体育馆举行开学典礼，下午进行专业教育、校规校纪教育等入学教育活动。</p>
-            <span class="tl-status upcoming">即将开始</span>
+            <h4>军训（时间待通知）</h4>
+            <p>军训具体安排待通知，请关注班级通知。可提前准备运动鞋、防晒用品、水杯等。</p>
+            <span class="tl-status upcoming">待通知</span>
           </div>
         </div>
         <div class="tl-item upcoming">
           <div class="tl-dot"></div>
           <div class="tl-content">
-            <h4>9月8日-9月20日 军训</h4>
-            <p>为期两周的军事训练，地点：学校田径场。请准备运动鞋、防晒用品、水杯等。军训成绩计入学分。</p>
-            <span class="tl-status upcoming">即将开始</span>
-          </div>
-        </div>
-        <div class="tl-item upcoming">
-          <div class="tl-dot"></div>
-          <div class="tl-content">
-            <h4>9月21日 正式上课</h4>
-            <p>按照课表正式开始上课，请提前确认教室位置、教材准备。第一周为试听周，可进行选课调整。</p>
+            <h4>9月7日 正式上课</h4>
+            <p>按照课表正式开始上课，请提前确认教室位置、教材准备。</p>
             <span class="tl-status upcoming">即将开始</span>
           </div>
         </div>
@@ -2234,7 +2226,7 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
         <div class="notice-item" onclick="this.querySelector('.faq-answer').style.display = this.querySelector('.faq-answer').style.display === 'none' ? 'block' : 'none'">
           <h4>Q：军训要注意什么？可以请假吗？</h4>
           <div class="faq-answer" style="display:none;margin-top:8px;font-size:12px;color:var(--text-2);line-height:1.8;">
-            A：军训为期两周，计入必修学分。注意：穿运动鞋、多喝水、做好防晒、保证睡眠。因身体原因不能参加军训的，需提供县级以上医院证明，向辅导员申请免训或缓训。
+            A：军训时间及具体安排待通知，请关注班级通知。因身体原因不能参加的，需提供医院证明申请免训或缓训。
           </div>
         </div>
       </div>
@@ -4131,11 +4123,11 @@ var ADMIN_SESSION_KEY = 'freshman_admin_session';
 
 // ===== 默认通知数据 =====
 var DEFAULT_NOTICES = [
-  {id: 1, cat: 'important', title: '关于2026级新生报到安排的通知', content: '报到时间：9月6日 8:00-17:00；报到地点：图书馆前广场；请携带录取通知书、身份证及相关材料。', author: '学工处', date: '2026-08-28', read: false},
+  {id: 1, cat: 'important', title: '关于2026级新生报到安排的通知', content: '报到时间：9月4日 8:00-17:00；报到地点：图书馆前广场；请携带录取通知书、身份证及相关材料。注意：报到车辆不得入内，请乘坐公共交通或步行入校。', author: '学工处', date: '2026-08-28', read: false},
   {id: 2, cat: 'academic', title: '新生选课系统开放通知', content: '选课时间：9月3日-9月5日；选课系统：教务管理系统；请在规定时间内完成公共选修课选课。', author: '教务处', date: '2026-08-27', read: false},
-  {id: 3, cat: 'activity', title: '新生开学典礼暨入学教育安排', content: '时间：9月7日上午9:00；地点：校体育馆；请全体新生准时参加，着正装或校服。', author: '校团委', date: '2026-08-26', read: true},
+  {id: 3, cat: 'activity', title: '新生开学典礼暨入学教育安排', content: '时间、地点待通知，请关注班级通知。', author: '校团委', date: '2026-08-26', read: true},
   {id: 4, cat: 'class', title: '新生班级群通知', content: '班级QQ群：XXXXXXX（入群请备注姓名+学号）。', author: '班级平台', date: '2026-08-25', read: true},
-  {id: 5, cat: 'important', title: '关于缴纳学费及住宿费的通知', content: '缴费截止时间：9月5日；缴费方式：校园统一支付平台；请按时完成缴费，以免影响报到注册。', author: '财务处', date: '2026-08-24', read: true},
+  {id: 5, cat: 'important', title: '关于缴纳学费及住宿费的通知', content: '缴费截止时间：9月3日；缴费方式：校园统一支付平台；请按时完成缴费，以免影响报到注册。', author: '财务处', date: '2026-08-24', read: true},
   {id: 6, cat: 'academic', title: '新生体检安排通知', content: '体检时间：9月8日-9月9日；体检地点：校医院；请空腹参加，携带身份证及体检表。', author: '校医院', date: '2026-08-23', read: true}
 ];
 
@@ -4393,8 +4385,8 @@ document.addEventListener('click', function(e) {
 function updateFreshmanCountdown() {
   var now = new Date();
   var year = now.getFullYear();
-  var reportDate = new Date(year, 8, 6);
-  if (now > reportDate) reportDate = new Date(year + 1, 8, 6);
+  var reportDate = new Date(year, 8, 4);
+  if (now > reportDate) reportDate = new Date(year + 1, 8, 4);
   var diff = Math.ceil((reportDate - now) / (1000 * 60 * 60 * 24));
   var el1 = document.getElementById('freshmanCountdown');
   var el2 = document.getElementById('freshmanHeroCountdown');
