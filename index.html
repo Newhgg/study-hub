@@ -2182,7 +2182,7 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
       </div>
       <div class="admin-tip">
         <span>🔓</span>
-        <span>管理模式已开启：可以新增、编辑、删除通知。操作仅保存在本设备。</span>
+        <span>管理模式已开启：可新增、编辑、删除通知，发布后全班同学实时可见。</span>
       </div>
       <div class="notice-tabs">
         <button class="notice-tab active" onclick="filterFreshmanNotice(this,'all')">全部</button>
@@ -2805,21 +2805,6 @@ function switchPage(name) {
   window.scrollTo({top:0, behavior:'smooth'});
   if (name === 'collect') showCollectList();
 }
-
-// ===== 深链支持（微信入口等外部链接可直达功能页） =====
-(function() {
-  var params = new URLSearchParams(window.location.search);
-  var target = params.get('page');
-  var validPages = ['home','freshman','policy','media','cs','tools','schedule','class','collect','music'];
-  if (target && validPages.indexOf(target) !== -1) {
-    var go = function() { switchPage(target); };
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', go);
-    } else {
-      setTimeout(go, 60);
-    }
-  }
-})();
 
 // ===== 渲染 =====
 function renderTimeline(containerId) {
@@ -4223,18 +4208,55 @@ var fmEditId = null;
 var fmDelId = null;
 var fmRole = '辅导员';
 
-// ===== 工具函数 =====
+// ===== 工具函数（服务端通知系统：同学只读，管理员密钥发布）=====
+var fmServerNotices = null;   // 服务端通知缓存
+var fmServerLoaded = false;
+
 function getNotices() {
+  // 服务端数据优先，未加载完成时返回空（避免闪旧数据）
+  if (fmServerLoaded) return fmServerNotices || [];
   var stored = localStorage.getItem(NOTICES_KEY);
   if (stored) {
     try { return JSON.parse(stored); } catch(e) {}
   }
-  localStorage.setItem(NOTICES_KEY, JSON.stringify(DEFAULT_NOTICES));
   return DEFAULT_NOTICES;
 }
 
 function saveNotices(notices) {
-  localStorage.setItem(NOTICES_KEY, JSON.stringify(notices));
+  // 服务端模式下本地不再持久化（数据以服务端为准）
+  fmServerNotices = notices;
+}
+
+// 从服务端加载通知（公开读取）
+async function loadNoticesFromServer() {
+  try {
+    var resp = await fetch(FORMS_API + '/api/notices');
+    if (!resp.ok) { fmServerLoaded = true; return; }
+    var data = await resp.json();
+    fmServerNotices = data.notices || [];
+    fmServerLoaded = true;
+    renderFreshmanNotices();
+  } catch(e) {
+    fmServerLoaded = true;
+    console.log('服务端通知加载失败，使用本地默认:', e);
+  }
+}
+
+// 管理员密钥验证（调后端，密钥不进前端源码）
+async function verifyAdminOnServer(pwd) {
+  try {
+    var resp = await fetch(FORMS_API + '/api/auth/verify', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({password: pwd})
+    });
+    if (!resp.ok) return false;
+    var data = await resp.json();
+    return !!data.success;
+  } catch(e) { return false; }
+}
+
+function getAdminToken() {
+  return sessionStorage.getItem(ADMIN_SESSION_KEY) || '';
 }
 
 function getAdminPassword() {
@@ -4286,10 +4308,10 @@ function renderFreshmanNotices() {
         '<span>' + n.date + '</span>' +
         '<span class="notice-read ' + (n.read ? 'read' : 'unread') + '">' + (n.read ? '已读' : '未读') + '</span>' +
       '</div>' +
-      '<div class="notice-actions">' +
-        '<button class="btn-edit" onclick="event.stopPropagation();editNotice(' + n.id + ')">✏️ 编辑</button>' +
-        '<button class="btn-delete" onclick="event.stopPropagation();deleteNotice(' + n.id + ')">🗑️ 删除</button>' +
-      '</div>' +
+      (isAdmin() ? '<div class="notice-actions">' +
+        '<button class="btn-edit" onclick="event.stopPropagation();editNotice(\'' + n.id + '\')">✏️ 编辑</button>' +
+        '<button class="btn-delete" onclick="event.stopPropagation();deleteNotice(\'' + n.id + '\')">🗑️ 删除</button>' +
+      '</div>' : '') +
     '</div>';
   }).join('');
 
@@ -4310,10 +4332,9 @@ function escapeHtml(str) {
 
 function markAsRead(id) {
   var notices = getNotices();
-  var notice = notices.find(function(n) { return n.id === id; });
+  var notice = notices.find(function(n) { return String(n.id) === String(id); });
   if (notice && !notice.read) {
     notice.read = true;
-    saveNotices(notices);
     renderFreshmanNotices();
   }
 }
@@ -4340,10 +4361,11 @@ function fmSelectRole(el) {
   fmRole = el.dataset.role;
 }
 
-function verifyAdmin() {
+async function verifyAdmin() {
   var pwd = document.getElementById('adminPassword').value;
-  if (pwd === getAdminPassword()) {
-    sessionStorage.setItem(ADMIN_SESSION_KEY, fmRole);
+  var ok = await verifyAdminOnServer(pwd);
+  if (ok) {
+    sessionStorage.setItem(ADMIN_SESSION_KEY, '管理员');
     fmCloseModal('adminLoginModal');
     enterAdminMode();
   } else {
@@ -4360,7 +4382,7 @@ function enterAdminMode() {
   var section = document.getElementById('noticeSection');
   if (section) section.classList.add('admin-mode');
   document.getElementById('adminLoginBtn').style.display = 'none';
-  document.getElementById('changePwdBtn').style.display = 'inline-flex';
+  document.getElementById('changePwdBtn').style.display = 'none';
   document.getElementById('adminLogoutBtn').style.display = 'inline-flex';
   document.getElementById('adminStatus').style.display = 'inline-block';
   document.getElementById('adminRoleName').textContent = getAdminRole();
@@ -4401,41 +4423,34 @@ function editNotice(id) {
   fmOpenModal('noticeFormModal');
 }
 
-function saveNotice() {
+async function saveNotice() {
   var title = document.getElementById('noticeTitle').value.trim();
   var content = document.getElementById('noticeContent').value.trim();
   var cat = document.getElementById('noticeCat').value;
-  var author = document.getElementById('noticeAuthor').value.trim() || getAdminRole();
+  var author = document.getElementById('noticeAuthor').value.trim() || '管理员';
 
   if (!title || !content) {
     alert('请填写标题和内容');
     return;
   }
 
-  var notices = getNotices();
-  if (fmEditId) {
-    var notice = notices.find(function(n) { return n.id === fmEditId; });
-    if (notice) {
-      notice.title = title;
-      notice.content = content;
-      notice.cat = cat;
-      notice.author = author;
-    }
-  } else {
-    var newId = notices.length > 0 ? Math.max.apply(null, notices.map(function(n) { return n.id; })) + 1 : 1;
-    notices.unshift({
-      id: newId,
-      cat: cat,
-      title: title,
-      content: content,
-      author: author,
-      date: formatDate(),
-      read: false
-    });
+  var payload = {cat: cat, title: title, content: content, author: author, date: formatDate()};
+  try {
+    var url = FORMS_API + '/api/notices';
+    var opts = {
+      method: fmEditId ? 'PUT' : 'POST',
+      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getAdminToken()},
+      body: JSON.stringify(payload)
+    };
+    if (fmEditId) url += '/' + fmEditId;
+    var resp = await fetch(url, opts);
+    var data = await resp.json();
+    if (!data.success) { alert('发布失败：' + (data.detail || '权限不足')); return; }
+    fmCloseModal('noticeFormModal');
+    await loadNoticesFromServer();
+  } catch(e) {
+    alert('发布失败：服务未连接');
   }
-  saveNotices(notices);
-  fmCloseModal('noticeFormModal');
-  renderFreshmanNotices();
 }
 
 function deleteNotice(id) {
@@ -4443,11 +4458,18 @@ function deleteNotice(id) {
   fmOpenModal('deleteConfirmModal');
 }
 
-function confirmDelete() {
-  var notices = getNotices().filter(function(n) { return n.id !== fmDelId; });
-  saveNotices(notices);
-  fmCloseModal('deleteConfirmModal');
-  renderFreshmanNotices();
+async function confirmDelete() {
+  try {
+    var resp = await fetch(FORMS_API + '/api/notices/' + fmDelId, {
+      method: 'DELETE', headers: {'Authorization': 'Bearer ' + getAdminToken()}
+    });
+    var data = await resp.json();
+    if (!data.success) { alert('删除失败'); return; }
+    fmCloseModal('deleteConfirmModal');
+    await loadNoticesFromServer();
+  } catch(e) {
+    alert('删除失败：服务未连接');
+  }
 }
 
 // ===== 模态框通用 =====
@@ -4484,6 +4506,7 @@ function updateFreshmanCountdown() {
 document.addEventListener('DOMContentLoaded', function() {
   updateFreshmanCountdown();
   renderFreshmanNotices();
+  loadNoticesFromServer();
   showWelcome();
   if (isAdmin()) {
     enterAdminMode();
@@ -4493,6 +4516,7 @@ document.addEventListener('DOMContentLoaded', function() {
 if (document.readyState !== 'loading') {
   updateFreshmanCountdown();
   renderFreshmanNotices();
+  loadNoticesFromServer();
   showWelcome();
   if (isAdmin()) enterAdminMode();
 }
@@ -4813,40 +4837,11 @@ function exportCollectCSV() {
 <div class="modal-overlay" id="adminLoginModal">
   <div class="modal-box">
     <h3>🔐 管理员登录</h3>
-    <p class="modal-desc">仅辅导员和班干部可管理通知。请选择身份并输入管理密码。</p>
+    <p class="modal-desc">管理员密钥仅站长持有。登录后可发布通知，全班同学实时可见。</p>
     <div class="form-group">
-      <label>选择身份</label>
-      <div class="role-grid" id="roleGrid">
-        <div class="role-option selected" data-role="辅导员" onclick="fmSelectRole(this)">
-          <span class="role-icon">👨‍🏫</span>
-          <span class="role-name">辅导员</span>
-        </div>
-        <div class="role-option" data-role="班长" onclick="fmSelectRole(this)">
-          <span class="role-icon">👑</span>
-          <span class="role-name">班长</span>
-        </div>
-        <div class="role-option" data-role="团支书" onclick="fmSelectRole(this)">
-          <span class="role-icon">🚩</span>
-          <span class="role-name">团支书</span>
-        </div>
-        <div class="role-option" data-role="学习委员" onclick="fmSelectRole(this)">
-          <span class="role-icon">📚</span>
-          <span class="role-name">学习委员</span>
-        </div>
-        <div class="role-option" data-role="生活委员" onclick="fmSelectRole(this)">
-          <span class="role-icon">🏠</span>
-          <span class="role-name">生活委员</span>
-        </div>
-        <div class="role-option" data-role="文体委员" onclick="fmSelectRole(this)">
-          <span class="role-icon">🎨</span>
-          <span class="role-name">文体委员</span>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>管理密码</label>
-      <input type="password" id="adminPassword" placeholder="请输入管理密码" onkeydown="if(event.key==='Enter')verifyAdmin()">
-      <div class="form-error" id="loginError">❌ 密码错误，请重试</div>
+      <label>管理员密钥</label>
+      <input type="password" id="adminPassword" placeholder="请输入管理员密钥" onkeydown="if(event.key==='Enter')verifyAdmin()">
+      <div class="form-error" id="loginError">❌ 密钥错误，请重试</div>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="fmCloseModal('adminLoginModal')">取消</button>
