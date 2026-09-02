@@ -4449,7 +4449,7 @@ async function fmSaveNotice() {
     fmCloseModal('noticeFormModal');
     await loadNoticesFromServer();
   } catch(e) {
-    alert('发布失败：服务未连接');
+    alert('发布失败：' + (e && e.message ? e.message : '服务未连接') + '\n\n提示：通知发布依赖本站后端服务，请确认网络正常；或改用备用入口 https://1234mac-studio.tail830780.ts.net/study/');
   }
 }
 
