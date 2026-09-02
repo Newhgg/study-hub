@@ -4229,21 +4229,44 @@ function saveNotices(notices) {
 
 // 从服务端加载通知（公开读取）
 async function loadNoticesFromServer() {
+  // 优先读 GitHub notices.json（同域，微信/所有环境必通，永久可用）
   try {
-    var resp = await fetch(FORMS_API + '/api/notices');
-    if (!resp.ok) { fmServerLoaded = true; return; }
-    var data = await resp.json();
-    fmServerNotices = data.notices || [];
+    var resp = await fetch('notices.json?t=' + Date.now());
+    if (resp.ok) {
+      var data = await resp.json();
+      fmServerNotices = data.notices || [];
+      fmServerLoaded = true;
+      renderFreshmanNotices();
+      return;
+    }
+  } catch(e) { console.log('notices.json 读取失败，尝试后端:', e); }
+  // fallback: 后端 API
+  try {
+    var resp2 = await fetch(FORMS_API + '/api/notices');
+    if (!resp2.ok) { fmServerLoaded = true; return; }
+    var data2 = await resp2.json();
+    fmServerNotices = data2.notices || [];
     fmServerLoaded = true;
     renderFreshmanNotices();
-  } catch(e) {
+  } catch(e2) {
     fmServerLoaded = true;
-    console.log('服务端通知加载失败，使用本地默认:', e);
+    console.log('服务端通知加载失败，使用本地默认:', e2);
   }
 }
 
 // 管理员密钥验证（调后端，密钥不进前端源码）
 async function verifyAdminOnServer(pwd) {
+  // 方式1: GitHub token 验证（云端，不依赖 Mac，永久可用）
+  try {
+    var g = await fetch('https://api.github.com/user', {
+      headers: {'Authorization': 'token ' + pwd}
+    });
+    if (g.ok) {
+      var gd = await g.json();
+      if (gd && gd.login) return true;
+    }
+  } catch(e) {}
+  // 方式2: 后端密钥验证（备用入口/电脑本地）
   try {
     var resp = await fetch(FORMS_API + '/api/auth/verify', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -4253,6 +4276,12 @@ async function verifyAdminOnServer(pwd) {
     var data = await resp.json();
     return !!data.success;
   } catch(e) { return false; }
+}
+
+// 判断当前登录方式（GitHub token 还是后端密钥）
+function isGitHubAdmin() {
+  var t = getAdminToken();
+  return t && t.indexOf('ghp_') === 0;
 }
 
 function getAdminToken() {
@@ -4436,20 +4465,67 @@ async function fmSaveNotice() {
 
   var payload = {cat: cat, title: title, content: content, author: author, date: formatDate()};
   try {
-    var url = FORMS_API + '/api/notices';
-    var opts = {
-      method: fmEditId ? 'PUT' : 'POST',
-      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getAdminToken()},
-      body: JSON.stringify(payload)
-    };
-    if (fmEditId) url += '/' + fmEditId;
-    var resp = await fetch(url, opts);
-    var data = await resp.json();
-    if (!data.success) { alert('发布失败：' + (data.detail || '权限不足')); return; }
+    var ok = false;
+    if (isGitHubAdmin()) {
+      ok = await saveNoticesToGithub(payload);
+      if (!ok) alert('GitHub 发布失败，请检查密钥权限，或改用后端密钥登录');
+    } else {
+      var url = FORMS_API + '/api/notices';
+      var opts = {
+        method: fmEditId ? 'PUT' : 'POST',
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getAdminToken()},
+        body: JSON.stringify(payload)
+      };
+      if (fmEditId) url += '/' + fmEditId;
+      var resp = await fetch(url, opts);
+      var data = await resp.json();
+      ok = !!(data && data.success);
+      if (!ok) alert('发布失败：' + (data && data.detail ? data.detail : '权限不足'));
+    }
+    if (!ok) return;
     fmCloseModal('noticeFormModal');
     await loadNoticesFromServer();
   } catch(e) {
-    alert('发布失败：' + (e && e.message ? e.message : '服务未连接') + '\n\n提示：通知发布依赖本站后端服务，请确认网络正常；或改用备用入口 https://1234mac-studio.tail830780.ts.net/study/');
+    alert('发布失败：' + (e && e.message ? e.message : '服务未连接'));
+  }
+}
+
+// 通过 GitHub API 写 notices.json（云端完成，不依赖 Mac 开机）
+async function saveNoticesToGithub(payload) {
+  try {
+    // 读当前 notices.json（拿 sha 和现有数据）
+    var cur = await fetch('notices.json?t=' + Date.now());
+    var curData = cur.ok ? await cur.json() : {notices: []};
+    var notices = curData.notices || [];
+    if (fmEditId) {
+      var idx = notices.findIndex(function(n) { return String(n.id) === String(fmEditId); });
+      if (idx >= 0) notices[idx] = Object.assign({}, notices[idx], payload);
+    } else {
+      notices.unshift(Object.assign({id: 'n' + Date.now()}, payload));
+    }
+    var newData = {notices: notices, update_time: formatDate()};
+
+    // GitHub Contents API: 先 GET 拿 sha
+    var g = await fetch('https://api.github.com/repos/Newhgg/study-hub/contents/notices.json', {
+      headers: {'Authorization': 'token ' + getAdminToken()}
+    });
+    var sha = null;
+    if (g.ok) { var gi = await g.json(); sha = gi.sha; }
+    // PUT 写入
+    var body = {
+      message: 'notice: ' + payload.title,
+      content: btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2)))),
+      sha: sha,
+      branch: 'master'
+    };
+    var p = await fetch('https://api.github.com/repos/Newhgg/study-hub/contents/notices.json', {
+      method: 'PUT', headers: {'Content-Type': 'application/json', 'Authorization': 'token ' + getAdminToken()},
+      body: JSON.stringify(body)
+    });
+    return p.ok;
+  } catch(e) {
+    console.log('GitHub 写入失败:', e);
+    return false;
   }
 }
 
@@ -4460,16 +4536,43 @@ function fmDeleteNotice(id) {
 
 async function fmConfirmDelete() {
   try {
-    var resp = await fetch(FORMS_API + '/api/notices/' + fmDelId, {
-      method: 'DELETE', headers: {'Authorization': 'Bearer ' + getAdminToken()}
-    });
-    var data = await resp.json();
-    if (!data.success) { alert('删除失败'); return; }
+    var ok = false;
+    if (isGitHubAdmin()) {
+      ok = await deleteNoticeFromGithub(fmDelId);
+      if (!ok) alert('GitHub 删除失败');
+    } else {
+      var resp = await fetch(FORMS_API + '/api/notices/' + fmDelId, {
+        method: 'DELETE', headers: {'Authorization': 'Bearer ' + getAdminToken()}
+      });
+      var data = await resp.json();
+      ok = !!(data && data.success);
+      if (!ok) alert('删除失败');
+    }
+    if (!ok) return;
     fmCloseModal('deleteConfirmModal');
     await loadNoticesFromServer();
   } catch(e) {
-    alert('删除失败：服务未连接');
+    alert('删除失败：' + (e && e.message ? e.message : '服务未连接'));
   }
+}
+
+async function deleteNoticeFromGithub(id) {
+  try {
+    var cur = await fetch('notices.json?t=' + Date.now());
+    var curData = cur.ok ? await cur.json() : {notices: []};
+    var notices = (curData.notices || []).filter(function(n) { return String(n.id) !== String(id); });
+    var newData = {notices: notices, update_time: formatDate()};
+    var g = await fetch('https://api.github.com/repos/Newhgg/study-hub/contents/notices.json', {
+      headers: {'Authorization': 'token ' + getAdminToken()}
+    });
+    var sha = null;
+    if (g.ok) { var gi = await g.json(); sha = gi.sha; }
+    var p = await fetch('https://api.github.com/repos/Newhgg/study-hub/contents/notices.json', {
+      method: 'PUT', headers: {'Content-Type': 'application/json', 'Authorization': 'token ' + getAdminToken()},
+      body: JSON.stringify({message: 'delete notice', content: btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2)))), sha: sha, branch: 'master'})
+    });
+    return p.ok;
+  } catch(e) { console.log('GitHub 删除失败:', e); return false; }
 }
 
 // ===== 模态框通用 =====
@@ -4837,10 +4940,10 @@ function exportCollectCSV() {
 <div class="modal-overlay" id="adminLoginModal">
   <div class="modal-box">
     <h3>🔐 管理员登录</h3>
-    <p class="modal-desc">管理员密钥仅站长持有。登录后可发布通知，全班同学实时可见。</p>
+    <p class="modal-desc">用 GitHub 仓库密钥（ghp_...）登录：云端发布，永久可用，不依赖电脑开机；或输入后端密钥。</p>
     <div class="form-group">
       <label>管理员密钥</label>
-      <input type="password" id="adminPassword" placeholder="请输入管理员密钥" onkeydown="if(event.key==='Enter')verifyAdmin()">
+      <input type="password" id="adminPassword" placeholder="输入 ghp_ 开头的仓库密钥" onkeydown="if(event.key==='Enter')verifyAdmin()">
       <div class="form-error" id="loginError">❌ 密钥错误，请重试</div>
     </div>
     <div class="modal-actions">
