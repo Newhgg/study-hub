@@ -4278,6 +4278,20 @@ async function verifyAdminOnServer(pwd) {
   } catch(e) { return false; }
 }
 
+// 通用 base64 编码(兼容微信旧 WebView, 替代 unescape 方案)
+function encodeToBase64(str) {
+  try {
+    if (typeof btoa === 'function' && typeof TextEncoder !== 'undefined') {
+      var bytes = new TextEncoder().encode(str);
+      var bin = '';
+      for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+      return btoa(bin);
+    }
+  } catch(e) {}
+  try { return btoa(unescape(encodeURIComponent(str))); } catch(e2) {}
+  throw new Error('当前环境不支持编码');
+}
+
 // 判断当前登录方式（GitHub token 还是后端密钥）
 function isGitHubAdmin() {
   var t = getAdminToken();
@@ -4347,8 +4361,7 @@ function renderFreshmanNotices() {
   // 绑定点击标记已读
   list.querySelectorAll('.notice-item').forEach(function(item) {
     item.addEventListener('click', function() {
-      var id = parseInt(this.dataset.id);
-      markAsRead(id);
+      markAsRead(this.dataset.id);
     });
   });
 }
@@ -4516,7 +4529,7 @@ async function saveNoticesToGithub(payload) {
     // PUT 写入
     var body = {
       message: 'notice: ' + payload.title,
-      content: btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2)))),
+      content: encodeToBase64(JSON.stringify(newData, null, 2)),
       sha: sha,
       branch: 'master'
     };
@@ -4571,7 +4584,7 @@ async function deleteNoticeFromGithub(id) {
     if (g.ok) { var gi = await g.json(); sha = gi.sha; }
     var p = await fetch('https://api.github.com/repos/Newhgg/study-hub/contents/notices.json', {
       method: 'PUT', headers: {'Content-Type': 'application/json', 'Authorization': 'token ' + getAdminToken()},
-      body: JSON.stringify({message: 'delete notice', content: btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2)))), sha: sha, branch: 'master'})
+      body: JSON.stringify({message: 'delete notice', content: encodeToBase64(JSON.stringify(newData, null, 2)), sha: sha, branch: 'master'})
     });
     return p.ok;
   } catch(e) { console.log('GitHub 删除失败:', e); return false; }
@@ -4608,6 +4621,10 @@ function updateFreshmanCountdown() {
 }
 
 // ===== 初始化 =====
+window.addEventListener('error', function(ev) {
+  console.error('全局错误:', ev.error);
+  alert('页面出错: ' + (ev.error && ev.error.message ? ev.error.message : ev.message));
+});
 document.addEventListener('DOMContentLoaded', function() {
   updateFreshmanCountdown();
   renderFreshmanNotices();
