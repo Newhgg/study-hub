@@ -4293,11 +4293,11 @@ function getAdminPassword() {
 }
 
 function isAdmin() {
-  return sessionStorage.getItem(ADMIN_SESSION_KEY) !== null;
+  return sessionStorage.getItem('fm_admin_mode') === '1';
 }
 
 function getAdminRole() {
-  return sessionStorage.getItem(ADMIN_SESSION_KEY) || '';
+  return '管理员';
 }
 
 function formatDate() {
@@ -4394,7 +4394,8 @@ async function verifyAdmin() {
   var pwd = document.getElementById('adminPassword').value;
   var ok = await verifyAdminOnServer(pwd);
   if (ok) {
-    sessionStorage.setItem(ADMIN_SESSION_KEY, '管理员');
+    sessionStorage.setItem(ADMIN_SESSION_KEY, pwd);
+    sessionStorage.setItem('fm_admin_mode', '1');
     fmCloseModal('adminLoginModal');
     enterAdminMode();
   } else {
@@ -4404,6 +4405,7 @@ async function verifyAdmin() {
 
 function logoutAdmin() {
   sessionStorage.removeItem(ADMIN_SESSION_KEY);
+  sessionStorage.removeItem('fm_admin_mode');
   exitAdminMode();
 }
 
