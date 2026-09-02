@@ -1,6 +1,14 @@
 {
   "notices": [
     {
+      "id": "ntest1",
+      "cat": "important",
+      "title": "🔧 发布链路测试",
+      "content": "这是一条测试通知,验证后删除。",
+      "author": "站长",
+      "date": "2026-09-02"
+    },
+    {
       "id": "c20d51d1",
       "cat": "important",
       "title": "📢 三班学习平台正式上线",
