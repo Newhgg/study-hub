@@ -3649,7 +3649,7 @@ function renderNotices() {
     <div class="notice-item ${n.important?'important':''}">
       <div class="notice-header">
         <div class="notice-title">${n.important?'🔴 ':''}${n.title}</div>
-        <button class="notice-delete" onclick="deleteNotice(${n.id})">✕</button>
+        <button class="notice-delete" onclick="classDeleteNotice(${n.id})">✕</button>
       </div>
       <div class="notice-content">${n.content.replace(/\n/g,'<br>')}</div>
       <div class="notice-meta"><span>👤 ${n.author||'匿名'}</span><span>🕐 ${n.time}</span></div>
@@ -3658,9 +3658,9 @@ function renderNotices() {
 }
 
 function showAddNotice() {
-  document.getElementById('noticeTitle').value = '';
-  document.getElementById('noticeContent').value = '';
-  document.getElementById('noticeAuthor').value = '';
+  document.getElementById('fmNoticeTitle').value = '';
+  document.getElementById('fmNoticeContent').value = '';
+  document.getElementById('fmNoticeAuthor').value = '';
   document.getElementById('noticeModal').classList.add('show');
 }
 
@@ -3670,8 +3670,8 @@ function closeNoticeModal() {
 
 function saveNotice() {
   const title = document.getElementById('noticeTitle').value.trim();
-  const content = document.getElementById('noticeContent').value.trim();
-  const author = document.getElementById('noticeAuthor').value.trim();
+  const content = document.getElementById('fmNoticeContent').value.trim();
+  const author = document.getElementById('fmNoticeAuthor').value.trim();
   if (!title || !content) { alert('请填写标题和内容'); return; }
   notices.unshift({
     id: Date.now(),
@@ -3686,7 +3686,7 @@ function saveNotice() {
   renderNotices();
 }
 
-function deleteNotice(id) {
+function classDeleteNotice(id) {
   if (confirm('确定删除这条通知吗？')) {
     notices = notices.filter(n => n.id !== id);
     localStorage.setItem('class_notices', JSON.stringify(notices));
@@ -4309,8 +4309,8 @@ function renderFreshmanNotices() {
         '<span class="notice-read ' + (n.read ? 'read' : 'unread') + '">' + (n.read ? '已读' : '未读') + '</span>' +
       '</div>' +
       (isAdmin() ? '<div class="notice-actions">' +
-        '<button class="btn-edit" onclick="event.stopPropagation();editNotice(\'' + n.id + '\')">✏️ 编辑</button>' +
-        '<button class="btn-delete" onclick="event.stopPropagation();deleteNotice(\'' + n.id + '\')">🗑️ 删除</button>' +
+        '<button class="btn-edit" onclick="event.stopPropagation();fmEditNotice(\'' + n.id + '\')">✏️ 编辑</button>' +
+        '<button class="btn-delete" onclick="event.stopPropagation();fmDeleteNotice(\'' + n.id + '\')">🗑️ 删除</button>' +
       '</div>' : '') +
     '</div>';
   }).join('');
@@ -4403,31 +4403,31 @@ function exitAdminMode() {
 function openNoticeForm() {
   fmEditId = null;
   document.getElementById('noticeFormTitle').textContent = '➕ 新增通知';
-  document.getElementById('noticeTitle').value = '';
-  document.getElementById('noticeContent').value = '';
-  document.getElementById('noticeCat').value = 'important';
-  document.getElementById('noticeAuthor').value = getAdminRole() || '';
+  document.getElementById('fmNoticeTitle').value = '';
+  document.getElementById('fmNoticeContent').value = '';
+  document.getElementById('fmNoticeCat').value = 'important';
+  document.getElementById('fmNoticeAuthor').value = getAdminRole() || '';
   fmOpenModal('noticeFormModal');
 }
 
-function editNotice(id) {
+function fmEditNotice(id) {
   var notices = getNotices();
   var notice = notices.find(function(n) { return n.id === id; });
   if (!notice) return;
   fmEditId = id;
   document.getElementById('noticeFormTitle').textContent = '✏️ 编辑通知';
-  document.getElementById('noticeTitle').value = notice.title;
-  document.getElementById('noticeContent').value = notice.content;
-  document.getElementById('noticeCat').value = notice.cat;
-  document.getElementById('noticeAuthor').value = notice.author;
+  document.getElementById('fmNoticeTitle').value = notice.title;
+  document.getElementById('fmNoticeContent').value = notice.content;
+  document.getElementById('fmNoticeCat').value = notice.cat;
+  document.getElementById('fmNoticeAuthor').value = notice.author;
   fmOpenModal('noticeFormModal');
 }
 
-async function saveNotice() {
-  var title = document.getElementById('noticeTitle').value.trim();
-  var content = document.getElementById('noticeContent').value.trim();
-  var cat = document.getElementById('noticeCat').value;
-  var author = document.getElementById('noticeAuthor').value.trim() || '管理员';
+async function fmSaveNotice() {
+  var title = document.getElementById('fmNoticeTitle').value.trim();
+  var content = document.getElementById('fmNoticeContent').value.trim();
+  var cat = document.getElementById('fmNoticeCat').value;
+  var author = document.getElementById('fmNoticeAuthor').value.trim() || '管理员';
 
   if (!title || !content) {
     alert('请填写标题和内容');
@@ -4453,12 +4453,12 @@ async function saveNotice() {
   }
 }
 
-function deleteNotice(id) {
+function fmDeleteNotice(id) {
   fmDelId = id;
   fmOpenModal('deleteConfirmModal');
 }
 
-async function confirmDelete() {
+async function fmConfirmDelete() {
   try {
     var resp = await fetch(FORMS_API + '/api/notices/' + fmDelId, {
       method: 'DELETE', headers: {'Authorization': 'Bearer ' + getAdminToken()}
@@ -4857,16 +4857,16 @@ function exportCollectCSV() {
     <p class="modal-desc">填写通知信息，发布后全班可见。</p>
     <div class="form-group">
       <label>通知标题</label>
-      <input type="text" id="noticeTitle" placeholder="例如：关于新生报到的通知">
+      <input type="text" id="fmNoticeTitle" placeholder="例如：关于新生报到的通知">
     </div>
     <div class="form-group">
       <label>通知内容</label>
-      <textarea id="noticeContent" placeholder="请输入通知详细内容..."></textarea>
+      <textarea id="fmNoticeContent" placeholder="请输入通知详细内容..."></textarea>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>分类</label>
-        <select id="noticeCat">
+        <select id="fmNoticeCat">
           <option value="important">重要</option>
           <option value="academic">教务</option>
           <option value="activity">活动</option>
@@ -4875,12 +4875,12 @@ function exportCollectCSV() {
       </div>
       <div class="form-group">
         <label>发布人</label>
-        <input type="text" id="noticeAuthor" placeholder="例如：学工处">
+        <input type="text" id="fmNoticeAuthor" placeholder="例如：学工处">
       </div>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="fmCloseModal('noticeFormModal')">取消</button>
-      <button class="btn-confirm" onclick="saveNotice()">保存</button>
+      <button class="btn-confirm" onclick="fmSaveNotice()">保存</button>
     </div>
   </div>
 </div>
@@ -4892,7 +4892,7 @@ function exportCollectCSV() {
     <p class="modal-desc" style="margin-bottom:20px;">确定要删除这条通知吗？删除后无法恢复。</p>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="fmCloseModal('deleteConfirmModal')">取消</button>
-      <button class="btn-danger" onclick="confirmDelete()">删除</button>
+      <button class="btn-danger" onclick="fmConfirmDelete()">删除</button>
     </div>
   </div>
 </div>
