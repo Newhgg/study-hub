@@ -1,6 +1,30 @@
 {
   "notices": [
     {
+      "id": "n1788317576655",
+      "cat": "important",
+      "title": "测试",
+      "content": "测试",
+      "author": "管理员",
+      "date": "2026-09-02"
+    },
+    {
+      "id": "ntest3",
+      "cat": "important",
+      "title": "CORS验证",
+      "content": "x",
+      "author": "t",
+      "date": "2026-09-02"
+    },
+    {
+      "id": "n1788317056487",
+      "cat": "important",
+      "title": "测试",
+      "content": "测试",
+      "author": "管理员",
+      "date": "2026-09-02"
+    },
+    {
       "id": "c20d51d1",
       "cat": "important",
       "title": "📢 三班学习平台正式上线",
