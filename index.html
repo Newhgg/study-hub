@@ -2806,6 +2806,21 @@ function switchPage(name) {
   if (name === 'collect') showCollectList();
 }
 
+// ===== 深链支持（微信入口等外部链接可直达功能页） =====
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var target = params.get('page');
+  var validPages = ['home','freshman','policy','media','cs','tools','schedule','class','collect','music'];
+  if (target && validPages.indexOf(target) !== -1) {
+    var go = function() { switchPage(target); };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', go);
+    } else {
+      setTimeout(go, 60);
+    }
+  }
+})();
+
 // ===== 渲染 =====
 function renderTimeline(containerId) {
   const now = new Date();
