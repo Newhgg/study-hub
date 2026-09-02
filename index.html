@@ -4258,7 +4258,7 @@ async function loadNoticesFromServer() {
 async function verifyAdminOnServer(pwd) {
   // 方式1: GitHub token 验证（云端，不依赖 Mac，永久可用）
   try {
-    var g = await fetch('https://api.github.com/user', {
+    var g = await fetch(GH_API_BASE + '/user', {
       headers: {'Authorization': 'token ' + pwd}
     });
     if (g.ok) {
@@ -4309,6 +4309,9 @@ function isGitHubAdmin() {
 function getAdminToken() {
   return sessionStorage.getItem(ADMIN_SESSION_KEY) || '';
 }
+
+// GitHub API 统一走同域代理（ts.net/gh/ → api.github.com，Caddy 服务端转发，微信不拦跨域）
+var GH_API_BASE = 'https://1234mac-studio.tail830780.ts.net/gh';
 
 function getAdminPassword() {
   return localStorage.getItem(ADMIN_PASSWORD_KEY) || DEFAULT_ADMIN_PASSWORD;
@@ -4530,7 +4533,7 @@ async function saveNoticesToGithub(payload) {
     var newData = {notices: notices, update_time: formatDate()};
 
     // GitHub Contents API: 先 GET 拿 sha
-    var g = await fetch('https://api.github.com/repos/Newhgg/study-hub/contents/notices.json', {
+    var g = await fetch(GH_API_BASE + '/repos/Newhgg/study-hub/contents/notices.json', {
       headers: {'Authorization': 'token ' + getAdminToken()}
     });
     var sha = null;
@@ -4542,7 +4545,7 @@ async function saveNoticesToGithub(payload) {
       sha: sha,
       branch: 'master'
     };
-    var p = await fetch('https://api.github.com/repos/Newhgg/study-hub/contents/notices.json', {
+    var p = await fetch(GH_API_BASE + '/repos/Newhgg/study-hub/contents/notices.json', {
       method: 'PUT', headers: {'Content-Type': 'application/json', 'Authorization': 'token ' + getAdminToken()},
       body: JSON.stringify(body)
     });
@@ -4591,12 +4594,12 @@ async function deleteNoticeFromGithub(id) {
     var curData = cur.ok ? await cur.json() : {notices: []};
     var notices = (curData.notices || []).filter(function(n) { return String(n.id) !== String(id); });
     var newData = {notices: notices, update_time: formatDate()};
-    var g = await fetch('https://api.github.com/repos/Newhgg/study-hub/contents/notices.json', {
+    var g = await fetch(GH_API_BASE + '/repos/Newhgg/study-hub/contents/notices.json', {
       headers: {'Authorization': 'token ' + getAdminToken()}
     });
     var sha = null;
     if (g.ok) { var gi = await g.json(); sha = gi.sha; }
-    var p = await fetch('https://api.github.com/repos/Newhgg/study-hub/contents/notices.json', {
+    var p = await fetch(GH_API_BASE + '/repos/Newhgg/study-hub/contents/notices.json', {
       method: 'PUT', headers: {'Content-Type': 'application/json', 'Authorization': 'token ' + getAdminToken()},
       body: JSON.stringify({message: 'delete notice', content: encodeToBase64(JSON.stringify(newData, null, 2)), sha: sha, branch: 'master'})
     });
