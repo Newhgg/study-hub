@@ -1,11 +1,11 @@
 {
   "notices": [
     {
-      "id": "n1788317056487",
+      "id": "ntest3",
       "cat": "important",
-      "title": "测试",
-      "content": "测试",
-      "author": "管理员",
+      "title": "CORS验证",
+      "content": "x",
+      "author": "t",
       "date": "2026-09-02"
     },
     {
