@@ -3526,7 +3526,6 @@ function renderSchedule() {
     scheduleData.courses.forEach(c => c.id = Date.now() + Math.random());
     localStorage.setItem('schedule_data', JSON.stringify(scheduleData));
   }
-  }
   let html = '<table class="schedule-table"><thead><tr><th class="time-col">节次</th>';
   dayNames.forEach(d => html += `<th>${d}</th>`);
   html += '</tr></thead><tbody>';
