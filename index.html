@@ -2176,7 +2176,6 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
         <div style="display:flex;align-items:center;gap:8px;">
           <span class="admin-status" id="adminStatus" style="display:none;">👤 <span id="adminRoleName"></span></span>
           <button class="admin-btn" id="adminLoginBtn" onclick="openAdminLogin()">⚙️ 管理</button>
-          <button class="admin-btn" id="changePwdBtn" style="display:none;" onclick="openChangePassword()">🔑 改密码</button>
           <button class="admin-btn logout" id="adminLogoutBtn" style="display:none;" onclick="logoutAdmin()">退出管理</button>
         </div>
       </div>
@@ -4193,7 +4192,7 @@ window.switchPage = function(page) {
 
 // ===== 配置 =====
 var ADMIN_PASSWORD_KEY = 'freshman_admin_password';
-var DEFAULT_ADMIN_PASSWORD = 'admin2026'; // 默认密码，首次登录后可修改
+var DEFAULT_ADMIN_PASSWORD = ''; // 密码走后端验证，不再内置明文默认密码（安全加固 2026-09-03）
 var NOTICES_KEY = 'freshman_notices_v2';
 var ADMIN_SESSION_KEY = 'freshman_admin_session';
 
@@ -4312,10 +4311,6 @@ function getAdminToken() {
 
 // GitHub API 统一走同域代理（ts.net/gh/ → api.github.com，Caddy 服务端转发，微信不拦跨域）
 var GH_API_BASE = 'https://1234mac-studio.tail830780.ts.net/gh';
-
-function getAdminPassword() {
-  return localStorage.getItem(ADMIN_PASSWORD_KEY) || DEFAULT_ADMIN_PASSWORD;
-}
 
 function isAdmin() {
   return sessionStorage.getItem('fm_admin_mode') === '1';
@@ -4437,7 +4432,6 @@ function enterAdminMode() {
   var section = document.getElementById('noticeSection');
   if (section) section.classList.add('admin-mode');
   document.getElementById('adminLoginBtn').style.display = 'none';
-  document.getElementById('changePwdBtn').style.display = 'none';
   document.getElementById('adminLogoutBtn').style.display = 'inline-flex';
   document.getElementById('adminStatus').style.display = 'inline-block';
   document.getElementById('adminRoleName').textContent = getAdminRole();
@@ -4448,7 +4442,6 @@ function exitAdminMode() {
   var section = document.getElementById('noticeSection');
   if (section) section.classList.remove('admin-mode');
   document.getElementById('adminLoginBtn').style.display = 'inline-flex';
-  document.getElementById('changePwdBtn').style.display = 'none';
   document.getElementById('adminLogoutBtn').style.display = 'none';
   document.getElementById('adminStatus').style.display = 'none';
   renderFreshmanNotices();
@@ -4660,46 +4653,7 @@ if (document.readyState !== 'loading') {
   if (isAdmin()) enterAdminMode();
 }
 
-// ===== 修改密码 =====
-function openChangePassword() {
-  document.getElementById('oldPassword').value = '';
-  document.getElementById('newPassword').value = '';
-  document.getElementById('confirmPassword').value = '';
-  document.getElementById('pwdError').classList.remove('show');
-  fmOpenModal('changePasswordModal');
-}
-
-function changePassword() {
-  var oldPwd = document.getElementById('oldPassword').value;
-  var newPwd = document.getElementById('newPassword').value;
-  var confirmPwd = document.getElementById('confirmPassword').value;
-  var errorEl = document.getElementById('pwdError');
-
-  if (!oldPwd || !newPwd || !confirmPwd) {
-    errorEl.textContent = '❌ 请填写所有字段';
-    errorEl.classList.add('show');
-    return;
-  }
-  if (oldPwd !== getAdminPassword()) {
-    errorEl.textContent = '❌ 旧密码错误';
-    errorEl.classList.add('show');
-    return;
-  }
-  if (newPwd.length < 4) {
-    errorEl.textContent = '❌ 新密码至少4位字符';
-    errorEl.classList.add('show');
-    return;
-  }
-  if (newPwd !== confirmPwd) {
-    errorEl.textContent = '❌ 两次输入的新密码不一致';
-    errorEl.classList.add('show');
-    return;
-  }
-
-  localStorage.setItem(ADMIN_PASSWORD_KEY, newPwd);
-  fmCloseModal('changePasswordModal');
-  fmOpenModal('pwdSuccessModal');
-}
+// ===== 修改密码（已移除 2026-09-03：密码走后端/GitHub token 验证，本地改密码无意义） =====
 
 /* ============================================================
    信息收集功能
@@ -5035,42 +4989,6 @@ function exportCollectCSV() {
     </div>
   </div>
 </div>
-
-<!-- 修改密码模态框 -->
-<div class="modal-overlay" id="changePasswordModal">
-  <div class="modal-box" style="max-width:380px;">
-    <h3>🔑 修改管理密码</h3>
-    <p class="modal-desc">请输入旧密码验证身份，然后设置新密码。</p>
-    <div class="form-group">
-      <label>旧密码</label>
-      <input type="password" id="oldPassword" placeholder="请输入当前管理密码">
-    </div>
-    <div class="form-group">
-      <label>新密码</label>
-      <input type="password" id="newPassword" placeholder="至少4位字符">
-    </div>
-    <div class="form-group">
-      <label>确认新密码</label>
-      <input type="password" id="confirmPassword" placeholder="再次输入新密码" onkeydown="if(event.key==='Enter')changePassword()">
-      <div class="form-error" id="pwdError"></div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="fmCloseModal('changePasswordModal')">取消</button>
-      <button class="btn-confirm" onclick="changePassword()">确认修改</button>
-    </div>
-  </div>
-</div>
-
-<!-- 密码修改成功提示 -->
-<div class="modal-overlay" id="pwdSuccessModal">
-  <div class="modal-box" style="max-width:320px;text-align:center;">
-    <div style="font-size:48px;margin-bottom:10px;">✅</div>
-    <h3 style="justify-content:center;">密码修改成功</h3>
-    <p class="modal-desc" style="margin-bottom:16px;">新密码已生效，请妥善保管。</p>
-    <div class="modal-actions">
-      <button class="btn-confirm" onclick="fmCloseModal('pwdSuccessModal')">知道了</button>
-    </div>
-  </div>
 
 <!-- 创建收集表模态框 -->
 <div class="modal-overlay" id="createFormModal">
