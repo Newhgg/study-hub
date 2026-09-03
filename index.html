@@ -3522,8 +3522,10 @@ function getCourseColor(name) {
 function renderSchedule() {
   const container = document.getElementById('scheduleContainer');
   if (scheduleData.courses.length === 0) {
-    container.innerHTML = '<div class="schedule-empty">📭 暂无课表<br><span style="font-size:12px;">点击「导入课表」或「添加课程」开始</span></div>';
-    return;
+    scheduleData = JSON.parse(JSON.stringify(classScheduleData));
+    scheduleData.courses.forEach(c => c.id = Date.now() + Math.random());
+    localStorage.setItem('schedule_data', JSON.stringify(scheduleData));
+  }
   }
   let html = '<table class="schedule-table"><thead><tr><th class="time-col">节次</th>';
   dayNames.forEach(d => html += `<th>${d}</th>`);
