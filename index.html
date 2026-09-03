@@ -4182,47 +4182,60 @@ var CET4 = (function(){
     box.innerHTML = html;
   }
 
-  var CET4_URL = (location.origin + location.pathname.replace(/[^/]*$/,'') + 'cet4.json');
-  function loadVocab(){
+  // 硬编码绝对 URL，不依赖 location.origin（微信 webview 里可能为空）
+  var CET4_URL = 'https://newhgg.github.io/study-hub/cet4.json';
+  // 备用源：jsDelivr CDN（GitHub Pages 挂了或缓存时用）
+  var CET4_FALLBACK = 'https://cdn.jsdelivr.net/gh/newhgg/study-hub@latest/cet4.json';
+  function loadVocab(useFallback){
     var box = document.getElementById('cet4Box');
+    var url = useFallback ? CET4_FALLBACK : CET4_URL;
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', CET4_URL + '?t=' + Date.now(), true);
-    xhr.timeout = 10000;  // 10 秒超时，微信 webview 里 fetch 不会自动 reject
+    xhr.open('GET', url + '?t=' + Date.now(), true);
+    xhr.timeout = 8000;  // 8 秒超时
     xhr.onreadystatechange = function(){
       if (xhr.readyState !== 4) return;
       if (xhr.status === 200){
         try {
           WORDS = JSON.parse(xhr.responseText);
+          console.log('[CET4] 词库加载成功:', WORDS.length, '词', useFallback?'(备用源)':'(主源)');
           loadProg();
           render();
         } catch(e){
-          if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);">❌ 词库解析失败，请刷新重试</div>';
+          console.error('[CET4] 词库解析失败:', e);
+          if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);">❌ 词库解析失败，<a href="#" onclick="CET4.retry();return false;">点此重试</a></div>';
         }
       } else {
-        // HTTP 错误：自动重试一次（走缓存绕过）
-        if (!loadVocab._retry){
-          loadVocab._retry = true;
-          setTimeout(loadVocab, 800);
-        } else {
-          if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);">❌ 词库加载失败（HTTP '+xhr.status+'），<a href="#" onclick="CET4.retry();return false;">点此重试</a></div>';
+        console.warn('[CET4] HTTP '+xhr.status+' from '+url);
+        // 主源失败 → 试备用源
+        if (!useFallback && !loadVocab._triedFallback){
+          loadVocab._triedFallback = true;
+          console.log('[CET4] 主源失败，切换备用源 jsDelivr...');
+          setTimeout(function(){ loadVocab(true); }, 500);
+          return;
         }
+        // 备用源也失败 → 显示重试
+        if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);">❌ 词库加载失败（HTTP '+xhr.status+'），<a href="#" onclick="CET4.retry();return false;">点此重试</a></div>';
       }
     };
     xhr.ontimeout = function(){
-      if (!loadVocab._retry){
-        loadVocab._retry = true;
-        setTimeout(loadVocab, 800);
-      } else {
-        if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);">⏱ 词库加载超时，<a href="#" onclick="CET4.retry();return false;">点此重试</a></div>';
+      console.warn('[CET4] 超时 from '+url);
+      if (!useFallback && !loadVocab._triedFallback){
+        loadVocab._triedFallback = true;
+        console.log('[CET4] 主源超时，切换备用源 jsDelivr...');
+        setTimeout(function(){ loadVocab(true); }, 500);
+        return;
       }
+      if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);">⏱ 词库加载超时，<a href="#" onclick="CET4.retry();return false;">点此重试</a></div>';
     };
     xhr.onerror = function(){
-      if (!loadVocab._retry){
-        loadVocab._retry = true;
-        setTimeout(loadVocab, 800);
-      } else {
-        if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);">❌ 网络错误，<a href="#" onclick="CET4.retry();return false;">点此重试</a></div>';
+      console.warn('[CET4] 网络错误 from '+url);
+      if (!useFallback && !loadVocab._triedFallback){
+        loadVocab._triedFallback = true;
+        console.log('[CET4] 主源网络错误，切换备用源 jsDelivr...');
+        setTimeout(function(){ loadVocab(true); }, 500);
+        return;
       }
+      if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);">❌ 网络错误，<a href="#" onclick="CET4.retry();return false;">点此重试</a></div>';
     };
     xhr.send();
   }
@@ -4299,10 +4312,10 @@ var CET4 = (function(){
     render();
   }
   function retry(){
-    loadVocab._retry = false;
+    loadVocab._triedFallback = false;
     var box = document.getElementById('cet4Box');
     if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-3);">⏳ 词库加载中...</div>';
-    loadVocab();
+    loadVocab(false);
   }
   function init(){
     loadProg();
