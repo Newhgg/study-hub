@@ -432,6 +432,10 @@ body.dark .cat-数学 { background:rgba(6,182,212,0.2); color:#22d3ee; }
 .date-nav-bar .week-btn.today-btn { background:var(--accent); color:white; border-color:var(--accent); }
 .date-nav-bar .week-btn:disabled { opacity:0.3; cursor:not-allowed; }
 .date-nav-bar .week-btn:disabled:hover { background:var(--card); color:var(--text-2); border-color:var(--border); }
+
+.schedule-warning { background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.3); border-radius:8px; padding:10px 14px; font-size:12px; font-weight:600; color:#92400e; margin-bottom:14px; }
+body.dark .schedule-warning { background:rgba(251,191,36,0.08); border-color:rgba(251,191,36,0.2); color:#fbbf24; }
+
 .schedule-empty { text-align:center; padding:60px 20px; color:var(--text-3); font-size:14px; background:var(--card); border:1px dashed var(--border); border-radius:12px; }
 .schedule-table { width:100%; border-collapse:collapse; min-width:700px; }
 .schedule-table th, .schedule-table td { border:1px solid var(--border); padding:0; text-align:center; vertical-align:middle; }
@@ -2564,6 +2568,7 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
         <button class="schedule-btn" onclick="importClassSchedule()">📥 导入到我的课表</button>
       </div>
       <div class="schedule-tip">这是班级统一课表，点击上方按钮可导入到你个人课表中，支持自定义修改。</div>
+      <div class="schedule-warning">⚠️ 课表仅供同学参考，具体安排以教务系统为准，最终以班级群通知为准。</div>
       <div class="date-nav-bar" id="classDateNavBar"></div>
       <div class="schedule-container" id="classScheduleContainer"></div>
     </div>
@@ -2701,6 +2706,7 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
       💡 支持导入JSON格式课表，或手动添加课程。数据保存在本地，刷新不丢失。
       <a href="#" onclick="showScheduleTemplate();return false;">查看导入格式示例</a>
     </div>
+    <div class="schedule-warning">⚠️ 课表仅供同学参考，具体安排以教务系统为准，最终以班级群通知为准。</div>
     <div class="date-nav-bar" id="dateNavBar"></div>
     <div class="schedule-container" id="scheduleContainer">
       <div class="schedule-empty">
