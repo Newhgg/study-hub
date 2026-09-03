@@ -4035,7 +4035,7 @@ window.addEventListener('error', function() {
         return sel+'[top='+Math.round(r.top)+' left='+Math.round(r.left)+' w='+Math.round(r.width)+' h='+Math.round(r.height)+' display='+cs.display+' op='+cs.opacity+' color='+cs.color+']'; };
       report('几何 '+probe('.wrap')+' | '+probe('#page-home')+' | '+probe('.main-content')+' | '+probe('.dashboard-welcome')+' | scrollY='+window.scrollY);
     }catch(e){ report('探针失败:'+e.message); }
-  },2000); })();
+  },2000); });
   // 连续滚动监控：盯住0~6秒内 scrollY/scrollX 每次变化，找出"谁在滚、什么时候滚"
   window.addEventListener('load', function(){
     var lastY=-1,lastX=-1,log=[],t0=performance.now();
