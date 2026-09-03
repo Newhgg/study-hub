@@ -71,7 +71,7 @@ th{background:#f8f9fa;font-weight:600}
   <div class="tabs">
     <div class="tab active" onclick="switchTab('forms')">📝 收集表</div>
     <div class="tab" onclick="switchTab('tasks')">📌 任务</div>
-    <div class="tab" onclick="switchTab('ai')">🤖 AI 辅助</div>
+    <div class="tab" id="aiTab" onclick="switchTab('ai')" style="display:none">🤖 AI 辅助</div>
   </div>
   <div class="panel active" id="panel-forms">
     <div class="card">
@@ -109,21 +109,69 @@ th{background:#f8f9fa;font-weight:600}
 </div>
 <script>
 var FORMS_API = 'https://1234mac-studio.tail830780.ts.net';
+var GH_API_BASE = 'https://1234mac-studio.tail830780.ts.net/gh';
 var adminLoggedIn = localStorage.getItem('teacher_logged_in') === '1';
 var currentFormId = null;
 var aiFormData = null;
 
+// 后端验证（GitHub token 或后端密钥），密码不存源码
+async function verifyOnServer(pwd) {
+  // 方式1: GitHub token
+  try {
+    var g = await fetch(GH_API_BASE + '/user', {
+      headers: {'Authorization': 'token ' + pwd}
+    });
+    if (g.ok) { var gd = await g.json(); if (gd && gd.login) return true; }
+  } catch(e) {}
+  // 方式2: 后端密钥验证
+  try {
+    var resp = await fetch(FORMS_API + '/api/auth/verify', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({password: pwd})
+    });
+    if (!resp.ok) return false;
+    var data = await resp.json();
+    return !!data.success;
+  } catch(e) { return false; }
+}
+
+function getAuthToken() {
+  return localStorage.getItem('teacher_token') || '';
+}
+
+function authHeaders(extra) {
+  var h = extra || {};
+  var t = getAuthToken();
+  if (t) h['Authorization'] = 'Bearer ' + t;
+  return h;
+}
+
 function login() {
   var pwd = document.getElementById('password').value;
-  if (pwd === 'admin2026') {
-    localStorage.setItem('teacher_logged_in', '1');
-    adminLoggedIn = true;
-    showApp();
-  } else {
-    alert('密码错误');
-  }
+  if (!pwd) { alert('请输入密码'); return; }
+  var btn = document.querySelector('.login-box button');
+  var origText = btn.textContent;
+  btn.textContent = '验证中...';
+  btn.disabled = true;
+  verifyOnServer(pwd).then(function(ok) {
+    btn.textContent = origText;
+    btn.disabled = false;
+    if (ok) {
+      localStorage.setItem('teacher_token', pwd);
+      localStorage.setItem('teacher_logged_in', '1');
+      adminLoggedIn = true;
+      showApp();
+    } else {
+      alert('密码错误');
+    }
+  }).catch(function() {
+    btn.textContent = origText;
+    btn.disabled = false;
+    alert('验证失败，请检查网络');
+  });
 }
 function logout() {
+  localStorage.removeItem('teacher_token');
   localStorage.removeItem('teacher_logged_in');
   adminLoggedIn = false;
   document.getElementById('app').style.display = 'none';
@@ -133,9 +181,16 @@ function logout() {
 function showApp() {
   document.getElementById('loginPage').style.display = 'none';
   document.getElementById('app').style.display = 'block';
+  // AI 辅助仅在 URL 参数 ?ai=1 时显示（隐藏入口，减少老师后台噪音）
+  if (new URLSearchParams(location.search).get('ai') === '1') {
+    document.getElementById('aiTab').style.display = '';
+    loadFormsForAI();
+  }
   loadForms();
   loadTasks();
-  loadFormsForAI();
+  if (new URLSearchParams(location.search).get('ai') !== '1') {
+    console.log('💡 隐藏功能：URL 后加 ?ai=1 可开启 AI 辅助（生成表单字段 / 整理提交数据）');
+  }
 }
 function switchTab(tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -209,7 +264,7 @@ async function saveCreateForm() {
   if (validFields.length === 0) { alert('至少添加一个字段'); return; }
   var resp = await fetch(FORMS_API + '/api/forms', {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: authHeaders({'Content-Type': 'application/json'}),
     body: JSON.stringify({title: title, description: desc, fields: validFields})
   });
   var data = await resp.json();
@@ -225,12 +280,12 @@ async function toggleForm(id) {
   var form = data.forms.find(function(f) { return f.id === id; });
   if (!form) return;
   var newStatus = form.status === 'open' ? 'closed' : 'open';
-  await fetch(FORMS_API + '/api/forms/' + id + '/status?status=' + newStatus, {method: 'PUT'});
+  await fetch(FORMS_API + '/api/forms/' + id + '/status?status=' + newStatus, {method: 'PUT', headers: authHeaders({})});
   loadForms();
 }
 async function deleteForm(id) {
   if (!confirm('确定删除？')) return;
-  await fetch(FORMS_API + '/api/forms/' + id, {method: 'DELETE'});
+  await fetch(FORMS_API + '/api/forms/' + id, {method: 'DELETE', headers: authHeaders({})});
   loadForms();
 }
 
@@ -292,7 +347,7 @@ async function saveCreateTask() {
   if (!title) { alert('请输入标题'); return; }
   var resp = await fetch(FORMS_API + '/api/tasks', {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: authHeaders({'Content-Type': 'application/json'}),
     body: JSON.stringify({title: title, description: desc, deadline: deadline, form_id: formId || null})
   });
   var data = await resp.json();
@@ -303,7 +358,7 @@ async function saveCreateTask() {
 }
 async function deleteTask(id) {
   if (!confirm('确定删除？')) return;
-  await fetch(FORMS_API + '/api/tasks/' + id, {method: 'DELETE'});
+  await fetch(FORMS_API + '/api/tasks/' + id, {method: 'DELETE', headers: authHeaders({})});
   loadTasks();
 }
 
