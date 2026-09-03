@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <!-- 声明浅色方案：防止微信/iOS深色模式强行给页面套暗色滤镜(症状=发灰半透明) -->
 <meta name="color-scheme" content="light only">
 <meta name="theme-color" content="#6366f1" media="(prefers-color-scheme: light)">
@@ -4179,18 +4182,49 @@ var CET4 = (function(){
     box.innerHTML = html;
   }
 
+  var CET4_URL = (location.origin + location.pathname.replace(/[^/]*$/,'') + 'cet4.json');
   function loadVocab(){
-    fetch('cet4.json?t='+Date.now())
-      .then(function(r){ return r.json(); })
-      .then(function(data){
-        WORDS = data;
-        loadProg();
-        render();
-      })
-      .catch(function(e){
-        var box = document.getElementById('cet4Box');
-        if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);">❌ 词库加载失败：'+e.message+'</div>';
-      });
+    var box = document.getElementById('cet4Box');
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', CET4_URL + '?t=' + Date.now(), true);
+    xhr.timeout = 10000;  // 10 秒超时，微信 webview 里 fetch 不会自动 reject
+    xhr.onreadystatechange = function(){
+      if (xhr.readyState !== 4) return;
+      if (xhr.status === 200){
+        try {
+          WORDS = JSON.parse(xhr.responseText);
+          loadProg();
+          render();
+        } catch(e){
+          if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);">❌ 词库解析失败，请刷新重试</div>';
+        }
+      } else {
+        // HTTP 错误：自动重试一次（走缓存绕过）
+        if (!loadVocab._retry){
+          loadVocab._retry = true;
+          setTimeout(loadVocab, 800);
+        } else {
+          if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);">❌ 词库加载失败（HTTP '+xhr.status+'），<a href="#" onclick="CET4.retry();return false;">点此重试</a></div>';
+        }
+      }
+    };
+    xhr.ontimeout = function(){
+      if (!loadVocab._retry){
+        loadVocab._retry = true;
+        setTimeout(loadVocab, 800);
+      } else {
+        if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);">⏱ 词库加载超时，<a href="#" onclick="CET4.retry();return false;">点此重试</a></div>';
+      }
+    };
+    xhr.onerror = function(){
+      if (!loadVocab._retry){
+        loadVocab._retry = true;
+        setTimeout(loadVocab, 800);
+      } else {
+        if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);">❌ 网络错误，<a href="#" onclick="CET4.retry();return false;">点此重试</a></div>';
+      }
+    };
+    xhr.send();
   }
 
   function startDue(){
@@ -4264,12 +4298,18 @@ var CET4 = (function(){
     current = null;
     render();
   }
+  function retry(){
+    loadVocab._retry = false;
+    var box = document.getElementById('cet4Box');
+    if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-3);">⏳ 词库加载中...</div>';
+    loadVocab();
+  }
   function init(){
     loadProg();
     render();
   }
   return { init:init, render:render, startDue:startDue, startNew:startNew,
-           reveal:reveal, answer:answer, reset:reset };
+           reveal:reveal, answer:answer, reset:reset, retry:retry };
 })();
 
 // 页面加载后初始化（tools 页存在时）
