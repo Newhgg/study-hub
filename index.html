@@ -2348,6 +2348,66 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
       </div>
     </div>
 
+    <!-- 校规与日常守则 -->
+    <div class="freshman-section">
+      <h3 class="section-title">📋 校规与日常守则（新生必读）</h3>
+      <div style="display:grid;grid-template-columns:1fr;gap:12px;">
+
+        <div style="background:var(--card);border-radius:12px;padding:16px;border:1px solid var(--border);">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="font-size:20px;">🎓</span>
+            <h4 style="font-size:15px;font-weight:700;margin:0;">课堂纪律（严管）</h4>
+          </div>
+          <ul style="margin:0;padding-left:20px;font-size:13px;line-height:2;color:var(--text-2);">
+            <li><b>提前 10 分钟到达教室</b>，迟到早退按旷课论</li>
+            <li><b>每节课自我展示</b>：分享阅读心得、个人感悟、自制作品等</li>
+            <li><b>严禁带早餐、饮料进课堂</b>，教室有监控严查</li>
+            <li>监控截图 + 点名记录交叉验证，违纪累计达 3 次记入档案</li>
+          </ul>
+        </div>
+
+        <div style="background:var(--card);border-radius:12px;padding:16px;border:1px solid var(--border);">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="font-size:20px;">🤝</span>
+            <h4 style="font-size:15px;font-weight:700;margin:0;">文明与品行（零容忍）</h4>
+          </div>
+          <ul style="margin:0;padding-left:20px;font-size:13px;line-height:2;color:var(--text-2);">
+            <li><b>礼貌用语</b>为基本准则，尊重师长和同学</li>
+            <li><b>严禁抽烟、喝酒、打架斗殴</b>，一经查实从重处罚</li>
+            <li>处分记入<b>学生档案</b>，撤销处分时附带撤销证明一并留档</li>
+            <li>处分影响评优、奖助、入党、推荐就业等所有事项</li>
+          </ul>
+        </div>
+
+        <div style="background:var(--card);border-radius:12px;padding:16px;border:1px solid var(--border);">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="font-size:20px;">🏠</span>
+            <h4 style="font-size:15px;font-weight:700;margin:0;">宿舍管理（11 点门禁）</h4>
+          </div>
+          <ul style="margin:0;padding-left:20px;font-size:13px;line-height:2;color:var(--text-2);">
+            <li><b>晚门禁 23:00</b>，晚归须提前向辅导员报备</li>
+            <li>夜不归宿未报备：通报批评 → 记过 → 留校察看 → 开除学籍（逐级加重）</li>
+            <li><b>严禁使用加热电器</b>：烧水壶、电磁炉、电饭煲、热得快等大功率电器一律禁止</li>
+            <li>发现违禁电器当场没收，情节严重记入档案</li>
+          </ul>
+        </div>
+
+        <div style="background:var(--card);border-radius:12px;padding:16px;border:1px solid var(--border);">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <span style="font-size:20px;">⚠️</span>
+            <h4 style="font-size:15px;font-weight:700;margin:0;">安全与防范</h4>
+          </div>
+          <ul style="margin:0;padding-left:20px;font-size:13px;line-height:2;color:var(--text-2);">
+            <li><b>校医院 24 小时值班</b>，身体不适随时就诊</li>
+            <li><b>防范诈骗</b>：不点陌生链接、不转发不明二维码、不向任何人透露验证码</li>
+            <li><b>不添加校外三无人员</b>：不认识的不加、不明目的的微信/游戏好友一律拒绝</li>
+            <li>被骗立即报警，第一时间告知辅导员，保留证据</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 
   <div class="page" id="page-policy">
@@ -2682,6 +2742,39 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
       <div class="modal-actions">
         <button class="modal-btn secondary" onclick="closeCourseModal()">取消</button>
         <button class="modal-btn primary" onclick="saveCourse()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 课程详情弹窗（不可删除） -->
+  <div class="modal-overlay" id="courseInfoModal">
+    <div class="modal-box" style="max-width:380px;">
+      <button class="modal-close" onclick="closeCourseInfoModal()">✕</button>
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;text-align:center;">📖 课程详情</h3>
+      <div style="display:grid;gap:12px;">
+        <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--bg);border-radius:10px;">
+          <span style="color:var(--text-3);font-size:13px;">课程</span>
+          <span style="font-weight:600;font-size:14px;" id="courseInfoName">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--bg);border-radius:10px;">
+          <span style="color:var(--text-3);font-size:13px;">老师</span>
+          <span style="font-weight:600;font-size:14px;" id="courseInfoTeacher">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--bg);border-radius:10px;">
+          <span style="color:var(--text-3);font-size:13px;">地点</span>
+          <span style="font-weight:600;font-size:14px;" id="courseInfoLocation">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--bg);border-radius:10px;">
+          <span style="color:var(--text-3);font-size:13px;">时间</span>
+          <span style="font-weight:600;font-size:13px;" id="courseInfoTime">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--bg);border-radius:10px;">
+          <span style="color:var(--text-3);font-size:13px;">周次</span>
+          <span style="font-weight:600;font-size:13px;" id="courseInfoWeeks">—</span>
+        </div>
+      </div>
+      <div style="text-align:center;padding:12px;margin-top:8px;background:var(--bg);border-radius:10px;font-size:12px;color:var(--text-3);">
+        🔒 班级统一课表，不可删除或修改
       </div>
     </div>
   </div>
@@ -3586,14 +3679,29 @@ function saveCourse() {
   renderSchedule();
 }
 
+function showCourseInfo(course) {
+  if (!course) return;
+  const period = course.start;
+  const endTime = timeSlots[period - 1] ? timeSlots[period - 1].end : "未知";
+  const startTime = timeSlots[period - 1] ? timeSlots[period - 1].start : "未知";
+  const dayName = dayNames[course.day - 1] || "未知";
+
+  document.getElementById('courseInfoName').textContent = course.name;
+  document.getElementById('courseInfoTeacher').textContent = course.teacher || "未填写";
+  document.getElementById('courseInfoLocation').textContent = course.location || "未安排教室";
+  document.getElementById('courseInfoTime').textContent = `${dayName} 第${course.start}节 ${startTime}-${endTime}`;
+  document.getElementById('courseInfoWeeks').textContent = course.weeks || "全学期";
+  document.getElementById('courseInfoModal').classList.add('show');
+}
+
+function closeCourseInfoModal() {
+  document.getElementById('courseInfoModal').classList.remove('show');
+}
+
 function showCourseDetail(id) {
   const course = scheduleData.courses.find(c => c.id === id);
   if (!course) return;
-  if (confirm(`课程：${course.name}\n老师：${course.teacher || '未填写'}\n地点：${course.location || '未填写'}\n时间：${dayNames[course.day-1]} 第${course.start}-${course.end}节\n周次：${course.weeks}\n\n点击确定删除此课程，取消返回`)) {
-    scheduleData.courses = scheduleData.courses.filter(c => c.id !== id);
-    localStorage.setItem('schedule_data', JSON.stringify(scheduleData));
-    renderSchedule();
-  }
+  showCourseInfo(course);
 }
 
 function importSchedule(file) {
@@ -3723,11 +3831,12 @@ function classDeleteNotice(id) {
   }
 }
 
-// 班级统一课表（计科三班 2026-2027-1）
+// 班级统一课表（计科三班 2026-2027-1）已核对原始Excel表
 const classScheduleData = {
   courses: [
     {name:"计算机导论", teacher:"孙桂鸿", location:"", day:1, start:1, end:1, weeks:"1-4、8-18"},
     {name:"高等数学A（一）", teacher:"张敏华", location:"操场", day:1, start:3, end:3, weeks:"1-15"},
+    {name:"新时代实践教育", teacher:"陈晨", location:"笃行楼401/404", day:1, start:5, end:5, weeks:"1-3周"},
     {name:"创意与创新", teacher:"王苹", location:"", day:1, start:5, end:5, weeks:"4-5、8-18"},
     {name:"体育（一）", teacher:"体育组", location:"", day:1, start:7, end:7, weeks:"1-18"},
     {name:"大学英语/日语", teacher:"钟桂玲", location:"", day:1, start:9, end:9, weeks:"1-18"},
@@ -3735,11 +3844,14 @@ const classScheduleData = {
 
     {name:"大学日语（一）", teacher:"钟桂玲", location:"", day:2, start:1, end:1, weeks:"1-18"},
     {name:"习思想概论", teacher:"金莉", location:"", day:2, start:5, end:5, weeks:"1-5、8-14"},
-    {name:"军事理论", teacher:"王春峰", location:"", day:2, start:7, end:7, weeks:"8-17"},
+    {name:"高级语言程序设计", teacher:"黄飞雄", location:"", day:2, start:5, end:5, weeks:"15-18周"},
+    {name:"新时代实践教育", teacher:"陈晨", location:"笃行楼501/208", day:2, start:7, end:7, weeks:"1-3周"},
+    {name:"军事理论", teacher:"王春峰", location:"", day:2, start:7, end:7, weeks:"8-17周"},
     {name:"大学英语/日语", teacher:"钟桂玲", location:"", day:2, start:9, end:9, weeks:"1-18"},
     {name:"习思想概论", teacher:"金莉", location:"线上", day:2, start:10, end:10, weeks:"1-5、8-14"},
 
     {name:"高等数学A（一）", teacher:"张敏华", location:"", day:3, start:1, end:1, weeks:"1-15"},
+    {name:"计算机导论", teacher:"孙桂鸿", location:"", day:3, start:1, end:1, weeks:"第17周"},
     {name:"高级语言程序设计", teacher:"黄飞雄", location:"", day:3, start:3, end:3, weeks:"1-5、8-17"},
     {name:"大学英语/日语", teacher:"钟桂玲", location:"", day:3, start:9, end:9, weeks:"1-18"},
     {name:"习思想概论", teacher:"金莉", location:"线上", day:3, start:10, end:10, weeks:"1-5、8-14"},
@@ -3751,6 +3863,7 @@ const classScheduleData = {
     {name:"大学英语/日语", teacher:"钟桂玲", location:"", day:4, start:9, end:9, weeks:"1-18"},
     {name:"习思想概论", teacher:"金莉", location:"线上", day:4, start:10, end:10, weeks:"1-5、8-14"},
 
+    {name:"新时代实践教育", teacher:"陈晨", location:"博学楼314", day:5, start:1, end:1, weeks:"2、5、8周"},
     {name:"高级语言程序设计", teacher:"黄飞雄", location:"", day:5, start:1, end:1, weeks:"1、9-15单"},
     {name:"新时代实践教育", teacher:"陈晨", location:"博学楼314", day:5, start:3, end:3, weeks:"2、5、8周"},
     {name:"新时代实践教育", teacher:"陈晨", location:"博学楼314", day:5, start:5, end:5, weeks:"2、5、8周"},
@@ -3762,6 +3875,7 @@ const classScheduleData = {
 
 function renderClassSchedule() {
   const container = document.getElementById('classScheduleContainer');
+  classScheduleData.courses.forEach((c, i) => { if (!c.id) c.id = 'cls_' + i; });
   let html = '<table class="schedule-table"><thead><tr><th class="time-col">节次</th>';
   dayNames.forEach(d => html += `<th>${d}</th>`);
   html += '</tr></thead><tbody>';
@@ -3772,7 +3886,7 @@ function renderClassSchedule() {
       if (course) {
         const rowspan = course.end - course.start + 1;
         const color = getCourseColor(course.name);
-        html += `<td rowspan="${rowspan}"><div class="course-block" style="background:${color}">
+        html += `<td rowspan="${rowspan}"><div class="course-block" style="background:${color}" onclick="showClassCourseDetail('${course.id}')">
           <div class="course-name">${course.name}</div>
           <div class="course-info">${course.teacher || ''}</div>
           <div class="course-info">${course.location || ''}</div>
@@ -3786,6 +3900,11 @@ function renderClassSchedule() {
   }
   html += '</tbody></table>';
   container.innerHTML = html;
+}
+
+function showClassCourseDetail(id) {
+  const course = classScheduleData.courses.find(c => c.id === id);
+  if (course) showCourseInfo(course);
 }
 
 function importClassSchedule() {
