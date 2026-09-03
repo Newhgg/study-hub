@@ -341,6 +341,29 @@ body.dark .cat-数学 { background:rgba(6,182,212,0.2); color:#22d3ee; }
 .countdown-icon { font-size:28px; margin-bottom:8px; }
 .countdown-title { font-size:14px; font-weight:700; margin-bottom:4px; }
 .countdown-date { font-size:11px; color:var(--text-3); margin-bottom:12px; }
+
+/* === 四级词汇 · 艾宾浩斯记忆 === */
+.cet4-box { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:20px; }
+.cet4-stats { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:16px; }
+.cet4-stat { flex:1; min-width:90px; background:var(--bg); border-radius:12px; padding:12px; text-align:center; }
+.cet4-stat .num { font-size:22px; font-weight:800; color:var(--primary); }
+.cet4-stat .label { font-size:11px; color:var(--text-3); margin-top:2px; }
+.cet4-card { background:var(--bg-soft); border:1px solid var(--border); border-radius:14px; padding:24px; text-align:center; min-height:180px; display:flex; flex-direction:column; justify-content:center; cursor:pointer; transition:all 0.15s; }
+.cet4-card:hover { border-color:var(--primary); }
+.cet4-word { font-size:30px; font-weight:800; letter-spacing:0.5px; color:var(--text); }
+.cet4-phonetic { font-size:14px; color:var(--text-3); margin-top:6px; }
+.cet4-mean { font-size:16px; color:var(--primary-dark); margin-top:16px; font-weight:600; line-height:1.6; }
+.cet4-hint { font-size:12px; color:var(--text-3); margin-top:12px; }
+.cet4-btns { display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; justify-content:center; }
+.cet4-btn { flex:1; min-width:90px; padding:12px 16px; border:none; border-radius:12px; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.15s; }
+.cet4-btn:disabled { opacity:0.4; cursor:not-allowed; }
+.cet4-btn.again { background:#fef2f2; color:#dc2626; }
+.cet4-btn.hard { background:#fefce8; color:#ca8a04; }
+.cet4-btn.good { background:#ecfdf5; color:#059669; }
+.cet4-btn:hover:not(:disabled) { transform:translateY(-2px); box-shadow:var(--shadow-hover); }
+.cet4-progress { margin-top:16px; font-size:12px; color:var(--text-3); }
+.cet4-reset { margin-top:10px; background:none; border:1px solid var(--border); border-radius:8px; padding:6px 12px; font-size:12px; color:var(--text-3); cursor:pointer; }
+.cet4-reset:hover { border-color:var(--danger); color:var(--danger); }
 .countdown-num { font-size:32px; font-weight:700; color:var(--primary); font-variant-numeric:tabular-nums; }
 .countdown-unit { font-size:12px; color:var(--text-3); margin-top:2px; }
 .countdown-card.urgent .countdown-num { color:#ef4444; }
@@ -2382,6 +2405,11 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
     <h3 style="font-size:18px;font-weight:700;margin:28px 0 16px;">💡 每日一题</h3>
     <div class="daily-problem-box" id="dailyProblemBox"></div>
 
+    <h3 style="font-size:18px;font-weight:700;margin:28px 0 16px;">📚 四级词汇 · 艾宾浩斯记忆</h3>
+    <div class="cet4-box" id="cet4Box">
+      <div id="cet4Loading" style="padding:20px;text-align:center;color:var(--text-3);">⏳ 词库加载中...</div>
+    </div>
+
     <h3 style="font-size:18px;font-weight:700;margin:28px 0 16px;">⏰ 重要日期倒计时</h3>
     <div class="countdown-grid" id="countdownGrid"></div>
   </div>
@@ -2751,7 +2779,6 @@ const csData = [
   {title:"MDN Web Docs", cat:"资源", desc:"Mozilla开发者网络，Web前端开发权威文档，HTML/CSS/JS参考", source:"官方平台", tags:["MDN","前端","Web","文档"],detail:"<p><b>📌 是什么：</b>Mozilla开发者网络，Web前端开发权威文档。</p><p><b>💡 对你有什么用：</b>HTML/CSS/JS查询首选。Web开发必备。</p><p><b>📋 怎么用：</b>搜「MDN」+ 技术名。大三做Web项目时必备。</p>"},
   {title:"Stack Overflow", cat:"资源", desc:"Stack Overflow全球最大程序员问答社区，编程问题搜索首选", source:"官方平台", tags:["StackOverflow","问答","社区","英文"],detail:"<p><b>📌 是什么：</b>全球最大程序员问答社区，编程问题搜索首选。</p><p><b>💡 对你有什么用：</b>遇到编程问题第一站。答案质量高、覆盖面广。</p><p><b>📋 怎么用：</b>搜索用英文关键词。大三开始大量使用。</p>"},
   {title:"掘金", cat:"资源", desc:"掘金国内技术社区，前端/后端/AI/移动端技术文章，适合学习和分享", source:"官方平台", tags:["掘金","技术社区","文章","国内"],detail:"<p><b>📌 是什么：</b>国内技术社区，前端/后端/AI/移动端技术文章。</p><p><b>💡 对你有什么用：</b>国内最大技术社区，中文阅读友好。</p><p><b>📋 怎么用：</b>关注感兴趣的技术方向。大三开始关注。</p>"},
-  {title:"CSDN", cat:"资源", desc:"CSDN中国最大IT技术社区，博客、下载、问答、课程", source:"官方平台", tags:["CSDN","博客","IT","国内"],detail:"<p><b>📌 是什么：</b>中国最大IT技术社区，博客、下载、问答、课程。</p><p><b>💡 对你有什么用：</b>国内最大的中文技术内容平台。</p><p><b>📋 怎么用：</b>搜技术关键词。注意辨别质量，有些是AI生成的低质内容。</p>"},
   {title:"VS Code编辑器", cat:"工具", desc:"Visual Studio Code微软开源代码编辑器，插件丰富，轻量高效", source:"官方下载", tags:["VSCode","编辑器","微软","免费"],detail:"<p><b>📌 是什么：</b>微软开源代码编辑器，插件丰富、轻量高效。</p><p><b>💡 对你有什么用：</b>编程必备编辑器。插件生态丰富，几乎支持所有语言。</p><p><b>📋 怎么用：</b>官网下载。推荐插件：Python/C++/GitLens/Remote-SSH。</p>"},
   {title:"JetBrains全家桶", cat:"工具", desc:"JetBrains系列IDE，PyCharm/IDEA/CLion等，学生免费授权", source:"官方下载", tags:["JetBrains","IDE","学生免费","专业"],detail:"<p><b>📌 是什么：</b>JetBrains系列IDE（PyCharm/IDEA/CLion等），学生免费授权。</p><p><b>💡 对你有什么用：</b>专业级IDE，智能提示/调试/重构功能远超VS Code。</p><p><b>📋 怎么用：</b>用学校edu邮箱申请学生免费授权。大一即可用。</p>"},
   {title:"Git版本控制", cat:"工具", desc:"Git分布式版本控制系统，程序员必备技能，配合GitHub/Gitee使用", source:"官方文档", tags:["Git","版本控制","必备","协作"],detail:"<p><b>📌 是什么：</b>Git分布式版本控制系统，程序员必备技能。</p><p><b>💡 对你有什么用：</b>作业提交/项目协作/代码备份。所有程序员必会。</p><p><b>📋 怎么用：</b>大一开学学基础命令（add/commit/push/pull）。配合GitHub/Gitee使用。</p>"},
@@ -2763,7 +2790,6 @@ const csData = [
   {title:"Coze扣子AI平台", cat:"AI工具", desc:"字节跳动Coze扣子AI智能体搭建平台，零代码创建AI Bot，支持多平台发布", source:"官方平台", tags:["Coze","扣子","AI","零代码"],detail:"<p><b>📌 是什么：</b>字节跳动Coze扣子AI智能体搭建平台，零代码创建AI Bot。</p><p><b>💡 对你有什么用：</b>零代码入门AI应用，计科学生有技术优势。</p><p><b>📋 怎么用：</b>官网注册免费账号。先试模板，再自己搭。</p>"},
   {title:"Hugging Face", cat:"AI资源", desc:"Hugging Face全球最大AI模型社区，模型、数据集、Spaces应用，免费使用", source:"官方平台", tags:["HuggingFace","模型","数据集","AI"],detail:"<p><b>📌 是什么：</b>全球最大AI模型社区，模型/数据集/Spaces应用，免费使用。</p><p><b>💡 对你有什么用：</b>AI模型下载首选。开源模型最全。</p><p><b>📋 怎么用：</b>搜「huggingface」+ 模型名。大三学AI时使用。</p>"},
   {title:"ModelScope魔搭", cat:"AI资源", desc:"阿里达摩院ModelScope魔搭社区，国内AI模型平台，中文模型丰富", source:"官方平台", tags:["ModelScope","魔搭","AI","国内"],detail:"<p><b>📌 是什么：</b>阿里达摩院ModelScope魔搭社区，国内AI模型平台，中文模型丰富。</p><p><b>💡 对你有什么用：</b>国内访问速度快，中文模型多。Ollama国内替代方案。</p><p><b>📋 怎么用：</b>官网注册。下载模型需登录。</p>"},
-  {title:"AI绘画Midjourney", cat:"AI工具", desc:"Midjourney AI绘画工具，通过Discord使用，生成高质量图片", source:"付费平台", tags:["Midjourney","AI绘画","图片","付费"],detail:"<p><b>📌 是什么：</b>Midjourney AI绘画工具，通过Discord使用，生成高质量图片。付费。</p><p><b>💡 对你有什么用：</b>AI绘画质量最高。但需付费+Discord。</p><p><b>📋 怎么用：</b>需付费订阅。大一了解即可，不急。</p>"},
   {title:"Stable Diffusion", cat:"AI工具", desc:"Stable Diffusion开源AI绘画模型，可本地部署，免费使用", source:"开源项目", tags:["StableDiffusion","AI绘画","本地","开源"],detail:"<p><b>📌 是什么：</b>Stable Diffusion开源AI绘画模型，可本地部署，免费使用。</p><p><b>💡 对你有什么用：</b>免费本地AI绘画。开源可定制。</p><p><b>📋 怎么用：</b>需要GPU。大三有硬件条件时再学。</p>"},
 ];
 
@@ -4037,6 +4063,220 @@ window.addEventListener('error', function() {
     },6000);
   });
 })();
+
+
+/* ============================================================
+   四级词汇 · 艾宾浩斯记忆模块（2026-09-03）
+   词库：cet4.json（独立懒加载，3320词）
+   复习间隔（经典艾宾浩斯）：5min→30min→12h→1d→2d→4d→7d→15d→30d
+   三档反馈：忘记=重置间隔 / 模糊=按当前节点复习 / 认识=跳到下一节点
+   ============================================================ */
+var CET4 = (function(){
+  var WORDS = null;          // 词库数组
+  var PROG_KEY = 'cet4_progress_v1';  // 进度存储
+  var STATS_KEY = 'cet4_stats_v1';
+  // 艾宾浩斯间隔（毫秒）：索引0=刚学，1-8=复习节点
+  var INTERVALS = [5*60*1000, 30*60*1000, 12*3600*1000, 24*3600*1000,
+                   2*24*3600*1000, 4*24*3600*1000, 7*24*3600*1000,
+                   15*24*3600*1000, 30*24*3600*1000];
+  var current = null;   // 当前词 {word, stage, next}
+  var revealed = false; // 是否已翻面
+  var todayKey = null;
+  var prog = {};        // word -> {stage,next,lapses}
+  var stats = {learned:0, reviewed:0, mastered:0};
+
+  function todayStr(){
+    var d = new Date();
+    return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+  }
+
+  function loadProg(){
+    try { prog = JSON.parse(localStorage.getItem(PROG_KEY)||'{}'); } catch(e){ prog={}; }
+    try { stats = JSON.parse(localStorage.getItem(STATS_KEY)||'{}'); } catch(e){ stats={}; }
+    todayKey = todayStr();
+    if (stats.day !== todayKey) {
+      // 新的一天，重置"今日已学"计数
+      stats.day = todayKey;
+      stats.dayLearned = 0;
+      stats.dayReviewed = 0;
+    }
+  }
+  function saveProg(){
+    try { localStorage.setItem(PROG_KEY, JSON.stringify(prog)); } catch(e){}
+    try { localStorage.setItem(STATS_KEY, JSON.stringify(stats)); } catch(e){}
+  }
+
+  function dueWords(){
+    var now = Date.now();
+    var due = [];
+    for (var w in prog){
+      if (prog[w].next <= now) due.push(w);
+    }
+    return due;
+  }
+  function newWordCount(){
+    if (!WORDS) return 0;
+    var done = 0;
+    for (var i=0;i<WORDS.length;i++){
+      if (prog[WORDS[i].w]) done++;
+    }
+    return WORDS.length - done;
+  }
+
+  function render(){
+    var box = document.getElementById('cet4Box');
+    if (!box) return;
+    // 未加载词库
+    if (!WORDS){
+      box.innerHTML = '<div id="cet4Loading" style="padding:20px;text-align:center;color:var(--text-3);">⏳ 词库加载中...</div>';
+      loadVocab();
+      return;
+    }
+    var due = dueWords();
+    var newCount = newWordCount();
+    var html = '';
+    // 统计条
+    html += '<div class="cet4-stats">'+
+      '<div class="cet4-stat"><div class="num">'+due.length+'</div><div class="label">今日待复习</div></div>'+
+      '<div class="cet4-stat"><div class="num">'+newCount+'</div><div class="label">待学新词</div></div>'+
+      '<div class="cet4-stat"><div class="num">'+ (stats.dayLearned||0) +'</div><div class="label">今日已学</div></div>'+
+      '<div class="cet4-stat"><div class="num">'+(stats.mastered||0)+'</div><div class="label">已掌握</div></div>'+
+    '</div>';
+
+    if (current){
+      // 有当前词：显示卡片
+      var w = current.word;
+      html += '<div class="cet4-card" onclick="CET4.reveal()">';
+      html += '<div class="cet4-word">'+w.w+'</div>';
+      html += '<div class="cet4-phonetic">'+ (w.p||'') +'</div>';
+      if (revealed){
+        html += '<div class="cet4-mean">'+w.m+'</div>';
+      } else {
+        html += '<div class="cet4-hint">👆 点击卡片查看释义</div>';
+      }
+      html += '</div>';
+      if (revealed){
+        html += '<div class="cet4-btns">'+
+          '<button class="cet4-btn again" onclick="CET4.answer(0)">😵 忘记</button>'+
+          '<button class="cet4-btn hard" onclick="CET4.answer(1)">🤔 模糊</button>'+
+          '<button class="cet4-btn good" onclick="CET4.answer(2)">😎 认识</button>'+
+        '</div>';
+      } else {
+        html += '<div class="cet4-hint" style="text-align:center;margin-top:12px;">点击卡片显示释义后再自评</div>';
+      }
+    } else {
+      // 无当前词
+      if (due.length > 0){
+        html += '<button class="cet4-btn good" style="max-width:220px;margin:0 auto;display:block;" onclick="CET4.startDue()">▶ 开始复习 '+due.length+' 词</button>';
+      } else if (newCount > 0){
+        html += '<button class="cet4-btn good" style="max-width:220px;margin:0 auto;display:block;" onclick="CET4.startNew()">▶ 学习新词</button>';
+      } else {
+        html += '<div style="text-align:center;padding:20px;color:var(--success);font-weight:700;">🎉 全部完成！今天没有待复习和新词了</div>';
+      }
+    }
+    html += '<div class="cet4-progress">已学 '+Object.keys(prog).length+' / '+WORDS.length+' 词</div>';
+    html += '<button class="cet4-reset" onclick="if(confirm(\'确定清空所有四级词汇进度？\'))CET4.reset()">🗑 清空进度</button>';
+    box.innerHTML = html;
+  }
+
+  function loadVocab(){
+    fetch('cet4.json?t='+Date.now())
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        WORDS = data;
+        loadProg();
+        render();
+      })
+      .catch(function(e){
+        var box = document.getElementById('cet4Box');
+        if (box) box.innerHTML = '<div style="padding:20px;text-align:center;color:var(--danger);">❌ 词库加载失败：'+e.message+'</div>';
+      });
+  }
+
+  function startDue(){
+    var due = dueWords();
+    if (due.length === 0) { current=null; render(); return; }
+    // 取最早到期的
+    var first = due[0];
+    var wi = null;
+    for (var i=0;i<WORDS.length;i++){ if (WORDS[i].w===first){ wi=WORDS[i]; break; } }
+    if (!wi) { delete prog[first]; saveProg(); startDue(); return; }
+    current = { word: wi, stage: prog[first].stage };
+    revealed = false;
+    render();
+  }
+  function startNew(){
+    for (var i=0;i<WORDS.length;i++){
+      if (!prog[WORDS[i].w]){
+        current = { word: WORDS[i], stage: 0 };
+        revealed = false;
+        render();
+        return;
+      }
+    }
+    current = null; render();
+  }
+  function reveal(){
+    if (!current) return;
+    revealed = true;
+    render();
+  }
+  function answer(grade){
+    if (!current) return;
+    var word = current.word.w;
+    var now = Date.now();
+    var st = prog[word] || {stage:0, next:0, lapses:0};
+    if (grade === 0){ // 忘记：重置到最前，1分钟后复习
+      st.stage = 0;
+      st.next = now + 60*1000;
+      st.lapses = (st.lapses||0) + 1;
+      stats.dayReviewed = (stats.dayReviewed||0)+1;
+    } else if (grade === 1){ // 模糊：间隔加一点，留在当前节点附近
+      var cur = INTERVALS[st.stage] || INTERVALS[INTERVALS.length-1];
+      st.next = now + Math.round(cur * 1.2);
+      // 首次学习选模糊 → 停在 stage=0；复习时模糊 → 微推进
+      st.stage = prog[word] ? Math.min(st.stage+1, INTERVALS.length-1) : 0;
+      stats.dayReviewed = (stats.dayReviewed||0)+1;
+    } else { // 认识：首次学习停在5min节点，复习时推进到下一节点
+      var isNew = !prog[word];
+      var ns;
+      if (isNew){
+        ns = 0; // 新词第一次"认识" → 5分钟后再见
+      } else {
+        ns = Math.min(st.stage+1, INTERVALS.length-1);
+      }
+      st.stage = ns;
+      st.next = now + INTERVALS[ns];
+      stats.dayReviewed = (stats.dayReviewed||0)+1;
+      if (ns >= INTERVALS.length-1) stats.mastered = (stats.mastered||0)+1;
+      // 首次学习才算"今日已学"
+      if (isNew) stats.dayLearned = (stats.dayLearned||0)+1;
+    }
+    prog[word] = st;
+    saveProg();
+    current = null;
+    render();
+  }
+  function reset(){
+    prog = {};
+    stats = {day: todayStr(), dayLearned:0, dayReviewed:0, mastered:0};
+    saveProg();
+    current = null;
+    render();
+  }
+  function init(){
+    loadProg();
+    render();
+  }
+  return { init:init, render:render, startDue:startDue, startNew:startNew,
+           reveal:reveal, answer:answer, reset:reset };
+})();
+
+// 页面加载后初始化（tools 页存在时）
+document.addEventListener('DOMContentLoaded', function(){
+  if (document.getElementById('cet4Box')) CET4.init();
+});
+
 </script>
 <!-- 个性化名片弹窗 -->
 <div class="modal-overlay" id="profileModal">
