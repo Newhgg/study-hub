@@ -3496,15 +3496,15 @@ audio.addEventListener('ended', () => {
 // ===== 课表功能 =====
 const timeSlots = [
   { start: "08:00", end: "08:45" },
-  { start: "08:55", end: "09:40" },
-  { start: "10:00", end: "10:45" },
-  { start: "10:55", end: "11:40" },
-  { start: "14:00", end: "14:45" },
-  { start: "14:55", end: "15:40" },
-  { start: "16:00", end: "16:45" },
-  { start: "16:55", end: "17:40" },
-  { start: "19:00", end: "19:45" },
-  { start: "19:55", end: "20:40" }
+  { start: "08:50", end: "09:35" },
+  { start: "09:45", end: "10:30" },
+  { start: "10:35", end: "11:20" },
+  { start: "13:30", end: "14:15" },
+  { start: "14:20", end: "15:05" },
+  { start: "15:15", end: "16:00" },
+  { start: "16:05", end: "16:50" },
+  { start: "18:30", end: "20:20" },
+  { start: "20:30", end: "22:20" }
 ];
 const dayNames = ['周一','周二','周三','周四','周五','周六','周日'];
 const courseColors = ['#6366f1','#8b5cf6','#ec4899','#ef4444','#f59e0b','#10b981','#06b6d4','#3b82f6','#f97316','#84cc16'];
@@ -3722,19 +3722,40 @@ function classDeleteNotice(id) {
   }
 }
 
-// 班级统一课表（示例：计科大一上学期）
+// 班级统一课表（计科三班 2026-2027-1）
 const classScheduleData = {
   courses: [
-    {name:"高等数学", teacher:"张教授", location:"教A101", day:1, start:1, end:2, weeks:"1-16"},
-    {name:"C语言程序设计", teacher:"李老师", location:"实验楼C201", day:1, start:5, end:6, weeks:"1-16"},
-    {name:"大学英语", teacher:"王老师", location:"教B203", day:2, start:1, end:2, weeks:"1-16"},
-    {name:"计算机导论", teacher:"陈教授", location:"教A305", day:2, start:5, end:6, weeks:"1-8"},
-    {name:"高等数学", teacher:"张教授", location:"教A101", day:3, start:3, end:4, weeks:"1-16"},
-    {name:"C语言程序设计", teacher:"李老师", location:"实验楼C201", day:3, start:5, end:6, weeks:"1-16"},
-    {name:"思想道德与法治", teacher:"刘老师", location:"教D101", day:4, start:1, end:2, weeks:"1-16"},
-    {name:"大学英语", teacher:"王老师", location:"教B203", day:4, start:3, end:4, weeks:"1-16"},
-    {name:"体育", teacher:"赵教练", location:"田径场", day:5, start:3, end:4, weeks:"1-16"},
-    {name:"军事理论", teacher:"周教官", location:"教A201", day:5, start:5, end:6, weeks:"1-8"}
+    {name:"计算机导论", teacher:"孙桂鸿", location:"", day:1, start:1, end:1, weeks:"1-4、8-18"},
+    {name:"高等数学A（一）", teacher:"张敏华", location:"操场", day:1, start:3, end:3, weeks:"1-15"},
+    {name:"创意与创新", teacher:"王苹", location:"", day:1, start:5, end:5, weeks:"4-5、8-18"},
+    {name:"体育（一）", teacher:"体育组", location:"", day:1, start:7, end:7, weeks:"1-18"},
+    {name:"大学英语/日语", teacher:"钟桂玲", location:"", day:1, start:9, end:9, weeks:"1-18"},
+    {name:"习思想概论", teacher:"金莉", location:"线上", day:1, start:10, end:10, weeks:"1-5、8-14"},
+
+    {name:"大学日语（一）", teacher:"钟桂玲", location:"", day:2, start:1, end:1, weeks:"1-18"},
+    {name:"习思想概论", teacher:"金莉", location:"", day:2, start:5, end:5, weeks:"1-5、8-14"},
+    {name:"军事理论", teacher:"王春峰", location:"", day:2, start:7, end:7, weeks:"8-17"},
+    {name:"大学英语/日语", teacher:"钟桂玲", location:"", day:2, start:9, end:9, weeks:"1-18"},
+    {name:"习思想概论", teacher:"金莉", location:"线上", day:2, start:10, end:10, weeks:"1-5、8-14"},
+
+    {name:"高等数学A（一）", teacher:"张敏华", location:"", day:3, start:1, end:1, weeks:"1-15"},
+    {name:"高级语言程序设计", teacher:"黄飞雄", location:"", day:3, start:3, end:3, weeks:"1-5、8-17"},
+    {name:"大学英语/日语", teacher:"钟桂玲", location:"", day:3, start:9, end:9, weeks:"1-18"},
+    {name:"习思想概论", teacher:"金莉", location:"线上", day:3, start:10, end:10, weeks:"1-5、8-14"},
+
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"", day:4, start:1, end:1, weeks:"1-18"},
+    {name:"高等数学A（一）", teacher:"张敏华", location:"笃行楼501", day:4, start:3, end:3, weeks:"双周"},
+    {name:"人工智能技术与应用", teacher:"谢雪峰", location:"单博学楼406/双语音室4", day:4, start:5, end:5, weeks:"1-15"},
+    {name:"习思想概论", teacher:"金莉", location:"", day:4, start:7, end:7, weeks:"1-5、8-14"},
+    {name:"大学英语/日语", teacher:"钟桂玲", location:"", day:4, start:9, end:9, weeks:"1-18"},
+    {name:"习思想概论", teacher:"金莉", location:"线上", day:4, start:10, end:10, weeks:"1-5、8-14"},
+
+    {name:"高级语言程序设计", teacher:"黄飞雄", location:"", day:5, start:1, end:1, weeks:"1、9-15单"},
+    {name:"新时代实践教育", teacher:"陈晨", location:"博学楼314", day:5, start:3, end:3, weeks:"2、5、8周"},
+    {name:"新时代实践教育", teacher:"陈晨", location:"博学楼314", day:5, start:5, end:5, weeks:"2、5、8周"},
+    {name:"新时代实践教育", teacher:"陈晨", location:"博学楼314", day:5, start:7, end:7, weeks:"2、5、8周"},
+    {name:"大学英语/日语", teacher:"钟桂玲", location:"", day:5, start:9, end:9, weeks:"1-18"},
+    {name:"习思想概论", teacher:"金莉", location:"线上", day:5, start:10, end:10, weeks:"1-5、8-14"}
   ]
 };
 
