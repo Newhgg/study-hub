@@ -419,6 +419,45 @@ body.dark .cat-数学 { background:rgba(6,182,212,0.2); color:#22d3ee; }
 .schedule-tip { background:rgba(99,102,241,0.05); border-radius:8px; padding:10px 14px; font-size:12px; color:var(--text-2); margin-bottom:16px; }
 .schedule-tip a { color:var(--primary); text-decoration:none; font-weight:600; }
 .schedule-tip a:hover { text-decoration:underline; }
+.kbc-tip { background:rgba(99,102,241,0.06); border:1px solid rgba(99,102,241,0.15); border-radius:8px; padding:8px 12px; font-size:12px; color:var(--text-2); margin-bottom:10px; }
+.kbc-weekbar { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+.kbc-weekbar .kb-weekinfo { font-size:13px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:8px; }
+.kb-week-badge { display:inline-block; padding:2px 8px; border-radius:6px; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; font-size:11px; font-weight:600; }
+.kbc-strip { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.kbc-strip::-webkit-scrollbar { display:none; }
+.kbc-day { min-width:100%; width:100%; flex:0 0 100%; scroll-snap-align:center; padding:2px 2px 6px; box-sizing:border-box; }
+.kbc-day-head { display:flex; align-items:baseline; gap:8px; padding:8px 4px 10px; border-bottom:2px solid var(--border); margin-bottom:10px; }
+.kbc-day-head .kb-dow { font-size:17px; font-weight:800; color:var(--text); }
+.kbc-day-head .kb-date { font-size:13px; color:var(--text-2); }
+.kbc-day-head .kb-today-tag { font-size:11px; color:#fff; background:var(--danger); border-radius:6px; padding:1px 6px; font-weight:600; }
+.kbc-cards { display:flex; flex-direction:column; gap:10px; }
+.kbc-card { display:flex; align-items:stretch; background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; cursor:pointer; transition:transform .12s, box-shadow .12s; box-shadow:var(--shadow); }
+.kbc-card:active { transform:scale(.98); }
+.kbc-bar { width:5px; flex:0 0 5px; border-radius:3px; margin:10px 4px 10px 8px; }
+.kbc-card-main { flex:1; padding:11px 12px 11px 4px; min-width:0; }
+.kbc-cname { font-size:15px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.kbc-meta { display:flex; flex-wrap:wrap; gap:4px 12px; font-size:12px; color:var(--text-2); }
+.kbc-meta span { display:inline-flex; align-items:center; gap:3px; white-space:nowrap; }
+.kbc-time-tag { font-size:11px; color:var(--primary); background:rgba(99,102,241,.08); border-radius:6px; padding:1px 6px; font-weight:600; }
+.kbc-empty { text-align:center; padding:48px 16px; color:var(--text-3); font-size:13px; background:var(--card); border:1px dashed var(--border); border-radius:12px; }
+.kb-detail-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:3000; display:none; align-items:flex-end; justify-content:center; }
+.kb-detail-overlay.show { display:flex; }
+.kb-detail-sheet { width:100%; max-width:520px; max-height:82vh; overflow-y:auto; background:var(--bg-soft); border-radius:20px 20px 0 0; padding:20px 18px 28px; animation:kbUp .22s ease; position:relative; }
+@keyframes kbUp { from { transform:translateY(40%); opacity:.4; } to { transform:translateY(0); opacity:1; } }
+.kb-detail-close { position:absolute; top:12px; right:14px; width:32px; height:32px; border-radius:50%; border:none; background:var(--bg); color:var(--text-2); font-size:15px; cursor:pointer; }
+.kb-dname { font-size:20px; font-weight:800; color:var(--text); margin:4px 44px 4px 0; }
+.kb-dweek { font-size:12px; color:var(--primary); font-weight:600; margin-bottom:14px; }
+.kb-drow { display:flex; gap:12px; background:var(--bg); border-radius:12px; padding:13px 14px; margin-bottom:10px; align-items:flex-start; }
+.kb-dicon { font-size:20px; line-height:1.2; }
+.kb-dlabel { font-size:11px; color:var(--text-3); margin-bottom:2px; }
+.kb-dvalue { font-size:14px; font-weight:600; color:var(--text); line-height:1.5; word-break:break-all; }
+.kb-dnav { display:flex; align-items:center; justify-content:center; gap:18px; margin-top:14px; }
+.kb-dnav button { border:none; background:var(--bg); color:var(--text-2); width:40px; height:40px; border-radius:50%; font-size:17px; cursor:pointer; }
+.kb-dnav button:disabled { opacity:.35; }
+.kb-dnav .kb-dpos { font-size:12px; color:var(--text-3); min-width:70px; text-align:center; }
+body.dark .kbc-card { background:rgba(30,30,50,.7); }
+body.dark .kb-detail-sheet { background:#181820; }
+body.dark .kbc-tip { background:rgba(99,102,241,.1); border-color:rgba(99,102,241,.2); }
 .schedule-container { overflow-x:auto; }
 
 .date-nav-bar { display:flex; align-items:center; justify-content:space-between; background:rgba(99,102,241,0.06); border:1px solid rgba(99,102,241,0.15); border-radius:10px; padding:10px 14px; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
@@ -2569,8 +2608,15 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
       </div>
       <div class="schedule-tip">这是班级统一课表，点击上方按钮可导入到你个人课表中，支持自定义修改。</div>
       <div class="schedule-warning">⚠️ 课表仅供同学参考，具体安排以教务系统为准，最终以班级群通知为准。</div>
-      <div class="date-nav-bar" id="classDateNavBar"></div>
-      <div class="schedule-container" id="classScheduleContainer"></div>
+      <div class="kbc-weekbar">
+        <span class="kb-weekinfo" id="kbInfoClass"></span>
+        <span style="display:flex;gap:6px;">
+          <button class="week-btn" onclick="kbStep('kbStripClass',-1)">◀</button>
+          <button class="week-btn" onclick="kbJumpToday('kbStripClass')">今天</button>
+          <button class="week-btn" onclick="kbStep('kbStripClass',1)">▶</button>
+        </span>
+      </div>
+      <div class="kbc-strip" id="kbStripClass"></div>
     </div>
   </div>
 
@@ -2688,31 +2734,40 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
     </div>
   </div>
 
-  <!-- 课表 -->
+  <!-- 课表（滑动版） -->
   <div class="page" id="page-schedule">
     <div class="schedule-toolbar">
       <h3 style="font-size:18px;font-weight:700;">📅 我的课表</h3>
       <div class="schedule-actions">
-        <label class="import-btn small">
-          📥 导入课表
-          <input type="file" id="scheduleImport" accept=".json" onchange="importSchedule(this.files[0])" style="display:none;">
-        </label>
+        <button class="schedule-btn secondary" onclick="kbToggleTools()">⚙️ 工具</button>
+      </div>
+    </div>
+    <div id="kbToolsBox" style="display:none;">
+      <div class="schedule-tip">
+        旧版工具（个人课表，保存在本机浏览器）：支持导入JSON或手动添加课程。
+        <a href="#" onclick="showScheduleTemplate();return false;">查看导入格式示例</a>
+      </div>
+      <div class="schedule-actions" style="margin-bottom:12px;">
+        <label class="import-btn small">📥 导入课表<input type="file" id="scheduleImport" accept=".json" onchange="importSchedule(this.files[0])" style="display:none;"></label>
         <button class="schedule-btn" onclick="showAddCourseForm()">➕ 添加课程</button>
         <button class="schedule-btn secondary" onclick="exportSchedule()">📤 导出</button>
         <button class="schedule-btn danger" onclick="clearSchedule()">🗑️ 清空</button>
       </div>
     </div>
-    <div class="schedule-tip">
-      💡 支持导入JSON格式课表，或手动添加课程。数据保存在本地，刷新不丢失。
-      <a href="#" onclick="showScheduleTemplate();return false;">查看导入格式示例</a>
-    </div>
     <div class="schedule-warning">⚠️ 课表仅供同学参考，具体安排以教务系统为准，最终以班级群通知为准。</div>
-    <div class="date-nav-bar" id="dateNavBar"></div>
-    <div class="schedule-container" id="scheduleContainer">
-      <div class="schedule-empty">
-        📭 暂无课表<br>
-        <span style="font-size:12px;">点击「导入课表」或「添加课程」开始</span>
-      </div>
+    <div class="kbc-tip">👉 左右滑动切换日期，点击课程卡片查看 时间 / 地点 / 讲师</div>
+    <div class="kbc-weekbar">
+      <span class="kb-weekinfo" id="kbInfoMain"></span>
+      <span style="display:flex;gap:6px;">
+        <button class="week-btn" onclick="kbStep('kbStripMain',-1)">◀</button>
+        <button class="week-btn" onclick="kbJumpToday('kbStripMain')">今天</button>
+        <button class="week-btn" onclick="kbStep('kbStripMain',1)">▶</button>
+      </span>
+    </div>
+    <div class="kbc-strip" id="kbStripMain"></div>
+    <div style="display:none;" aria-hidden="true">
+      <div class="date-nav-bar" id="dateNavBar"></div>
+      <div class="schedule-container" id="scheduleContainer"></div>
     </div>
   </div>
 
@@ -3832,50 +3887,76 @@ function classDeleteNotice(id) {
 // 班级统一课表（计科三班 2026-2027-1）已核对原始Excel表
 const classScheduleData = {
   courses: [
-    {name:"计算机导论", teacher:"孙桂鸿", location:"", day:1, start:1, end:1, weeks:"1-4、8-18"},
-    {name:"高等数学A（一）", teacher:"张敏华", location:"操场", day:1, start:3, end:3, weeks:"1-15"},
-    {name:"新时代实践教育", teacher:"陈晨", location:"笃行楼401/404", day:1, start:5, end:5, weeks:"1-3周"},
-    {name:"创意与创新", teacher:"王苹", location:"", day:1, start:5, end:5, weeks:"4-5、8-18"},
-    {name:"体育（一）", teacher:"体育组", location:"", day:1, start:7, end:7, weeks:"1-18"},
-    {name:"大学英语/日语", teacher:"钟桂玲", location:"", day:1, start:9, end:9, weeks:"1-18"},
-    {name:"习思想概论", teacher:"金莉", location:"线上", day:1, start:10, end:10, weeks:"1-5、8-14"},
+    {name:"计算机导论", teacher:"孙桂鸿", location:"笃行楼（原A2）(笃行楼402（滨海原A2）)", day:1, start:1, end:2, weeks:"8-18"},
+    {name:"计算机导论", teacher:"孙桂鸿", location:"笃行楼（原A2）(笃行楼402（滨海原A2）)", day:1, start:1, end:2, weeks:"1-4"},
+    {name:"高等数学A（一）", teacher:"张敏华", location:"博学楼（原A1)(博学楼107（滨海原A1）)", day:1, start:3, end:4, weeks:"1-4"},
+    {name:"高等数学A（一）", teacher:"张敏华", location:"博学楼（原A1)(博学楼107（滨海原A1）)", day:1, start:3, end:4, weeks:"8-16"},
+    {name:"创意与创新", teacher:"王苹", location:"笃行楼（原A2）(笃行楼404（滨海原A2）)", day:1, start:5, end:6, weeks:"8-18"},
+    {name:"创意与创新", teacher:"王苹", location:"笃行楼（原A2）(笃行楼404（滨海原A2）)", day:1, start:5, end:6, weeks:"第4周"},
+    {name:"新时代实践教育", teacher:"陈晨", location:"笃行楼（原A2）(笃行楼401（滨海原A2）)", day:1, start:5, end:6, weeks:"第3周"},
+    {name:"体育(一)", teacher:"欧阳吉华", location:"滨海操场(线上)", day:1, start:7, end:8, weeks:"19-20"},
+    {name:"体育(一)", teacher:"欧阳吉华", location:"滨海操场(滨海B区操场)", day:1, start:7, end:8, weeks:"8-18"},
+    {name:"体育(一)", teacher:"欧阳吉华", location:"滨海操场(滨海B区操场)", day:1, start:7, end:8, weeks:"1-4"},
 
-    {name:"大学日语（一）", teacher:"钟桂玲", location:"", day:2, start:1, end:1, weeks:"1-18"},
-    {name:"习思想概论", teacher:"金莉", location:"", day:2, start:5, end:5, weeks:"1-5、8-14"},
-    {name:"高级语言程序设计", teacher:"黄飞雄", location:"", day:2, start:5, end:5, weeks:"15-18周"},
-    {name:"新时代实践教育", teacher:"陈晨", location:"笃行楼501/208", day:2, start:7, end:7, weeks:"1-3周"},
-    {name:"军事理论", teacher:"王春峰", location:"", day:2, start:7, end:7, weeks:"8-17周"},
-    {name:"大学英语/日语", teacher:"钟桂玲", location:"", day:2, start:9, end:9, weeks:"1-18"},
-    {name:"习思想概论", teacher:"金莉", location:"线上", day:2, start:10, end:10, weeks:"1-5、8-14"},
+    {name:"习近平新时代中国特色社会主义思想概论", teacher:"金莉", location:"笃行楼（原A2）(笃行楼501（滨海原A2）)", day:2, start:5, end:6, weeks:"1-4"},
+    {name:"高级语言程序设计", teacher:"黄飞雄", location:"笃行楼（原A2）(计算机基础实验室V(笃行楼208))", day:2, start:5, end:6, weeks:"15-18"},
+    {name:"习近平新时代中国特色社会主义思想概论", teacher:"金莉", location:"笃行楼（原A2）(笃行楼501（滨海原A2）)", day:2, start:5, end:6, weeks:"8-14"},
+    {name:"军事理论", teacher:"王春峰", location:"博学楼（原A1)(博学楼301（滨海原A1）)", day:2, start:7, end:8, weeks:"8-17"},
 
-    {name:"高等数学A（一）", teacher:"张敏华", location:"", day:3, start:1, end:1, weeks:"1-15"},
-    {name:"计算机导论", teacher:"孙桂鸿", location:"", day:3, start:1, end:1, weeks:"第17周"},
-    {name:"高级语言程序设计", teacher:"黄飞雄", location:"", day:3, start:3, end:3, weeks:"1-5、8-17"},
-    {name:"大学英语/日语", teacher:"钟桂玲", location:"", day:3, start:9, end:9, weeks:"1-18"},
-    {name:"习思想概论", teacher:"金莉", location:"线上", day:3, start:10, end:10, weeks:"1-5、8-14"},
+    {name:"高等数学A（一）", teacher:"张敏华", location:"博学楼（原A1)(博学楼107（滨海原A1）)", day:3, start:1, end:2, weeks:"8-16"},
+    {name:"计算机导论", teacher:"孙桂鸿", location:"笃行楼（原A2）(笃行楼404（滨海原A2）)", day:3, start:1, end:2, weeks:"第17周"},
+    {name:"高等数学A（一）", teacher:"张敏华", location:"博学楼（原A1)(博学楼107（滨海原A1）)", day:3, start:1, end:2, weeks:"1-4"},
+    {name:"高级语言程序设计", teacher:"黄飞雄", location:"笃行楼（原A2）(公共语音机房IV(笃行楼314))", day:3, start:3, end:4, weeks:"1-4"},
+    {name:"高级语言程序设计", teacher:"黄飞雄", location:"笃行楼（原A2）(公共语音机房IV(笃行楼314))", day:3, start:3, end:4, weeks:"8-17"},
+    {name:"习近平新时代中国特色社会主义思想概论", teacher:"金莉", location:"笃行楼（原A2）(笃行楼501（滨海原A2）)", day:3, start:5, end:6, weeks:"第4周"},
 
-    {name:"大学英语（一）", teacher:"钟桂玲", location:"", day:4, start:1, end:1, weeks:"1-18"},
-    {name:"高等数学A（一）", teacher:"张敏华", location:"笃行楼501", day:4, start:3, end:3, weeks:"双周"},
-    {name:"人工智能技术与应用", teacher:"谢雪峰", location:"单博学楼406/双语音室4", day:4, start:5, end:5, weeks:"1-15"},
-    {name:"习思想概论", teacher:"金莉", location:"", day:4, start:7, end:7, weeks:"1-5、8-14"},
-    {name:"大学英语/日语", teacher:"钟桂玲", location:"", day:4, start:9, end:9, weeks:"1-18"},
-    {name:"习思想概论", teacher:"金莉", location:"线上", day:4, start:10, end:10, weeks:"1-5、8-14"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"笃行楼（原A2）(公共语音机房IV(笃行楼314))", day:4, start:1, end:2, weeks:"第2周"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"博学楼（原A1)(博学楼406（滨海原A1）)", day:4, start:1, end:2, weeks:"第15周"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"博学楼（原A1)(博学楼406（滨海原A1）)", day:4, start:1, end:2, weeks:"第1周"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"笃行楼（原A2）(公共语音机房IV(笃行楼314))", day:4, start:1, end:2, weeks:"第10周"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"笃行楼（原A2）(公共语音机房IV(笃行楼314))", day:4, start:1, end:2, weeks:"第8周"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"博学楼（原A1)(博学楼406（滨海原A1）)", day:4, start:1, end:2, weeks:"第5周"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"笃行楼（原A2）(公共语音机房IV(笃行楼314))", day:4, start:1, end:2, weeks:"第16周"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"笃行楼（原A2）(公共语音机房IV(笃行楼314))", day:4, start:1, end:2, weeks:"第12周"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"博学楼（原A1)(博学楼406（滨海原A1）)", day:4, start:1, end:2, weeks:"第9周"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"博学楼（原A1)(博学楼406（滨海原A1）)", day:4, start:1, end:2, weeks:"第3周"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"笃行楼（原A2）(公共语音机房IV(笃行楼314))", day:4, start:1, end:2, weeks:"第14周"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"博学楼（原A1)(博学楼406（滨海原A1）)", day:4, start:1, end:2, weeks:"第13周"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"笃行楼（原A2）(公共语音机房IV(笃行楼314))", day:4, start:1, end:2, weeks:"第18周"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"博学楼（原A1)(博学楼406（滨海原A1）)", day:4, start:1, end:2, weeks:"第11周"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"博学楼（原A1)(博学楼406（滨海原A1）)", day:4, start:1, end:2, weeks:"第17周"},
+    {name:"高等数学A（一）", teacher:"张敏华", location:"博学楼（原A1)(博学楼201（滨海原A1）)", day:4, start:3, end:4, weeks:"第10周"},
+    {name:"高等数学A（一）", teacher:"张敏华", location:"博学楼（原A1)(博学楼201（滨海原A1）)", day:4, start:3, end:4, weeks:"第12周"},
+    {name:"高等数学A（一）", teacher:"张敏华", location:"博学楼（原A1)(博学楼201（滨海原A1）)", day:4, start:3, end:4, weeks:"第2周"},
+    {name:"高等数学A（一）", teacher:"张敏华", location:"博学楼（原A1)(博学楼201（滨海原A1）)", day:4, start:3, end:4, weeks:"第14周"},
+    {name:"高等数学A（一）", teacher:"张敏华", location:"博学楼（原A1)(博学楼201（滨海原A1）)", day:4, start:3, end:4, weeks:"第8周"},
+    {name:"人工智能技术与应用", teacher:"谢雪峰", location:"笃行楼（原A2）(计算机基础实验室I(笃行楼202))", day:4, start:5, end:6, weeks:"第5周"},
+    {name:"人工智能技术与应用", teacher:"谢雪峰", location:"笃行楼（原A2）(计算机基础实验室I(笃行楼202))", day:4, start:5, end:6, weeks:"8-15"},
+    {name:"人工智能技术与应用", teacher:"谢雪峰", location:"笃行楼（原A2）(计算机基础实验室I(笃行楼202))", day:4, start:5, end:6, weeks:"1-3"},
+    {name:"习近平新时代中国特色社会主义思想概论", teacher:"金莉", location:"笃行楼（原A2）(笃行楼501（滨海原A2）)", day:4, start:7, end:8, weeks:"第5周"},
+    {name:"习近平新时代中国特色社会主义思想概论", teacher:"金莉", location:"笃行楼（原A2）(笃行楼501（滨海原A2）)", day:4, start:7, end:8, weeks:"8-14"},
+    {name:"习近平新时代中国特色社会主义思想概论", teacher:"金莉", location:"笃行楼（原A2）(笃行楼501（滨海原A2）)", day:4, start:7, end:8, weeks:"1-3"},
 
-    {name:"新时代实践教育", teacher:"陈晨", location:"博学楼314", day:5, start:1, end:1, weeks:"2、5、8周"},
-    {name:"高级语言程序设计", teacher:"黄飞雄", location:"", day:5, start:1, end:1, weeks:"1、9-15单"},
-    {name:"新时代实践教育", teacher:"陈晨", location:"博学楼314", day:5, start:3, end:3, weeks:"2、5、8周"},
-    {name:"新时代实践教育", teacher:"陈晨", location:"博学楼314", day:5, start:5, end:5, weeks:"2、5、8周"},
-    {name:"新时代实践教育", teacher:"陈晨", location:"博学楼314", day:5, start:7, end:7, weeks:"2、5、8周"},
-    {name:"大学英语/日语", teacher:"钟桂玲", location:"", day:5, start:9, end:9, weeks:"1-18"},
-    {name:"习思想概论", teacher:"金莉", location:"线上", day:5, start:10, end:10, weeks:"1-5、8-14"}
+    {name:"高级语言程序设计", teacher:"黄飞雄", location:"笃行楼（原A2）(公共语音机房II(笃行楼303))", day:5, start:1, end:2, weeks:"第11周"},
+    {name:"高级语言程序设计", teacher:"黄飞雄", location:"笃行楼（原A2）(公共语音机房II(笃行楼303))", day:5, start:1, end:2, weeks:"第13周"},
+    {name:"新时代实践教育", teacher:"陈晨", location:"()", day:5, start:1, end:8, weeks:"第5周"},
+    {name:"新时代实践教育", teacher:"陈晨", location:"博学楼（原A1)(博学楼314（滨海原A1）)", day:5, start:1, end:6, weeks:"第8周"},
+    {name:"高级语言程序设计", teacher:"黄飞雄", location:"笃行楼（原A2）(公共语音机房II(笃行楼303))", day:5, start:1, end:2, weeks:"第1周"},
+    {name:"高级语言程序设计", teacher:"黄飞雄", location:"笃行楼（原A2）(公共语音机房II(笃行楼303))", day:5, start:1, end:2, weeks:"第9周"},
+    {name:"高级语言程序设计", teacher:"黄飞雄", location:"笃行楼（原A2）(公共语音机房II(笃行楼303))", day:5, start:1, end:2, weeks:"第15周"},
+    {name:"大学英语（一）", teacher:"钟桂玲", location:"笃行楼（原A2）(公共语音机房IV(笃行楼314))", day:5, start:3, end:4, weeks:"第15周"},
+
+    {name:"高等数学A（一）", teacher:"张敏华", location:"博学楼（原A1)(博学楼107（滨海原A1）)", day:6, start:1, end:2, weeks:"第5周"},
+    {name:"高级语言程序设计", teacher:"黄飞雄", location:"笃行楼（原A2）(公共语音机房IV(笃行楼314))", day:6, start:3, end:4, weeks:"第5周"},
+    {name:"创意与创新", teacher:"王苹", location:"滨海操场(线上)", day:6, start:9, end:12, weeks:"1-2"},
+
+    {name:"体育(一)", teacher:"欧阳吉华", location:"滨海操场(滨海B区操场)", day:7, start:3, end:4, weeks:"第10周"},
+    {name:"习近平新时代中国特色社会主义思想概论", teacher:"金莉", location:"笃行楼（原A2）(笃行楼501（滨海原A2）)", day:7, start:5, end:6, weeks:"第2周"},
   ]
 };
 
 function renderClassSchedule() {
-  const container = document.getElementById('classScheduleContainer');
-  classScheduleData.courses.forEach((c, i) => { if (!c.id) c.id = 'cls_' + i; });
-  renderDateNavBar('classDateNavBar');
-  renderScheduleWithDates(classScheduleData.courses, 'classScheduleContainer', true);
+  if (typeof kbMount === 'function') { kbMount('kbStripClass', 'kbInfoClass'); return; }
 }
 
 function renderScheduleWithDates(courses, containerId, isClass) {
@@ -5553,5 +5634,273 @@ function exportCollectCSV() {
   </div>
 </div>
 </div>
+<script>
+// ===== 滑动课表模块（数据源：WakeUp 分享口令解析；待导入则显示空态）=====
+window.WAKEUP_SCHEDULE = {
+  tableName:"阳光学院", school:"阳光学院", startDate:"2026-09-07", maxWeek:20, nodes:20,
+  timeSlots:[
+    {node:1,start:"08:00",end:"08:50"},
+    {node:2,start:"09:00",end:"09:50"},
+    {node:3,start:"10:10",end:"11:00"},
+    {node:4,start:"11:10",end:"12:00"},
+    {node:5,start:"13:30",end:"14:20"},
+    {node:6,start:"14:30",end:"15:20"},
+    {node:7,start:"15:40",end:"16:30"},
+    {node:8,start:"16:40",end:"17:30"},
+    {node:9,start:"18:30",end:"19:20"},
+    {node:10,start:"19:30",end:"20:20"},
+    {node:11,start:"20:30",end:"21:20"},
+    {node:12,start:"21:25",end:"21:30"},
+    {node:13,start:"21:35",end:"21:40"},
+    {node:14,start:"21:45",end:"21:50"},
+    {node:15,start:"21:55",end:"22:00"},
+    {node:16,start:"22:05",end:"22:10"},
+    {node:17,start:"22:15",end:"22:20"},
+    {node:18,start:"22:25",end:"22:30"},
+    {node:19,start:"22:35",end:"22:40"},
+    {node:20,start:"22:45",end:"22:50"}
+  ],
+  courses:[
+    {name:"计算机导论",teacher:"孙桂鸿",room:"笃行楼（原A2）(笃行楼402（滨海原A2）)",day:1,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[8,9,10,11,12,13,14,15,16,17,18],weeksStr:"第8-18周"},
+    {name:"计算机导论",teacher:"孙桂鸿",room:"笃行楼（原A2）(笃行楼402（滨海原A2）)",day:1,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[1,2,3,4],weeksStr:"第1-4周"},
+    {name:"高等数学A（一）",teacher:"张敏华",room:"博学楼（原A1)(博学楼107（滨海原A1）)",day:1,startNode:3,span:2,startTime:"10:10",endTime:"12:00",weeks:[1,2,3,4],weeksStr:"第1-4周"},
+    {name:"高等数学A（一）",teacher:"张敏华",room:"博学楼（原A1)(博学楼107（滨海原A1）)",day:1,startNode:3,span:2,startTime:"10:10",endTime:"12:00",weeks:[8,9,10,11,12,13,14,15,16],weeksStr:"第8-16周"},
+    {name:"创意与创新",teacher:"王苹",room:"笃行楼（原A2）(笃行楼404（滨海原A2）)",day:1,startNode:5,span:2,startTime:"13:30",endTime:"15:20",weeks:[8,9,10,11,12,13,14,15,16,17,18],weeksStr:"第8-18周"},
+    {name:"创意与创新",teacher:"王苹",room:"笃行楼（原A2）(笃行楼404（滨海原A2）)",day:1,startNode:5,span:2,startTime:"13:30",endTime:"15:20",weeks:[4],weeksStr:"第4周"},
+    {name:"新时代实践教育",teacher:"陈晨",room:"笃行楼（原A2）(笃行楼401（滨海原A2）)",day:1,startNode:5,span:2,startTime:"13:30",endTime:"15:20",weeks:[3],weeksStr:"第3周"},
+    {name:"体育(一)",teacher:"欧阳吉华",room:"滨海操场(线上)",day:1,startNode:7,span:2,startTime:"15:40",endTime:"17:30",weeks:[19,20],weeksStr:"第19-20周"},
+    {name:"体育(一)",teacher:"欧阳吉华",room:"滨海操场(滨海B区操场)",day:1,startNode:7,span:2,startTime:"15:40",endTime:"17:30",weeks:[8,9,10,11,12,13,14,15,16,17,18],weeksStr:"第8-18周"},
+    {name:"体育(一)",teacher:"欧阳吉华",room:"滨海操场(滨海B区操场)",day:1,startNode:7,span:2,startTime:"15:40",endTime:"17:30",weeks:[1,2,3,4],weeksStr:"第1-4周"},
+    {name:"习近平新时代中国特色社会主义思想概论",teacher:"金莉",room:"笃行楼（原A2）(笃行楼501（滨海原A2）)",day:2,startNode:5,span:2,startTime:"13:30",endTime:"15:20",weeks:[1,2,3,4],weeksStr:"第1-4周"},
+    {name:"高级语言程序设计",teacher:"黄飞雄",room:"笃行楼（原A2）(计算机基础实验室V(笃行楼208))",day:2,startNode:5,span:2,startTime:"13:30",endTime:"15:20",weeks:[15,16,17,18],weeksStr:"第15-18周"},
+    {name:"习近平新时代中国特色社会主义思想概论",teacher:"金莉",room:"笃行楼（原A2）(笃行楼501（滨海原A2）)",day:2,startNode:5,span:2,startTime:"13:30",endTime:"15:20",weeks:[8,9,10,11,12,13,14],weeksStr:"第8-14周"},
+    {name:"军事理论",teacher:"王春峰",room:"博学楼（原A1)(博学楼301（滨海原A1）)",day:2,startNode:7,span:2,startTime:"15:40",endTime:"17:30",weeks:[8,9,10,11,12,13,14,15,16,17],weeksStr:"第8-17周"},
+    {name:"高等数学A（一）",teacher:"张敏华",room:"博学楼（原A1)(博学楼107（滨海原A1）)",day:3,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[8,9,10,11,12,13,14,15,16],weeksStr:"第8-16周"},
+    {name:"计算机导论",teacher:"孙桂鸿",room:"笃行楼（原A2）(笃行楼404（滨海原A2）)",day:3,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[17],weeksStr:"第17周"},
+    {name:"高等数学A（一）",teacher:"张敏华",room:"博学楼（原A1)(博学楼107（滨海原A1）)",day:3,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[1,2,3,4],weeksStr:"第1-4周"},
+    {name:"高级语言程序设计",teacher:"黄飞雄",room:"笃行楼（原A2）(公共语音机房IV(笃行楼314))",day:3,startNode:3,span:2,startTime:"10:10",endTime:"12:00",weeks:[1,2,3,4],weeksStr:"第1-4周"},
+    {name:"高级语言程序设计",teacher:"黄飞雄",room:"笃行楼（原A2）(公共语音机房IV(笃行楼314))",day:3,startNode:3,span:2,startTime:"10:10",endTime:"12:00",weeks:[8,9,10,11,12,13,14,15,16,17],weeksStr:"第8-17周"},
+    {name:"习近平新时代中国特色社会主义思想概论",teacher:"金莉",room:"笃行楼（原A2）(笃行楼501（滨海原A2）)",day:3,startNode:5,span:2,startTime:"13:30",endTime:"15:20",weeks:[4],weeksStr:"第4周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"笃行楼（原A2）(公共语音机房IV(笃行楼314))",day:4,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[2],weeksStr:"第2周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"博学楼（原A1)(博学楼406（滨海原A1）)",day:4,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[15],weeksStr:"第15周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"博学楼（原A1)(博学楼406（滨海原A1）)",day:4,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[1],weeksStr:"第1周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"笃行楼（原A2）(公共语音机房IV(笃行楼314))",day:4,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[10],weeksStr:"第10周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"笃行楼（原A2）(公共语音机房IV(笃行楼314))",day:4,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[8],weeksStr:"第8周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"博学楼（原A1)(博学楼406（滨海原A1）)",day:4,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[5],weeksStr:"第5周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"笃行楼（原A2）(公共语音机房IV(笃行楼314))",day:4,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[16],weeksStr:"第16周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"笃行楼（原A2）(公共语音机房IV(笃行楼314))",day:4,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[12],weeksStr:"第12周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"博学楼（原A1)(博学楼406（滨海原A1）)",day:4,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[9],weeksStr:"第9周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"博学楼（原A1)(博学楼406（滨海原A1）)",day:4,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[3],weeksStr:"第3周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"笃行楼（原A2）(公共语音机房IV(笃行楼314))",day:4,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[14],weeksStr:"第14周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"博学楼（原A1)(博学楼406（滨海原A1）)",day:4,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[13],weeksStr:"第13周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"笃行楼（原A2）(公共语音机房IV(笃行楼314))",day:4,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[18],weeksStr:"第18周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"博学楼（原A1)(博学楼406（滨海原A1）)",day:4,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[11],weeksStr:"第11周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"博学楼（原A1)(博学楼406（滨海原A1）)",day:4,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[17],weeksStr:"第17周"},
+    {name:"高等数学A（一）",teacher:"张敏华",room:"博学楼（原A1)(博学楼201（滨海原A1）)",day:4,startNode:3,span:2,startTime:"10:10",endTime:"12:00",weeks:[10],weeksStr:"第10周"},
+    {name:"高等数学A（一）",teacher:"张敏华",room:"博学楼（原A1)(博学楼201（滨海原A1）)",day:4,startNode:3,span:2,startTime:"10:10",endTime:"12:00",weeks:[12],weeksStr:"第12周"},
+    {name:"高等数学A（一）",teacher:"张敏华",room:"博学楼（原A1)(博学楼201（滨海原A1）)",day:4,startNode:3,span:2,startTime:"10:10",endTime:"12:00",weeks:[2],weeksStr:"第2周"},
+    {name:"高等数学A（一）",teacher:"张敏华",room:"博学楼（原A1)(博学楼201（滨海原A1）)",day:4,startNode:3,span:2,startTime:"10:10",endTime:"12:00",weeks:[14],weeksStr:"第14周"},
+    {name:"高等数学A（一）",teacher:"张敏华",room:"博学楼（原A1)(博学楼201（滨海原A1）)",day:4,startNode:3,span:2,startTime:"10:10",endTime:"12:00",weeks:[8],weeksStr:"第8周"},
+    {name:"人工智能技术与应用",teacher:"谢雪峰",room:"笃行楼（原A2）(计算机基础实验室I(笃行楼202))",day:4,startNode:5,span:2,startTime:"13:30",endTime:"15:20",weeks:[5],weeksStr:"第5周"},
+    {name:"人工智能技术与应用",teacher:"谢雪峰",room:"笃行楼（原A2）(计算机基础实验室I(笃行楼202))",day:4,startNode:5,span:2,startTime:"13:30",endTime:"15:20",weeks:[8,9,10,11,12,13,14,15],weeksStr:"第8-15周"},
+    {name:"人工智能技术与应用",teacher:"谢雪峰",room:"笃行楼（原A2）(计算机基础实验室I(笃行楼202))",day:4,startNode:5,span:2,startTime:"13:30",endTime:"15:20",weeks:[1,2,3],weeksStr:"第1-3周"},
+    {name:"习近平新时代中国特色社会主义思想概论",teacher:"金莉",room:"笃行楼（原A2）(笃行楼501（滨海原A2）)",day:4,startNode:7,span:2,startTime:"15:40",endTime:"17:30",weeks:[5],weeksStr:"第5周"},
+    {name:"习近平新时代中国特色社会主义思想概论",teacher:"金莉",room:"笃行楼（原A2）(笃行楼501（滨海原A2）)",day:4,startNode:7,span:2,startTime:"15:40",endTime:"17:30",weeks:[8,9,10,11,12,13,14],weeksStr:"第8-14周"},
+    {name:"习近平新时代中国特色社会主义思想概论",teacher:"金莉",room:"笃行楼（原A2）(笃行楼501（滨海原A2）)",day:4,startNode:7,span:2,startTime:"15:40",endTime:"17:30",weeks:[1,2,3],weeksStr:"第1-3周"},
+    {name:"高级语言程序设计",teacher:"黄飞雄",room:"笃行楼（原A2）(公共语音机房II(笃行楼303))",day:5,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[11],weeksStr:"第11周"},
+    {name:"高级语言程序设计",teacher:"黄飞雄",room:"笃行楼（原A2）(公共语音机房II(笃行楼303))",day:5,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[13],weeksStr:"第13周"},
+    {name:"新时代实践教育",teacher:"陈晨",room:"()",day:5,startNode:1,span:8,startTime:"08:00",endTime:"17:30",weeks:[5],weeksStr:"第5周"},
+    {name:"新时代实践教育",teacher:"陈晨",room:"博学楼（原A1)(博学楼314（滨海原A1）)",day:5,startNode:1,span:6,startTime:"08:00",endTime:"15:20",weeks:[8],weeksStr:"第8周"},
+    {name:"高级语言程序设计",teacher:"黄飞雄",room:"笃行楼（原A2）(公共语音机房II(笃行楼303))",day:5,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[1],weeksStr:"第1周"},
+    {name:"高级语言程序设计",teacher:"黄飞雄",room:"笃行楼（原A2）(公共语音机房II(笃行楼303))",day:5,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[9],weeksStr:"第9周"},
+    {name:"高级语言程序设计",teacher:"黄飞雄",room:"笃行楼（原A2）(公共语音机房II(笃行楼303))",day:5,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[15],weeksStr:"第15周"},
+    {name:"大学英语（一）",teacher:"钟桂玲",room:"笃行楼（原A2）(公共语音机房IV(笃行楼314))",day:5,startNode:3,span:2,startTime:"10:10",endTime:"12:00",weeks:[15],weeksStr:"第15周"},
+    {name:"高等数学A（一）",teacher:"张敏华",room:"博学楼（原A1)(博学楼107（滨海原A1）)",day:6,startNode:1,span:2,startTime:"08:00",endTime:"09:50",weeks:[5],weeksStr:"第5周"},
+    {name:"高级语言程序设计",teacher:"黄飞雄",room:"笃行楼（原A2）(公共语音机房IV(笃行楼314))",day:6,startNode:3,span:2,startTime:"10:10",endTime:"12:00",weeks:[5],weeksStr:"第5周"},
+    {name:"创意与创新",teacher:"王苹",room:"滨海操场(线上)",day:6,startNode:9,span:4,startTime:"18:30",endTime:"21:30",weeks:[1,2],weeksStr:"第1-2周"},
+    {name:"体育(一)",teacher:"欧阳吉华",room:"滨海操场(滨海B区操场)",day:7,startNode:3,span:2,startTime:"10:10",endTime:"12:00",weeks:[10],weeksStr:"第10周"},
+    {name:"习近平新时代中国特色社会主义思想概论",teacher:"金莉",room:"笃行楼（原A2）(笃行楼501（滨海原A2）)",day:7,startNode:5,span:2,startTime:"13:30",endTime:"15:20",weeks:[2],weeksStr:"第2周"}
+  ]
+};
+(function () {
+  'use strict';
+  var DAY_MS = 86400000;
+  var DOW = ['周日','周一','周二','周三','周四','周五','周六'];
+  var KB = { ctrls: {}, modal: null };
+
+  function kbParseD(s) { var p = String(s).split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function kbStartDate() { return WAKEUP_SCHEDULE ? kbParseD(WAKEUP_SCHEDULE.startDate) : new Date(2026, 8, 7); }
+  function kbEndDate() { var e = kbStartDate(); e.setDate(e.getDate() + ((WAKEUP_SCHEDULE ? WAKEUP_SCHEDULE.maxWeek : 20) * 7) - 1); return e; }
+  function kbDayIdx(d) { var s = kbStartDate(); return Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - s) / DAY_MS); }
+  function kbWeekOf(d) { return Math.floor(kbDayIdx(d) / 7) + 1; }
+  function kbTotalDays() { return Math.round((kbEndDate() - kbStartDate()) / DAY_MS) + 1; }
+  function kbDateAt(idx) { var d = kbStartDate(); d.setDate(d.getDate() + idx); return d; }
+  function kbGetData() { return (WAKEUP_SCHEDULE && WAKEUP_SCHEDULE.courses && WAKEUP_SCHEDULE.courses.length) ? WAKEUP_SCHEDULE : null; }
+  function kbTimeSlot(node) {
+    var ts = (WAKEUP_SCHEDULE && WAKEUP_SCHEDULE.timeSlots) || window.timeSlots || [];
+    return ts[node - 1] || null;
+  }
+  function kbCoursesOn(idx) {
+    var data = kbGetData(); if (!data) return [];
+    var d = kbDateAt(idx), wd = d.getDay(); if (wd === 0) wd = 7;
+    var wk = kbWeekOf(d);
+    return data.courses.filter(function (c) { return c.day === wd && c.weeks && c.weeks.indexOf(wk) >= 0; })
+      .sort(function (a, b) { return a.startNode - b.startNode; });
+  }
+  function kbCourseTime(c) {
+    if (c.startTime && c.endTime) return c.startTime + ' - ' + c.endTime;
+    var s = kbTimeSlot(c.startNode), e = kbTimeSlot(c.startNode + (c.span || 1) - 1);
+    if (s && e) return s.start + ' - ' + e.end;
+    return '第' + c.startNode + (c.span > 1 ? '-' + (c.startNode + c.span - 1) : '') + '节';
+  }
+  function kbEscape(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function kbFmt(d) { return (d.getMonth() + 1) + '月' + d.getDate() + '日'; }
+  function kbTodayIdxClamped() { var i = kbDayIdx(new Date()); var t = kbTotalDays(); return Math.max(0, Math.min(t - 1, i)); }
+
+  function kbBuild(stripId, infoId) {
+    var strip = document.getElementById(stripId);
+    if (!strip) return;
+    var info = document.getElementById(infoId);
+    KB.ctrls[stripId] = { strip: stripId, info: infoId, idx: kbTodayIdxClamped() };
+    var data = kbGetData();
+    if (!data) {
+      strip.innerHTML = '<div class="kbc-day"><div class="kbc-empty">📭 课表数据待导入<br><span style="font-size:12px;">将从 WakeUp 课程表分享口令解析导入</span></div></div>';
+      if (info) info.innerHTML = '<span class="kb-week-badge">课表</span>数据待导入';
+      return;
+    }
+    var total = kbTotalDays(), todayIdx = kbTodayIdxClamped(), h = '';
+    for (var i = 0; i < total; i++) {
+      var d = kbDateAt(i), wk = kbWeekOf(d), list = kbCoursesOn(i);
+      h += '<div class="kbc-day" data-idx="' + i + '">';
+      h += '<div class="kbc-day-head"><span class="kb-dow">' + DOW[d.getDay()] + '</span><span class="kb-date">' + kbFmt(d) + '</span><span class="kb-week-badge">第' + wk + '周</span>' + (i === todayIdx ? '<span class="kb-today-tag">今天</span>' : '') + '</div>';
+      if (!list.length) {
+        h += '<div class="kbc-empty">🌤️ 这天没有课</div>';
+      } else {
+        h += '<div class="kbc-cards">';
+        for (var j = 0; j < list.length; j++) {
+          var c = list[j];
+          h += '<div class="kbc-card" data-di="' + i + '" data-ci="' + j + '">'
+            + '<div class="kbc-bar" style="background:' + (window.getCourseColor ? getCourseColor(c.name) : '#6366f1') + '"></div>'
+            + '<div class="kbc-card-main">'
+            + '<div class="kbc-cname">' + kbEscape(c.name) + '</div>'
+            + '<div class="kbc-meta">'
+            + '<span class="kbc-time-tag">🕐 ' + kbEscape(kbCourseTime(c)) + '</span>'
+            + (c.room ? '<span>📍 ' + kbEscape(c.room) + '</span>' : '')
+            + (c.teacher ? '<span>👨‍🏫 ' + kbEscape(c.teacher) + '</span>' : '')
+            + '</div></div></div>';
+        }
+        h += '</div>';
+      }
+      h += '</div>';
+    }
+    strip.innerHTML = h;
+    strip.onclick = function (ev) {
+      var card = ev.target.closest('.kbc-card');
+      if (card && strip.contains(card)) kbOpenDetail(stripId, +card.getAttribute('data-di'), +card.getAttribute('data-ci'));
+    };
+    strip.onscroll = kbOnScroll(stripId);
+    kbJump(stripId, KB.ctrls[stripId].idx, 'auto');
+  }
+  function kbUpdateInfo(stripId) {
+    var ctl = KB.ctrls[stripId]; if (!ctl || !kbGetData()) return;
+    var info = document.getElementById(ctl.info); if (!info) return;
+    var d = kbDateAt(ctl.idx);
+    info.innerHTML = '<span class="kb-week-badge">第' + kbWeekOf(d) + '周</span>' + kbFmt(d) + ' ' + DOW[d.getDay()];
+  }
+  function kbOnScroll(stripId) {
+    var strip = document.getElementById(stripId); if (!strip) return function(){};
+    var raf = null;
+    return function () {
+      if (raf) return;
+      raf = requestAnimationFrame(function () {
+        raf = null;
+        var ctl = KB.ctrls[stripId]; if (!ctl) return;
+        var idx = Math.round(strip.scrollLeft / (strip.clientWidth || 1));
+        if (idx !== ctl.idx) { ctl.idx = Math.max(0, Math.min(kbTotalDays() - 1, idx)); kbUpdateInfo(stripId); }
+      });
+    };
+  }
+  function kbJump(stripId, idx, behavior) {
+    var strip = document.getElementById(stripId); if (!strip) return;
+    var ctl = KB.ctrls[stripId]; if (ctl) ctl.idx = idx;
+    strip.scrollTo({ left: idx * (strip.clientWidth || 1), behavior: behavior || 'smooth' });
+    kbUpdateInfo(stripId);
+  }
+  window.kbStep = function (stripId, n) { var ctl = KB.ctrls[stripId]; if (!ctl) return; kbJump(stripId, Math.max(0, Math.min(kbTotalDays() - 1, ctl.idx + n))); };
+  window.kbJumpToday = function (stripId) { kbJump(stripId, kbTodayIdxClamped()); };
+  window.kbMount = function (stripId, infoId) { kbBuild(stripId, infoId); };
+  window.kbToggleTools = function () { var b = document.getElementById('kbToolsBox'); if (b) b.style.display = b.style.display === 'none' ? 'block' : 'none'; };
+  window.kbReload = function () { kbBuild('kbStripMain', 'kbInfoMain'); kbBuild('kbStripClass', 'kbInfoClass'); };
+
+  // ===== 课程详情（底部弹层；左右滑动/‹›切换当天课程）=====
+  window.kbOpenDetail = function (stripId, dayIdx, courseIdx) {
+    var list = kbCoursesOn(dayIdx); if (!list.length || !kbGetData()) return;
+    KB.modal = { list: list, pos: courseIdx, dayIdx: dayIdx };
+    kbEnsureModal(); kbPaintModal();
+    document.getElementById('kbDetailOverlay').classList.add('show');
+  };
+  window.kbCloseDetail = function () { var ov = document.getElementById('kbDetailOverlay'); if (ov) ov.classList.remove('show'); };
+  window.kbDetailStep = function (n) {
+    if (!KB.modal) return;
+    var p = KB.modal.pos + n;
+    if (p < 0 || p >= KB.modal.list.length) return;
+    KB.modal.pos = p; kbPaintModal();
+  };
+  function kbEnsureModal() {
+    var ov = document.getElementById('kbDetailOverlay');
+    if (ov) return ov;
+    ov = document.createElement('div');
+    ov.id = 'kbDetailOverlay';
+    ov.className = 'kb-detail-overlay';
+    ov.innerHTML = '<div class="kb-detail-sheet" id="kbDetailSheet">'
+      + '<button class="kb-detail-close" onclick="kbCloseDetail()">✕</button>'
+      + '<div id="kbDetailBody"></div>'
+      + '<div class="kb-dnav"><button onclick="kbDetailStep(-1)" id="kbPrev">‹</button><span class="kb-dpos" id="kbDPos"></span><button onclick="kbDetailStep(1)" id="kbNext">›</button></div>'
+      + '</div>';
+    ov.addEventListener('click', function (e) { if (e.target === ov) kbCloseDetail(); });
+    document.body.appendChild(ov);
+    var sheet = ov.querySelector('#kbDetailSheet');
+    var sx = 0, sy = 0, dx = 0, tracking = false;
+    sheet.addEventListener('touchstart', function (e) {
+      if (e.touches.length !== 1) return;
+      sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0; tracking = true;
+    }, { passive: true });
+    sheet.addEventListener('touchmove', function (e) {
+      if (!tracking) return;
+      var mx = e.touches[0].clientX - sx, my = e.touches[0].clientY - sy;
+      if (Math.abs(mx) > Math.abs(my)) { dx = mx; sheet.style.transform = 'translateX(' + (dx / 2) + 'px)'; }
+    }, { passive: true });
+    sheet.addEventListener('touchend', function () {
+      if (!tracking) return; tracking = false;
+      sheet.style.transform = '';
+      if (dx < -50) kbDetailStep(1); else if (dx > 50) kbDetailStep(-1);
+      dx = 0;
+    });
+    return ov;
+  }
+  function kbPaintModal() {
+    var m = KB.modal; if (!m) return;
+    var c = m.list[m.pos];
+    var d = kbDateAt(m.dayIdx), wk = kbWeekOf(d);
+    var nodeTxt = '第' + c.startNode + (c.span > 1 ? ' - ' + (c.startNode + c.span - 1) : '') + '节';
+    var wkTxt = (c.weeksStr && c.weeksStr.length) ? c.weeksStr : '第' + (c.weeks || []).join(',') + '周';
+    document.getElementById('kbDetailBody').innerHTML =
+      '<div class="kb-dname">' + kbEscape(c.name) + '</div>'
+      + '<div class="kb-dweek">' + kbFmt(d) + ' ' + DOW[d.getDay()] + ' · 第' + wk + '周 · ' + kbEscape(wkTxt) + '</div>'
+      + '<div class="kb-drow"><span class="kb-dicon">🕐</span><div><div class="kb-dlabel">时间</div><div class="kb-dvalue">' + kbEscape(kbCourseTime(c)) + '<br><span style="font-weight:400;color:var(--text-2);font-size:12px;">' + kbEscape(nodeTxt) + '</span></div></div></div>'
+      + '<div class="kb-drow"><span class="kb-dicon">📍</span><div><div class="kb-dlabel">地点</div><div class="kb-dvalue">' + (c.room ? kbEscape(c.room) : '<span style="color:var(--text-3);font-weight:400;">待定 / 以老师通知为准</span>') + '</div></div></div>'
+      + '<div class="kb-drow"><span class="kb-dicon">👨‍🏫</span><div><div class="kb-dlabel">讲师</div><div class="kb-dvalue">' + (c.teacher ? kbEscape(c.teacher) : '<span style="color:var(--text-3);font-weight:400;">待定</span>') + '</div></div></div>';
+    document.getElementById('kbDPos').textContent = (m.pos + 1) + ' / ' + m.list.length;
+    document.getElementById('kbPrev').disabled = m.pos === 0;
+    document.getElementById('kbNext').disabled = m.pos === m.list.length - 1;
+  }
+  function kbInitAll() {
+    kbBuild('kbStripMain', 'kbInfoMain');
+    kbBuild('kbStripClass', 'kbInfoClass');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kbInitAll);
+  else kbInitAll();
+})();
+</script>
 </body>
 </html>
