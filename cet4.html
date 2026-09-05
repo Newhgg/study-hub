@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta name="color-scheme" content="dark only">
+<meta name="theme-color" content="#07080f">
+<meta name="format-detection" content="telephone=no">
+<title>四级词汇 · 每日打卡</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { touch-action:manipulation; }
+body { min-height:100vh; background:#07080f; color:#eef0fa;
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','PingFang SC','Microsoft YaHei',sans-serif; overflow-x:hidden; }
+.aurora { position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+.blob { position:absolute; border-radius:50%; filter:blur(90px); opacity:.5; }
+.blob1 { width:480px; height:480px; background:radial-gradient(circle,#4f46e5,transparent 65%); top:-160px; right:-120px; animation:drift1 26s ease-in-out infinite; }
+.blob2 { width:420px; height:420px; background:radial-gradient(circle,#7c3aed,transparent 65%); bottom:-140px; left:-120px; animation:drift2 31s ease-in-out infinite; }
+.blob3 { width:320px; height:320px; background:radial-gradient(circle,#0ea5e9,transparent 65%); top:42%; left:55%; opacity:.25; animation:drift1 38s ease-in-out infinite reverse; }
+@keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-46px,34px) scale(1.12)} }
+@keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(38px,-30px) scale(1.08)} }
+.grain { position:absolute; inset:0; background-image:radial-gradient(rgba(255,255,255,.045) 1px, transparent 1px); background-size:26px 26px; }
+.app { position:relative; z-index:1; max-width:520px; margin:0 auto; padding:18px 18px calc(96px + env(safe-area-inset-bottom)); }
+header { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+.backlink { display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:13px; text-decoration:none;
+  color:#c7cdf5; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); font-size:20px; transition:.18s; }
+.backlink:active { transform:scale(.92); }
+.htitle { flex:1; }
+.htitle h1 { font-size:19px; font-weight:800; letter-spacing:.5px;
+  background:linear-gradient(92deg,#c7d2fe,#f0abfc 55%,#67e8f9); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.htitle p { font-size:11px; color:#8b90b8; margin-top:2px; letter-spacing:1px; }
+.streak-pill { display:flex; align-items:center; gap:6px; padding:8px 13px; border-radius:999px; font-size:13px; font-weight:700;
+  background:linear-gradient(135deg,rgba(251,146,60,.18),rgba(251,113,133,.14)); border:1px solid rgba(251,146,60,.35); color:#fdba74; }
+.streak-pill b { font-size:16px; color:#fff; }
+.glass { background:linear-gradient(160deg,rgba(255,255,255,.058),rgba(255,255,255,.022));
+  border:1px solid rgba(255,255,255,.09); border-radius:22px;
+  box-shadow:0 18px 46px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.07);
+  -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px); }
+.hero { display:flex; gap:16px; align-items:center; padding:18px; margin-bottom:14px; }
+.ring-wrap { position:relative; width:118px; height:118px; flex:none; }
+.ring-wrap svg { width:118px; height:118px; transform:rotate(-90deg); }
+.ring-bg { fill:none; stroke:rgba(255,255,255,.08); stroke-width:9; }
+.ring-fg { fill:none; stroke:url(#ringGrad); stroke-width:9; stroke-linecap:round; transition:stroke-dashoffset 1s cubic-bezier(.3,.8,.3,1); }
+.ring-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.ring-center b { font-size:22px; font-weight:800; letter-spacing:.5px; }
+.ring-center span { font-size:9.5px; color:#8b90b8; margin-top:2px; }
+.hero-right { flex:1; min-width:0; }
+.streak-line { font-size:13px; color:#c7cdf5; margin-bottom:10px; }
+.streak-line b { color:#fdba74; font-size:15px; }
+.hstats { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.hstat { background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.06); border-radius:14px; padding:9px 10px; }
+.hstat .num { font-size:19px; font-weight:800; font-variant-numeric:tabular-nums; }
+.hstat .lab { font-size:10px; color:#8b90b8; margin-top:1px; }
+.hstat.due .num { color:#fda4af; } .hstat.new .num { color:#c4b5fd; }
+.hstat.today .num { color:#67e8f9; } .hstat.mast .num { color:#6ee7b7; }
+.qmeta { display:flex; justify-content:center; gap:14px; font-size:11.5px; color:#8b90b8; margin-bottom:12px; letter-spacing:.3px; }
+.qmeta b { color:#c7d2fe; font-variant-numeric:tabular-nums; }
+.card-flip { height:272px; perspective:1300px; cursor:pointer; animation:cardIn .38s cubic-bezier(.3,.9,.3,1) both; }
+@keyframes cardIn { from { opacity:0; transform:translateY(16px) scale(.97); } to { opacity:1; transform:none; } }
+.card3d { position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .58s cubic-bezier(.35,.1,.2,1); }
+.card3d.flipped { transform:rotateY(180deg); }
+.face { position:absolute; inset:0; -webkit-backface-visibility:hidden; backface-visibility:hidden; border-radius:26px;
+  border:1px solid rgba(255,255,255,.1); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:26px; overflow:hidden; }
+.face.front { background:linear-gradient(165deg,#171a2e 0%,#10121f 60%,#151028 100%); box-shadow:0 24px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08); }
+.face.back { transform:rotateY(180deg); background:linear-gradient(165deg,#1b1533 0%,#131024 55%,#0f1626 100%); box-shadow:0 24px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08); }
+.corner { position:absolute; font-size:10px; letter-spacing:2.5px; color:rgba(255,255,255,.22); text-transform:uppercase; }
+.corner.tl { top:16px; left:20px; } .corner.br { bottom:14px; right:20px; }
+.fword { font-size:38px; font-weight:800; letter-spacing:1px; line-height:1.15; word-break:break-all; }
+.fphon { font-size:14.5px; color:#9aa0c8; margin-top:10px; font-family:Georgia,'Times New Roman',serif; }
+.speak-btn { margin-top:16px; width:44px; height:44px; border-radius:50%; border:1px solid rgba(129,140,248,.4); background:rgba(99,102,241,.14); color:#a5b4fc; font-size:19px; cursor:pointer; transition:.18s; }
+.speak-btn:active { transform:scale(.88); background:rgba(99,102,241,.3); }
+.flip-hint { margin-top:18px; font-size:11px; color:#565b82; letter-spacing:1px; animation:pulseHint 2.4s ease-in-out infinite; }
+@keyframes pulseHint { 0%,100%{opacity:.45} 50%{opacity:1} }
+.fmean { font-size:17.5px; font-weight:600; line-height:1.75; color:#e6e9ff; max-height:150px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.fstage { margin-top:16px; display:inline-flex; align-items:center; gap:6px; font-size:11px; color:#a5b4fc;
+  background:rgba(99,102,241,.13); border:1px solid rgba(99,102,241,.32); padding:5px 12px; border-radius:999px; }
+.grade-btns { display:flex; gap:10px; margin-top:16px; opacity:0; transform:translateY(12px); pointer-events:none; transition:.32s ease; }
+.grade-btns.show { opacity:1; transform:none; pointer-events:auto; }
+.gbtn { flex:1; padding:14px 6px; border:none; border-radius:16px; font-size:14.5px; font-weight:800; cursor:pointer; transition:.15s; letter-spacing:.5px; }
+.gbtn:active { transform:scale(.94); }
+.gbtn.again { background:linear-gradient(150deg,rgba(244,63,94,.2),rgba(244,63,94,.09)); border:1px solid rgba(244,63,94,.4); color:#fda4af; }
+.gbtn.hard { background:linear-gradient(150deg,rgba(245,158,11,.2),rgba(245,158,11,.09)); border:1px solid rgba(245,158,11,.4); color:#fcd34d; }
+.gbtn.good { background:linear-gradient(135deg,#6366f1,#8b5cf6); border:1px solid rgba(255,255,255,.22); color:#fff; box-shadow:0 10px 26px rgba(99,102,241,.4); }
+.gnote { text-align:center; font-size:11px; color:#565b82; margin-top:12px; }
+.flow-summary { padding:34px 24px; text-align:center; animation:cardIn .38s both; }
+.fs-emoji { font-size:44px; margin-bottom:12px; }
+.fs-title { font-size:18px; font-weight:800; }
+.fs-desc { font-size:12.5px; color:#8b90b8; margin-top:8px; line-height:1.7; }
+.fs-btn { display:inline-block; margin-top:20px; padding:13px 34px; border:none; border-radius:999px; font-size:15px; font-weight:800; cursor:pointer; color:#fff;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6); box-shadow:0 12px 30px rgba(99,102,241,.42); transition:.18s; }
+.fs-btn:active { transform:scale(.95); }
+.fs-btn.ghost { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.14); box-shadow:none; color:#c7cdf5; margin-top:12px; }
+.fs-load { padding:44px 24px; text-align:center; color:#8b90b8; font-size:14px; }
+.fs-load a { color:#a5b4fc; }
+.view { display:none; } .view.on { display:block; animation:cardIn .32s both; }
+.book-counts { display:flex; gap:8px; margin-bottom:12px; }
+.bchip { flex:1; text-align:center; padding:10px 4px; border-radius:14px; font-size:11px; color:#8b90b8;
+  background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.06); }
+.bchip b { display:block; font-size:18px; font-weight:800; margin-bottom:2px; font-variant-numeric:tabular-nums; }
+.bchip.s0 b { color:#9ca3af; } .bchip.s1 b { color:#a5b4fc; } .bchip.s2 b { color:#6ee7b7; }
+.searchbar { position:relative; margin-bottom:12px; }
+.searchbar input { width:100%; padding:13px 16px 13px 42px; border-radius:15px; border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05); color:#eef0fa; font-size:14.5px; outline:none; transition:.2s; }
+.searchbar input:focus { border-color:rgba(129,140,248,.55); background:rgba(255,255,255,.075); }
+.searchbar input::placeholder { color:#565b82; }
+.searchbar .sic { position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:15px; color:#565b82; }
+.book-list { display:flex; flex-direction:column; gap:7px; }
+.book-row { display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:15px; cursor:pointer; transition:.15s;
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06); }
+.book-row:active { background:rgba(99,102,241,.12); }
+.bw { font-size:15.5px; font-weight:700; letter-spacing:.3px; flex:none; max-width:44%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.bm { flex:1; font-size:11.5px; color:#8b90b8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.bdot { flex:none; width:8px; height:8px; border-radius:50%; }
+.bdot.s0 { background:#3f4257; } .bdot.s1 { background:#818cf8; box-shadow:0 0 8px rgba(129,140,248,.8); } .bdot.s2 { background:#34d399; box-shadow:0 0 8px rgba(52,211,153,.8); }
+.book-hint { text-align:center; padding:26px 0; color:#565b82; font-size:12.5px; line-height:1.8; }
+.book-more { text-align:center; padding:14px 0 4px; color:#565b82; font-size:11px; }
+.mbar { display:flex; height:10px; border-radius:999px; overflow:hidden; background:rgba(255,255,255,.06); margin-bottom:10px; }
+.mbar i { height:100%; transition:width .8s cubic-bezier(.3,.8,.3,1); }
+.mbar .m0 { background:#3f4257; } .mbar .m1 { background:linear-gradient(90deg,#818cf8,#a78bfa); } .mbar .m2 { background:linear-gradient(90deg,#34d399,#10b981); }
+.mlegend { display:flex; gap:16px; font-size:11px; color:#8b90b8; margin-bottom:20px; }
+.mlegend em { font-style:normal; display:inline-block; width:8px; height:8px; border-radius:3px; margin-right:5px; vertical-align:1px; }
+.panel { padding:18px; margin-bottom:14px; }
+.panel h3 { font-size:13px; font-weight:800; letter-spacing:1px; color:#c7cdf5; margin-bottom:14px; }
+.heat { display:flex; gap:3px; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch; }
+.hcol { display:flex; flex-direction:column; gap:3px; flex:none; }
+.hcell { width:13px; height:13px; border-radius:3.5px; background:rgba(255,255,255,.055); }
+.hcell.lv1 { background:#3730a3; } .hcell.lv2 { background:#4f46e5; } .hcell.lv3 { background:#818cf8; }
+.hcell.lv4 { background:#c7d2fe; box-shadow:0 0 7px rgba(199,210,254,.55); }
+.hcell.off { opacity:.28; }
+.sgrid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.sstat { text-align:center; padding:11px 4px; background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.06); border-radius:14px; }
+.sstat b { display:block; font-size:18px; font-weight:800; font-variant-numeric:tabular-nums; }
+.sstat span { font-size:9.5px; color:#8b90b8; }
+.ival-list { display:flex; flex-wrap:wrap; gap:7px; }
+.ival { font-size:11px; padding:6px 11px; border-radius:999px; color:#a5b4fc; background:rgba(99,102,241,.1); border:1px solid rgba(99,102,241,.28); }
+.reset-zone { text-align:center; padding:6px 0 2px; }
+.reset-btn { background:none; border:1px solid rgba(244,63,94,.35); color:#fda4af; border-radius:12px; padding:10px 22px; font-size:12.5px; cursor:pointer; transition:.15s; }
+.reset-btn:active { background:rgba(244,63,94,.12); }
+.tabbar { position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:520px; z-index:20;
+  display:flex; padding:10px 22px calc(10px + env(safe-area-inset-bottom)); gap:8px;
+  background:rgba(9,10,20,.82); -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px);
+  border-top:1px solid rgba(255,255,255,.07); }
+.tab { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:7px 0; border:none; background:none; cursor:pointer;
+  color:#565b82; font-size:10.5px; font-weight:700; letter-spacing:1px; border-radius:13px; transition:.2s; }
+.tab .ticon { font-size:19px; line-height:1; filter:grayscale(1) opacity(.6); transition:.2s; }
+.tab.on { color:#c7d2fe; background:rgba(99,102,241,.12); }
+.tab.on .ticon { filter:none; }
+#toast { position:fixed; top:22px; left:50%; transform:translate(-50%,-72px); z-index:50; max-width:86%;
+  padding:12px 22px; border-radius:999px; font-size:13.5px; font-weight:700; color:#fff; text-align:center;
+  background:linear-gradient(135deg,rgba(99,102,241,.94),rgba(139,92,246,.94)); box-shadow:0 14px 40px rgba(99,102,241,.5);
+  transition:transform .4s cubic-bezier(.3,1.2,.3,1); pointer-events:none; }
+#toast.on { transform:translate(-50%,0); }
+#autotestResult, #bootErr { display:none; }
+</style>
+</head>
+<body>
+<div id="bootErr"></div>
+<div id="autotestResult"></div>
+<div class="aurora"><div class="blob blob1"></div><div class="blob blob2"></div><div class="blob blob3"></div><div class="grain"></div></div>
+<div class="app">
+  <header>
+    <a class="backlink" href="index.html">&lsaquo;</a>
+    <div class="htitle">
+      <h1>四级词汇 · 每日打卡</h1>
+      <p>EBINGHAUS SRS &middot; 3320 WORDS</p>
+    </div>
+    <div class="streak-pill" id="streakPill">&#128293; <b id="streakNum">0</b> 天</div>
+  </header>
+  <section class="view on" id="view-learn">
+    <div class="hero glass">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 120 120">
+          <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#818cf8"/><stop offset="60%" stop-color="#c084fc"/><stop offset="100%" stop-color="#67e8f9"/>
+          </linearGradient></defs>
+          <circle class="ring-bg" cx="60" cy="60" r="52"/>
+          <circle class="ring-fg" id="ringFg" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+        </svg>
+        <div class="ring-center"><b id="ringPct">--</b><span id="ringSub">词库加载中</span></div>
+      </div>
+      <div class="hero-right">
+        <div class="streak-line">&#128293; 连续打卡 <b id="streakNum2">0</b> 天 &middot; 今日已学 <b id="todayNum" style="color:#67e8f9">0</b> 词</div>
+        <div class="hstats">
+          <div class="hstat due"><div class="num" id="nDue">-</div><div class="lab">今日待复习</div></div>
+          <div class="hstat new"><div class="num" id="nNew">-</div><div class="lab">待学新词</div></div>
+          <div class="hstat today"><div class="num" id="nToday">-</div><div class="lab">今日已学</div></div>
+          <div class="hstat mast"><div class="num" id="nMast">-</div><div class="lab">已掌握</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="qmeta" id="qmeta"></div>
+    <div id="stageArea"></div>
+  </section>
+  <section class="view" id="view-book">
+    <div class="book-counts" id="bookCounts"></div>
+    <div class="searchbar"><span class="sic">&#128269;</span><input id="searchInput" placeholder="搜索单词或释义，如 abandon / 放弃" oninput="CET4APP.onSearch(this.value)"></div>
+    <div class="book-list" id="bookList"><div class="book-hint">输入关键词检索 3320 词<br>点击单词可发音</div></div>
+  </section>
+  <section class="view" id="view-stats">
+    <div class="panel glass">
+      <h3>词汇掌握度</h3>
+      <div class="mbar"><i class="m0" id="mb0"></i><i class="m1" id="mb1"></i><i class="m2" id="mb2"></i></div>
+      <div class="mlegend"><span><em style="background:#3f4257"></em>未学</span><span><em style="background:#818cf8"></em>学习中</span><span><em style="background:#34d399"></em>已掌握</span></div>
+      <h3>打卡日历 &middot; 近 15 周</h3>
+      <div class="heat" id="heat"></div>
+    </div>
+    <div class="panel glass">
+      <h3>累计数据</h3>
+      <div class="sgrid">
+        <div class="sstat"><b id="sLearn">-</b><span>累计学习(词)</span></div>
+        <div class="sstat"><b id="sDays">-</b><span>打卡天数</span></div>
+        <div class="sstat"><b id="sBest">-</b><span>最佳连续</span></div>
+        <div class="sstat"><b id="sRev">-</b><span>今日回顾(次)</span></div>
+      </div>
+    </div>
+    <div class="panel glass">
+      <h3>艾宾浩斯复习节点</h3>
+      <div class="ival-list"><span class="ival">5分钟</span><span class="ival">30分钟</span><span class="ival">12小时</span><span class="ival">1天</span><span class="ival">2天</span><span class="ival">4天</span><span class="ival">7天</span><span class="ival">15天</span><span class="ival">30天</span></div>
+      <div class="reset-zone" style="margin-top:16px;"><button class="reset-btn" onclick="CET4APP.resetAll()">清空全部进度</button></div>
+    </div>
+  </section>
+</div>
+<nav class="tabbar">
+  <button class="tab on" id="tab-learn" onclick="CET4APP.showTab('learn')"><span class="ticon">&#9889;</span>学习</button>
+  <button class="tab" id="tab-book" onclick="CET4APP.showTab('book')"><span class="ticon">&#128214;</span>词书</button>
+  <button class="tab" id="tab-stats" onclick="CET4APP.showTab('stats')"><span class="ticon">&#128202;</span>统计</button>
+</nav>
+<div id="toast"></div>
+<script>
+(function(){
+'use strict';
+window.addEventListener('error', function(e){
+  var el = document.getElementById('bootErr');
+  if (el) el.textContent = 'ERR:' + (e && e.message ? e.message : 'unknown') + '@' + (e && e.lineno ? e.lineno : '?');
+});
+var PROG_KEY = 'cet4_progress_v1';
+var STATS_KEY = 'cet4_stats_v1';
+var INTERVALS = [5*60*1000, 30*60*1000, 12*3600*1000, 24*3600*1000,
+                 2*24*3600*1000, 4*24*3600*1000, 7*24*3600*1000,
+                 15*24*3600*1000, 30*24*3600*1000];
+var STAGE_LABEL = ['5分钟后','30分钟后','12小时后','1天后','2天后','4天后','7天后','15天后','30天后'];
+var MAX_STAGE = INTERVALS.length - 1;
+var CET4_URL = 'https://newhgg.github.io/study-hub/cet4.json';
+var CET4_FALLBACK = 'https://cdn.jsdelivr.net/gh/newhgg/study-hub@latest/cet4.json';
+var WORDS = null;
+var prog = {};
+var stats = {};
+var current = null;
+var revealed = false;
+var queue = [];
+var sessionCount = 0;
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function todayStr(){ var d = new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function loadState(){
+  try { prog = JSON.parse(localStorage.getItem(PROG_KEY) || '{}') || {}; } catch(e){ prog = {}; }
+  try { stats = JSON.parse(localStorage.getItem(STATS_KEY) || '{}') || {}; } catch(e){ stats = {}; }
+  var tk = todayStr();
+  if (stats.day !== tk) { stats.day = tk; stats.dayLearned = 0; stats.dayReviewed = 0; }
+  if (!stats.log || typeof stats.log !== 'object') stats.log = {};
+}
+function calcStreak(){
+  var log = stats.log || {}; var s = 0; var d = new Date();
+  function key(x){ return x.getFullYear()+'-'+(x.getMonth()+1)+'-'+x.getDate(); }
+  if (!log[key(d)]) d.setDate(d.getDate()-1);
+  while (log[key(d)]) { s++; d.setDate(d.getDate()-1); if (s > 3650) break; }
+  return s;
+}
+function saveState(){
+  stats.streak = calcStreak();
+  if (stats.streak > (stats.bestStreak || 0)) stats.bestStreak = stats.streak;
+  try { localStorage.setItem(PROG_KEY, JSON.stringify(prog)); } catch(e){}
+  try { localStorage.setItem(STATS_KEY, JSON.stringify(stats)); } catch(e){}
+}
+function learnedCount(){ return Object.keys(prog).length; }
+function masteredCount(){ var n = 0; for (var w in prog) { if (prog[w] && prog[w].stage >= MAX_STAGE) n++; } return n; }
+function learningCount(){ return learnedCount() - masteredCount(); }
+function dueWords(){ var now = Date.now(); var due = []; for (var w in prog) { if (prog[w] && prog[w].next <= now) due.push(w); } return due; }
+function newWordsLeft(){ if (!WORDS) return 0; return WORDS.length - learnedCount(); }
+function renderHero(){
+  var pct = 0;
+  if (WORDS && WORDS.length) { pct = Math.round(learnedCount() * 100 / WORDS.length); }
+  var C = 326.7;
+  var fg = $('ringFg');
+  if (fg) fg.setAttribute('stroke-dashoffset', String(C * (1 - pct/100)));
+  $('ringPct').textContent = WORDS ? pct + '%' : '--';
+  $('ringSub').textContent = WORDS ? '已学 ' + learnedCount() + '/' + WORDS.length : '词库加载中';
+  $('nDue').textContent = dueWords().length;
+  $('nNew').textContent = WORDS ? newWordsLeft() : '-';
+  $('nToday').textContent = stats.dayLearned || 0;
+  $('nMast').textContent = masteredCount();
+  var sk = stats.streak || calcStreak();
+  $('streakNum').textContent = sk;
+  $('streakNum2').textContent = sk;
+  $('todayNum').textContent = stats.dayLearned || 0;
+}
+function renderFlow(){
+  var area = $('stageArea'); if (!area) return;
+  if (!WORDS) {
+    area.innerHTML = '<div class="glass fs-load" id="loadState">⏳ 词库加载中…</div>';
+    $('qmeta').textContent = '';
+    return;
+  }
+  var due = dueWords().length, fresh = newWordsLeft();
+  if (current) {
+    $('qmeta').innerHTML = '本轮 <b>' + sessionCount + '</b> 题 · 队列剩余 <b>' + queue.length + '</b> · 待复习 <b>' + due + '</b>';
+    area.innerHTML = buildCard();
+    return;
+  }
+  $('qmeta').textContent = '';
+  if (due > 0) {
+    area.innerHTML = '<div class="glass flow-summary"><div class="fs-emoji">🎯</div>' +
+      '<div class="fs-title">有 ' + due + ' 个词到了复习时间</div>' +
+      '<div class="fs-desc">艾宾浩斯节奏到了，趁记忆消退前巩固效果最好</div>' +
+      '<button class="fs-btn" onclick="CET4APP.startDue()">开始复习</button></div>';
+  } else if (fresh > 0) {
+    var batch = Math.min(10, fresh);
+    area.innerHTML = '<div class="glass flow-summary"><div class="fs-emoji">✨</div>' +
+      '<div class="fs-title">' + (learnedCount() > 0 ? '复习已完成，学点新词？' : '开启你的四级词汇之旅') + '</div>' +
+      '<div class="fs-desc">已学 ' + learnedCount() + ' / ' + WORDS.length + ' 词 · 本批学习 ' + batch + ' 个新词</div>' +
+      '<button class="fs-btn" onclick="CET4APP.startNew(10)">学新词 +'+ batch +'</button>' +
+      '<div style="margin-top:12px;"><button class="fs-btn ghost" onclick="CET4APP.startNew(9999)">不限量连学</button></div></div>';
+  } else {
+    area.innerHTML = '<div class="glass flow-summary"><div class="fs-emoji">🎉</div>' +
+      '<div class="fs-title">全部 3320 词已进入记忆轨道</div>' +
+      '<div class="fs-desc">没有待复习，也没有新词了<br>保持连续打卡，让艾宾浩斯替你安排复习</div></div>';
+  }
+}
+function buildCard(){
+  var w = current.word;
+  var stage = current.stage;
+  return '<div class="card-flip" onclick="CET4APP.reveal()">' +
+    '<div class="card3d' + (revealed ? ' flipped' : '') + '">' +
+    '<div class="face front">' +
+      '<span class="corner tl">CET-4</span><span class="corner br">' + (stage + 1) + ' / 9</span>' +
+      '<div class="fword">' + esc(w.w) + '</div>' +
+      (w.p ? '<div class="fphon">' + esc(w.p) + '</div>' : '') +
+      '<button class="speak-btn" onclick="event.stopPropagation();CET4APP.speak()">🔊</button>' +
+      '<div class="flip-hint">轻触卡片查看释义</div>' +
+    '</div>' +
+    '<div class="face back">' +
+      '<span class="corner tl">释义</span>' +
+      '<div class="fmean">' + esc(w.m) + '</div>' +
+      '<div class="fstage">⏱ 本阶段节点：' + STAGE_LABEL[Math.min(stage, MAX_STAGE)] + '</div>' +
+    '</div>' +
+    '</div></div>' +
+    '<div class="grade-btns' + (revealed ? ' show' : '') + '">' +
+      '<button class="gbtn again" onclick="CET4APP.answer(0)">😵 忘记</button>' +
+      '<button class="gbtn hard" onclick="CET4APP.answer(1)">🤔 模糊</button>' +
+      '<button class="gbtn good" onclick="CET4APP.answer(2)">😎 认识</button>' +
+    '</div>' +
+    (revealed ? '' : '<div class="gnote">先回忆词义，再翻面自评</div>');
+}
+function startDue(){
+  if (!WORDS) return;
+  var due = dueWords();
+  if (!due.length) { renderFlow(); return; }
+  due.sort(function(a,b){ return prog[a].next - prog[b].next; });
+  queue = due.slice(0, 40);
+  sessionCount = 0;
+  pickNext();
+}
+function startNew(n){
+  if (!WORDS) return;
+  var want = n || 10; var add = [];
+  for (var i = 0; i < WORDS.length && add.length < want; i++) {
+    if (!prog[WORDS[i].w]) add.push(WORDS[i].w);
+  }
+  if (!add.length) { renderFlow(); return; }
+  queue = add;
+  sessionCount = 0;
+  pickNext();
+}
+function pickNext(){
+  if (!queue.length) { current = null; renderFlow(); return; }
+  var wname = queue.shift();
+  var wi = null;
+  for (var i = 0; i < WORDS.length; i++) { if (WORDS[i].w === wname) { wi = WORDS[i]; break; } }
+  if (!wi) { delete prog[wname]; saveState(); pickNext(); return; }
+  current = { word: wi, stage: (prog[wname] && prog[wname].stage) || 0 };
+  revealed = false;
+  renderFlow();
+}
+function reveal(){
+  if (!current || revealed) return;
+  revealed = true;
+  var area = $('stageArea');
+  var card = area.querySelector('.card3d');
+  var gbtns = area.querySelector('.grade-btns');
+  var note = area.querySelector('.gnote');
+  if (card) card.classList.add('flipped');
+  if (gbtns) gbtns.classList.add('show');
+  if (note && note.parentNode) note.parentNode.removeChild(note);
+}
+function answer(grade){
+  if (!current) return;
+  var word = current.word.w;
+  var now = Date.now();
+  var st = prog[word] || { stage: 0, next: 0, lapses: 0 };
+  var isNew = !prog[word];
+  if (grade === 0) {
+    st.stage = 0; st.next = now + 60*1000; st.lapses = (st.lapses || 0) + 1;
+  } else if (grade === 1) {
+    var cur = INTERVALS[st.stage] || INTERVALS[MAX_STAGE];
+    st.next = now + Math.round(cur * 1.2);
+    st.stage = isNew ? 0 : Math.min(st.stage + 1, MAX_STAGE);
+  } else {
+    var ns = isNew ? 0 : Math.min(st.stage + 1, MAX_STAGE);
+    st.stage = ns; st.next = now + INTERVALS[ns];
+    if (ns >= MAX_STAGE) stats.mastered = (stats.mastered || 0) + 1;
+    if (isNew) stats.dayLearned = (stats.dayLearned || 0) + 1;
+  }
+  st.reps = (st.reps || 0) + 1;
+  prog[word] = st;
+  var tk = todayStr();
+  var firstToday = !stats.log[tk];
+  stats.log[tk] = (stats.log[tk] || 0) + 1;
+  stats.dayReviewed = (stats.dayReviewed || 0) + 1;
+  saveState();
+  sessionCount++;
+  current = null; revealed = false;
+  if (firstToday) toast('🎉 今日打卡成功 · 已连续 ' + (stats.streak || calcStreak()) + ' 天');
+  renderAll();
+  if (queue.length) pickNext();
+}
+function resetAll(){
+  if (!confirm('确定清空所有四级词汇进度？此操作不可恢复。')) return;
+  prog = {};
+  stats = { day: todayStr(), dayLearned: 0, dayReviewed: 0, mastered: 0, log: {} };
+  saveState();
+  current = null; queue = []; revealed = false; sessionCount = 0;
+  renderAll();
+  toast('进度已清空，重新出发 💪');
+}
+function renderBookCounts(){
+  var el = $('bookCounts'); if (!el) return;
+  var total = WORDS ? WORDS.length : 3320;
+  el.innerHTML =
+    '<div class="bchip s0"><b>' + (total - learnedCount()) + '</b>未学</div>' +
+    '<div class="bchip s1"><b>' + learningCount() + '</b>学习中</div>' +
+    '<div class="bchip s2"><b>' + masteredCount() + '</b>已掌握</div>';
+}
+function onSearch(q){
+  lastQuery = (q || '').trim().toLowerCase();
+  var list = $('bookList'); if (!list) return;
+  if (!WORDS) { list.innerHTML = '<div class="book-hint">词库加载中…</div>'; return; }
+  if (!lastQuery) {
+    list.innerHTML = '<div class="book-hint">输入关键词检索 ' + WORDS.length + ' 词<br>点击单词可发音</div>';
+    return;
+  }
+  var hits = [];
+  for (var i = 0; i < WORDS.length && hits.length < 80; i++) {
+    var w = WORDS[i];
+    if (w.w.toLowerCase().indexOf(lastQuery) > -1 || (w.m && w.m.toLowerCase().indexOf(lastQuery) > -1)) hits.push(w);
+  }
+  if (!hits.length) {
+    list.innerHTML = '<div class="book-hint">未找到「' + esc(lastQuery) + '」相关的词</div>';
+    return;
+  }
+  var html = '';
+  for (var j = 0; j < hits.length; j++) {
+    var it = hits[j];
+    var cls = !prog[it.w] ? 's0' : (prog[it.w].stage >= MAX_STAGE ? 's2' : 's1');
+    var tag = cls === 's2' ? '已掌握' : (cls === 's1' ? '学习中' : '未学');
+    html += '<div class="book-row" data-w="' + esc(it.w) + '" onclick="CET4APP.speakWord(this.dataset.w)">' +
+      '<div class="bw">' + esc(it.w) + '</div>' +
+      '<div class="bm">' + esc(it.m) + '</div>' +
+      '<span class="bdot ' + cls + '" title="' + tag + '"></span></div>';
+  }
+  if (hits.length >= 80) html += '<div class="book-more">仅显示前 80 条，请继续输入缩小范围</div>';
+  list.innerHTML = html;
+}
+var lastQuery = '';
+function renderStats(){
+  var total = WORDS ? WORDS.length : 3320;
+  var un = total - learnedCount(), ln = learningCount(), ms = masteredCount();
+  function wpct(n){ return total ? (n * 100 / total) + '%' : '0%'; }
+  $('mb0').style.width = wpct(un); $('mb1').style.width = wpct(ln); $('mb2').style.width = wpct(ms);
+  $('sLearn').textContent = learnedCount();
+  var days = 0; for (var k in stats.log) { if (stats.log[k] > 0) days++; }
+  $('sDays').textContent = days;
+  $('sBest').textContent = stats.bestStreak || stats.streak || 0;
+  $('sRev').textContent = stats.dayReviewed || 0;
+  renderHeat();
+}
+function renderHeat(){
+  var el = $('heat'); if (!el) return;
+  var log = stats.log || {};
+  var today = new Date(); today.setHours(0,0,0,0);
+  var dow = (today.getDay() + 6) % 7;
+  var start = new Date(today); start.setDate(start.getDate() - dow - 14*7);
+  var html = '';
+  for (var c = 0; c < 15; c++) {
+    html += '<div class="hcol">';
+    for (var r = 0; r < 7; r++) {
+      var d = new Date(start); d.setDate(start.getDate() + c*7 + r);
+      var k = d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+      var v = log[k] || 0; var lv = 0;
+      if (v > 0) lv = 1; if (v >= 4) lv = 2; if (v >= 10) lv = 3; if (v >= 20) lv = 4;
+      var future = d.getTime() > today.getTime();
+      html += '<div class="hcell lv' + lv + (future ? ' off' : '') + '" title="' + (d.getMonth()+1) + '月' + d.getDate() + '日 · ' + (future ? '—' : v + ' 次') + '"></div>';
+    }
+    html += '</div>';
+  }
+  el.innerHTML = html;
+}
+function speak(){
+  if (!current || !window.speechSynthesis) return;
+  try {
+    var u = new SpeechSynthesisUtterance(current.word.w);
+    u.lang = 'en-US'; u.rate = 0.88;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  } catch(e){}
+}
+function speakWord(word){
+  if (!window.speechSynthesis) return;
+  try {
+    var u = new SpeechSynthesisUtterance(word);
+    u.lang = 'en-US'; u.rate = 0.88;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  } catch(e){}
+}
+function showTab(name){
+  var views = ['learn','book','stats'];
+  for (var i = 0; i < views.length; i++) {
+    var v = $('view-' + views[i]); var t = $('tab-' + views[i]);
+    if (v) v.classList.toggle('on', views[i] === name);
+    if (t) t.classList.toggle('on', views[i] === name);
+  }
+  if (name === 'book') renderBookCounts();
+  if (name === 'stats') renderStats();
+  if (name === 'learn') renderHero();
+  window.scrollTo(0,0);
+}
+var toastTimer = null;
+function toast(msg){
+  var t = $('toast');
+  t.textContent = msg; t.classList.add('on');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('on'); }, 2400);
+}
+function renderAll(){ renderHero(); renderFlow(); renderBookCounts(); if ($('view-stats').classList.contains('on')) renderStats(); }
+function onVocabReady(){
+  console.log('[CET4] 词库加载成功: ' + WORDS.length + ' 词');
+  loadState();
+  renderAll();
+  var p = new URLSearchParams(location.search);
+  if (p.get('autotest')) runAutotest();
+}
+function loadVocab(stage){
+  var url = stage === 1 ? CET4_FALLBACK : (stage === 2 ? 'cet4.json' : CET4_URL);
+  var st = $('loadState');
+  if (st) st.innerHTML = '⏳ 词库加载中…' + (stage === 1 ? '（备用源）' : (stage === 2 ? '（本地源）' : ''));
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true);
+  xhr.timeout = 8000;
+  var settled = false;
+  xhr.onload = function(){
+    if (settled) return; settled = true;
+    if (xhr.status === 200) {
+      try {
+        var d = JSON.parse(xhr.responseText);
+        if (d && d.length) { WORDS = d; onVocabReady(); return; }
+      } catch(e){}
+    }
+    sourceFailed(stage);
+  };
+  xhr.ontimeout = function(){ if (settled) return; settled = true; console.warn('[CET4] 超时 from ' + url); sourceFailed(stage); };
+  xhr.onerror = function(){ if (settled) return; settled = true; console.warn('[CET4] 网络错误 from ' + url); sourceFailed(stage); };
+  xhr.send();
+}
+function sourceFailed(stage){
+  if (stage === 0) {
+    console.log('[CET4] 切换备用源 jsDelivr…');
+    setTimeout(function(){ loadVocab(1); }, 400);
+    return;
+  }
+  if (stage === 1) {
+    console.log('[CET4] 切换同目录本地源…');
+    setTimeout(function(){ loadVocab(2); }, 400);
+    return;
+  }
+  var st = $('loadState');
+  if (st) st.innerHTML = '❌ 词库加载失败，请检查网络<br><a href="javascript:void(0)" onclick="CET4APP.retry()">点此重试</a>';
+}
+function retry(){ loadVocab(0); }
+function runAutotest(){
+  var out = $('autotestResult');
+  var t0 = Date.now();
+  (function wait(){
+    if (!WORDS) {
+      if (Date.now() - t0 > 15000) { out.textContent = 'AUTOTEST_FAIL nowords'; return; }
+      setTimeout(wait, 200); return;
+    }
+    try {
+      var res = [];
+      showTab('book');
+      onSearch('ab');
+      res.push('book=' + document.querySelectorAll('#bookList .book-row').length);
+      showTab('stats');
+      res.push('heat=' + document.querySelectorAll('#heat .hcell').length);
+      res.push('mbar=' + ($('mb1').style.width.indexOf('%') > -1 ? 1 : 0));
+      showTab('learn');
+      startDue();
+      if (!current) startNew(5);
+      if (current) {
+        reveal();
+        res.push('flip=' + (document.querySelector('.card3d.flipped') ? 1 : 0));
+        res.push('gbtn=' + (document.querySelector('.grade-btns.show') ? 1 : 0));
+        answer(2);
+        res.push('ans=1');
+        res.push('log=' + ((stats.log[todayStr()] || 0) > 0 ? 1 : 0));
+        res.push('streak=' + calcStreak());
+      } else {
+        res.push('flip=0');
+      }
+      res.push('hero=' + ($('ringPct').textContent.indexOf('%') > -1 ? 1 : 0));
+      out.textContent = 'AUTOTEST_OK ' + res.join(' ');
+    } catch(e) {
+      out.textContent = 'AUTOTEST_FAIL ' + (e && e.message ? e.message : 'unknown');
+    }
+  })();
+}
+loadState();
+renderHero();
+renderFlow();
+showTab('learn');
+loadVocab(0);
+window.CET4APP = { reveal:reveal, answer:answer, startDue:startDue, startNew:startNew,
+  showTab:showTab, onSearch:onSearch, speak:speak, speakWord:speakWord, resetAll:resetAll, retry:retry };
+})();
+</script>
+</body>
+</html>
