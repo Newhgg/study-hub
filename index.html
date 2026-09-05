@@ -367,6 +367,22 @@ body.dark .cat-数学 { background:rgba(6,182,212,0.2); color:#22d3ee; }
 .cet4-progress { margin-top:16px; font-size:12px; color:var(--text-3); }
 .cet4-reset { margin-top:10px; background:none; border:1px solid var(--border); border-radius:8px; padding:6px 12px; font-size:12px; color:var(--text-3); cursor:pointer; }
 .cet4-reset:hover { border-color:var(--danger); color:var(--danger); }
+
+/* === 四级词汇打卡 · 全新入口卡（2026-09-06）=== */
+.cet4-entry { position:relative; display:block; text-decoration:none; background:linear-gradient(135deg,#eef2ff 0%,#f5f3ff 55%,#ecfeff 100%); border:1px solid #e0e7ff; border-radius:18px; padding:20px 22px; overflow:hidden; transition:all 0.2s ease; }
+.cet4-entry:hover { transform:translateY(-3px); box-shadow:0 10px 30px rgba(99,102,241,0.18); border-color:#c7d2fe; }
+.cet4-entry::after { content:''; position:absolute; right:-40px; top:-40px; width:130px; height:130px; border-radius:50%; background:radial-gradient(circle,rgba(139,92,246,0.14),transparent 70%); pointer-events:none; }
+.cet4-entry-badge { position:absolute; top:14px; right:14px; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; font-size:11px; font-weight:800; padding:3px 10px; border-radius:20px; letter-spacing:1px; z-index:1; }
+.cet4-entry-head { display:flex; align-items:center; gap:14px; }
+.cet4-entry-icon { width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg,#6366f1,#8b5cf6); display:flex; align-items:center; justify-content:center; font-size:24px; color:#fff; box-shadow:0 6px 16px rgba(99,102,241,0.35); flex-shrink:0; }
+.cet4-entry-titles { flex:1; min-width:0; }
+.cet4-entry-title { font-size:17px; font-weight:800; color:var(--text); }
+.cet4-entry-sub { font-size:12px; color:var(--text-3); margin-top:4px; }
+.cet4-entry-bar { margin-top:16px; height:8px; background:rgba(99,102,241,0.12); border-radius:6px; overflow:hidden; }
+.cet4-entry-bar-in { height:100%; border-radius:6px; background:linear-gradient(90deg,#6366f1,#8b5cf6,#06b6d4); transition:width 0.4s ease; }
+.cet4-entry-foot { margin-top:12px; display:flex; justify-content:space-between; align-items:center; }
+.cet4-entry-learned { font-size:12px; color:var(--text-3); }
+.cet4-entry-cta { font-size:13px; font-weight:800; color:#6366f1; }
 .countdown-num { font-size:32px; font-weight:700; color:var(--primary); font-variant-numeric:tabular-nums; }
 .countdown-unit { font-size:12px; color:var(--text-3); margin-top:2px; }
 .countdown-card.urgent .countdown-num { color:#ef4444; }
@@ -2526,7 +2542,7 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
 
     <h3 style="font-size:18px;font-weight:700;margin:28px 0 16px;">📚 四级词汇 · 艾宾浩斯记忆</h3>
     <div class="cet4-box" id="cet4Box">
-      <div id="cet4Loading" style="padding:20px;text-align:center;color:var(--text-3);">⏳ 词库加载中...</div>
+      <div id="cet4Loading" style="padding:20px;text-align:center;color:var(--text-3);">⏳ 加载中...</div>
     </div>
 
     <h3 style="font-size:18px;font-weight:700;margin:28px 0 16px;">⏰ 重要日期倒计时</h3>
@@ -4455,56 +4471,30 @@ var CET4 = (function(){
   function render(){
     var box = document.getElementById('cet4Box');
     if (!box) return;
-    // 未加载词库
-    if (!WORDS){
-      box.innerHTML = '<div id="cet4Loading" style="padding:20px;text-align:center;color:var(--text-3);">⏳ 词库加载中...</div>';
-      loadVocab();
-      return;
-    }
-    var due = dueWords();
-    var newCount = newWordCount();
+    // 全新入口卡（2026-09-06）：纯本地统计，点击跳转独立打卡页 cet4.html
+    // 词库不再在本页加载（死代码 loadVocab 保留不动），进度键与 cet4.html 完全共享
+    loadProg();
+    var learned = Object.keys(prog).length;
+    var due = dueWords().length;
+    var mastered = stats.mastered || 0;
+    var streak = stats.streak || 0;
+    var pct = Math.min(100, Math.round(learned / 3320 * 100));
     var html = '';
-    // 统计条
-    html += '<div class="cet4-stats">'+
-      '<div class="cet4-stat"><div class="num">'+due.length+'</div><div class="label">今日待复习</div></div>'+
-      '<div class="cet4-stat"><div class="num">'+newCount+'</div><div class="label">待学新词</div></div>'+
-      '<div class="cet4-stat"><div class="num">'+ (stats.dayLearned||0) +'</div><div class="label">今日已学</div></div>'+
-      '<div class="cet4-stat"><div class="num">'+(stats.mastered||0)+'</div><div class="label">已掌握</div></div>'+
-    '</div>';
-
-    if (current){
-      // 有当前词：显示卡片
-      var w = current.word;
-      html += '<div class="cet4-card" onclick="CET4.reveal()">';
-      html += '<div class="cet4-word">'+w.w+'</div>';
-      html += '<div class="cet4-phonetic">'+ (w.p||'') +'</div>';
-      if (revealed){
-        html += '<div class="cet4-mean">'+w.m+'</div>';
-      } else {
-        html += '<div class="cet4-hint">👆 点击卡片查看释义</div>';
-      }
-      html += '</div>';
-      if (revealed){
-        html += '<div class="cet4-btns">'+
-          '<button class="cet4-btn again" onclick="CET4.answer(0)">😵 忘记</button>'+
-          '<button class="cet4-btn hard" onclick="CET4.answer(1)">🤔 模糊</button>'+
-          '<button class="cet4-btn good" onclick="CET4.answer(2)">😎 认识</button>'+
-        '</div>';
-      } else {
-        html += '<div class="cet4-hint" style="text-align:center;margin-top:12px;">点击卡片显示释义后再自评</div>';
-      }
-    } else {
-      // 无当前词
-      if (due.length > 0){
-        html += '<button class="cet4-btn good" style="max-width:220px;margin:0 auto;display:block;" onclick="CET4.startDue()">▶ 开始复习 '+due.length+' 词</button>';
-      } else if (newCount > 0){
-        html += '<button class="cet4-btn good" style="max-width:220px;margin:0 auto;display:block;" onclick="CET4.startNew()">▶ 学习新词</button>';
-      } else {
-        html += '<div style="text-align:center;padding:20px;color:var(--success);font-weight:700;">🎉 全部完成！今天没有待复习和新词了</div>';
-      }
-    }
-    html += '<div class="cet4-progress">已学 '+Object.keys(prog).length+' / '+WORDS.length+' 词</div>';
-    html += '<button class="cet4-reset" onclick="if(confirm(\'确定清空所有四级词汇进度？\'))CET4.reset()">🗑 清空进度</button>';
+    html += '<a class="cet4-entry" href="cet4.html">' +
+      '<span class="cet4-entry-badge">全新版</span>' +
+      '<div class="cet4-entry-head">' +
+        '<div class="cet4-entry-icon">🎓</div>' +
+        '<div class="cet4-entry-titles">' +
+          '<div class="cet4-entry-title">四级词汇打卡</div>' +
+          '<div class="cet4-entry-sub">已掌握 ' + mastered + ' 词 · 今日待复习 ' + due + ' 词 · 连续打卡 ' + streak + ' 天</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="cet4-entry-bar"><div class="cet4-entry-bar-in" style="width:' + pct + '%"></div></div>' +
+      '<div class="cet4-entry-foot">' +
+        '<span class="cet4-entry-learned">已学 ' + learned + ' / 3320 词</span>' +
+        '<span class="cet4-entry-cta">进入打卡 →</span>' +
+      '</div>' +
+    '</a>';
     box.innerHTML = html;
   }
 
