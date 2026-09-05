@@ -1100,6 +1100,7 @@ button:active, .quick-item:active, .lib-card:active, .route-card:active {
 .fb-right { display: flex; align-items: center; gap: 16px; position: relative; z-index: 1; }
 .fb-countdown { text-align: center; }
 .fb-num { font-size: 28px; font-weight: 800; line-height: 1; display: block; }
+.fb-num.fb-badge { font-size: 17px; font-weight: 700; line-height: 1.2; display: inline-block; background: rgba(255,255,255,0.18); backdrop-filter: blur(8px); padding: 7px 16px; border-radius: 999px; }
 .fb-label { font-size: 11px; opacity: 0.8; }
 .fb-arrow { font-size: 20px; opacity: 0.7; }
 
@@ -2082,8 +2083,8 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
       </div>
       <div class="fb-right">
         <div class="fb-countdown">
-          <span class="fb-num" id="freshmanCountdown">--</span>
-          <span class="fb-label">天后报到</span>
+          <span class="fb-num fb-badge" id="freshmanCountdown">已报到</span>
+          <span class="fb-label">阳光新手</span>
         </div>
         <span class="fb-arrow">→</span>
       </div>
@@ -2212,8 +2213,8 @@ a, .item-go, .lib-go { color: var(--accent-dark); }
       <h2>🎓 新生专区</h2>
       <p>阳光学院计算机科学与技术 · 三班 · 2026级</p>
       <div class="hero-countdown">
-        <span class="num" id="freshmanHeroCountdown">--</span>
-        <span class="unit">天后正式报到</span>
+        <span class="num" id="freshmanHeroCountdown">已报到</span>
+        <span class="unit">阳光新手</span>
       </div>
     </div>
 
@@ -5237,15 +5238,11 @@ document.addEventListener('click', function(e) {
 
 // ===== 报到倒计时 =====
 function updateFreshmanCountdown() {
-  var now = new Date();
-  var year = now.getFullYear();
-  var reportDate = new Date(year, 8, 4);
-  if (now > reportDate) reportDate = new Date(year + 1, 8, 4);
-  var diff = Math.ceil((reportDate - now) / (1000 * 60 * 60 * 24));
+  // 2026-09-04 报到已过：倒计时永久改为「已报到」状态（2026-09-05）
   var el1 = document.getElementById('freshmanCountdown');
   var el2 = document.getElementById('freshmanHeroCountdown');
-  if (el1) el1.textContent = diff;
-  if (el2) el2.textContent = diff;
+  if (el1) el1.textContent = '已报到';
+  if (el2) el2.textContent = '已报到';
 }
 
 // ===== 初始化 =====
