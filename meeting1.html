@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第一次班会记录 · 2026级计科3班</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f5f7fb; --card:#ffffff; --text:#1a202c; --text-2:#4a5568; --text-3:#8895a7;
+  --brand:#6366f1; --brand-2:#8b5cf6; --accent:#ef4444; --ok:#10b981;
+  --border:rgba(99,102,241,.14); --shadow:0 6px 24px rgba(99,102,241,.08);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:15px}
+a{color:var(--brand);text-decoration:none}
+.wrap{max-width:880px;margin:0 auto;padding:24px 16px 60px}
+/* 顶部导航 */
+.topbar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.topbar-inner{max-width:880px;margin:0 auto;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.topbar-inner a{font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.doc-meta{font-size:12px;color:var(--text-3);background:rgba(99,102,241,.06);padding:5px 10px;border-radius:6px}
+/* 文档头 */
+.doc-head{background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 100%);color:#fff;padding:32px 24px;border-radius:16px;margin:20px 0 24px;box-shadow:var(--shadow)}
+.doc-head h1{font-size:24px;font-weight:800;margin-bottom:8px;line-height:1.4}
+.doc-head .meta{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;opacity:.92}
+.doc-head .meta span{display:inline-flex;align-items:center;gap:6px}
+/* 章节 */
+.section{background:var(--card);border-radius:14px;padding:22px 24px;margin-bottom:16px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.6)}
+.section h2{font-size:18px;font-weight:700;color:var(--text);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:8px}
+.section h2 .n{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-radius:8px;font-size:13px;flex-shrink:0}
+.sub{margin:16px 0 8px;font-size:15px;font-weight:700;color:var(--brand)}
+p{margin-bottom:10px}
+ul,ol{margin:8px 0 12px 20px}
+li{margin-bottom:6px}
+strong{color:var(--accent);font-weight:600}
+/* 表格 */
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+th,td{padding:10px 12px;text-align:center;border:1px solid #e2e8f0}
+th{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-weight:600;font-size:12px}
+td{color:var(--text-2)}
+td.yes{color:var(--ok);font-weight:700;font-size:15px}
+td.no{color:var(--text-3)}
+tr:nth-child(even) td{background:rgba(99,102,241,.03)}
+/* 图片 */
+figure{margin:16px 0;text-align:center}
+figure img{max-width:100%;border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,.1);border:1px solid rgba(0,0,0,.06)}
+figcaption{font-size:12px;color:var(--text-3);margin-top:8px;font-style:italic}
+/* 图片点击放大 */
+img{cursor:zoom-in}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+.lightbox.show{display:flex}
+.lightbox img{max-width:95%;max-height:95%;object-fit:contain}
+.lightbox .close{position:absolute;top:16px;right:24px;color:#fff;font-size:36px;cursor:pointer;line-height:1}
+/* 行动按钮 */
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all .15s}
+.btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(99,102,241,.35)}
+.btn-ghost{background:rgba(99,102,241,.08);color:var(--brand);border:1px solid var(--border)}
+.btn-ghost:hover{background:rgba(99,102,241,.14)}
+/* 页脚 */
+.footer{text-align:center;padding:20px;color:var(--text-3);font-size:12px;border-top:1px solid var(--border);margin-top:20px}
+/* 移动端 */
+@media(max-width:640px){
+  .wrap{padding:16px 12px 40px}
+  .doc-head{padding:22px 18px}
+  .doc-head h1{font-size:20px}
+  .section{padding:16px}
+  .section h2{font-size:16px}
+  table{font-size:11px}
+  th,td{padding:6px 4px}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html">← 返回三班学习平台</a>
+    <span class="doc-meta">2026-09-13 · 笃行楼501</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="doc-head">
+    <h1>2026级计算机科学与技术3班<br>第一次会议记录</h1>
+    <div class="meta">
+      <span>📅 2026年9月13日 18:30-19:00</span>
+      <span>📍 笃行楼501</span>
+      <span>👥 实到 30 人</span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <a class="btn btn-primary" href="2026级计科3班_第一次班会记录.docx" download>⬇ 下载 Word 原件</a>
+    <a class="btn btn-ghost" href="index.html#page-freshman">📋 新生专区</a>
+    <a class="btn btn-ghost" href="index.html">🏠 平台首页</a>
+  </div>
+
+  <!-- 一、请假与流程规范 -->
+  <div class="section">
+    <h2><span class="n">一</span>请假与流程规范</h2>
+    <p>本次班会重点强调了各类请假的规范流程，要求全体同学严格按照规定办理请假手续，不得无故缺席。</p>
+
+    <div class="sub">（一）请假类型与流程对照</div>
+    <table>
+      <thead>
+        <tr><th>请假类型</th><th>本人微信告知辅导员</th><th>家长微信/短信告知</th><th>告知宿舍长</th><th>i阳光系统申报</th><th>到校报备</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>课假（病假、事假）</td><td class="yes">√</td><td class="yes">√</td><td class="no">×</td><td class="yes">√</td><td class="yes">√</td></tr>
+        <tr><td>周末离校假（晚上不回宿舍）</td><td class="yes">√</td><td class="yes">√</td><td class="yes">√</td><td class="yes">√</td><td class="yes">√</td></tr>
+        <tr><td>校外实习假</td><td class="yes">√</td><td class="yes">√</td><td class="yes">√</td><td class="yes">√</td><td class="yes">√</td></tr>
+      </tbody>
+    </table>
+    <figure>
+      <img src="assets/meeting1/compressed/image1.jpg" alt="请假流程一览表" loading="lazy" onclick="showLightbox(this)">
+      <figcaption>请假流程一览表</figcaption>
+    </figure>
+
+    <div class="sub">（二）近期重要调整</div>
+    <table>
+      <tr><td style="text-align:left">收到校级通知，i阳光系统请假流程尚未完善，最近请假需将"i阳光系统申报"环节改为"填写在线文档"，请同学们留意班群通知。</td></tr>
+    </table>
+
+    <div class="sub">（三）周末离校假特别说明</div>
+    <ul>
+      <li>需学生本人及家长共同向辅导员提出请假申请</li>
+      <li>提前 2 天（每周四至周五）向辅导员微信告知请假原因</li>
+      <li>在 i 阳光系统发起请假申请，提交家长短信截图等佐证材料</li>
+      <li>辅导员系统批准后填写在线文档</li>
+      <li>请假结束后学生需发消息报备销假："刘老师，___已到校，请给予销假"</li>
+      <li><strong>因周末需开展班会，无特殊情况请在周末 18:00 前返校</strong></li>
+    </ul>
+    <figure>
+      <img src="assets/meeting1/compressed/image2.jpg" alt="周末离校假请假要求及流程" loading="lazy" onclick="showLightbox(this)">
+      <figcaption>周末离校假请假要求及流程</figcaption>
+    </figure>
+  </div>
+
+  <!-- 二、安全问题 -->
+  <div class="section">
+    <h2><span class="n">二</span>安全问题</h2>
+
+    <div class="sub">（一）校园交通安全</div>
+    <table>
+      <tr><td style="text-align:left"><strong>禁止在校内骑行摩托车和一切非机动车辆</strong>（包括超标电动车、电动车、电动滑板车、平衡车等）。违者给予警告及以上处分；情节严重的，给予严重警告及以上处分。</td></tr>
+    </table>
+
+    <div class="sub">（二）日常行为安全规范</div>
+    <ul>
+      <li>不穿拖鞋、背心进入课堂、办公室</li>
+      <li>注意仪容仪表整洁、穿着得体大方</li>
+      <li>进入办公室应先敲门，不随便翻阅办公桌上的物品</li>
+      <li>师生见面应相互主动打招呼，如"老师好""您好"</li>
+    </ul>
+    <figure>
+      <img src="assets/meeting1/compressed/image3.jpg" alt="行为规范要求" loading="lazy" onclick="showLightbox(this)">
+      <figcaption>行为规范要求</figcaption>
+    </figure>
+  </div>
+
+  <!-- 三、课程签到准时问题 -->
+  <div class="section">
+    <h2><span class="n">三</span>课程签到准时问题</h2>
+
+    <div class="sub">（一）无故旷课处理梯度</div>
+    <ol>
+      <li><strong>第一次：</strong>线下找辅导员说明情况并做书面检讨</li>
+      <li><strong>第二次：</strong>通报至年级群且通报家长，并做书面检讨</li>
+      <li><strong>第三次：</strong>根据学生手册相关规定进行纪律处分</li>
+    </ol>
+
+    <div class="sub">（二）学生手册相关规定</div>
+    <table>
+      <thead>
+        <tr><th>一学期累计旷课学时</th><th>处分等级</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>10～19 学时</td><td>警告处分</td></tr>
+        <tr><td>20～29 学时</td><td>严重警告处分</td></tr>
+        <tr><td>30～39 学时</td><td>记过处分</td></tr>
+        <tr><td>40 学时及以上</td><td>留校察看处分</td></tr>
+      </tbody>
+    </table>
+    <table>
+      <tr><td style="text-align:left">一门课无故旷课 6 学时以上的，本门课程期末考试成绩无效，不许参加补考，直接进入重修；迟到或早退累积 3 次折算旷课 1 学时。</td></tr>
+    </table>
+    <figure>
+      <img src="assets/meeting1/compressed/image4.jpg" alt="迟到、早退、旷课处理规定" loading="lazy" onclick="showLightbox(this)">
+      <figcaption>迟到、早退、旷课处理规定</figcaption>
+    </figure>
+  </div>
+
+  <!-- 四、学风与课堂纪律 -->
+  <div class="section">
+    <h2><span class="n">四</span>学风与课堂纪律</h2>
+
+    <div class="sub">（一）课前要求</div>
+    <ul>
+      <li>带齐纸质学习资料：教材、笔记本，不能空手来上课</li>
+      <li>课前 10 分钟全体同学到位，临时负责人点名同步给课任教师和辅导员</li>
+    </ul>
+
+    <div class="sub">（二）课中要求</div>
+    <ul>
+      <li><strong>前排就坐：</strong>尽量往前坐，前三排空位过多会被记录</li>
+      <li><strong>抬头率：</strong>抬头听课、积极参与；半数同学持续低头超过 10 分钟，整个课堂氛围会被记录</li>
+      <li><strong>玩手机：</strong>连续 20 分钟以上玩手机（非学习用途）会被记为个人问题</li>
+      <li>禁止带餐食、饮料（矿泉水除外）、穿拖鞋进入教学楼</li>
+      <li>保持举止得体，避免在课堂上有过于亲密的言行</li>
+    </ul>
+
+    <div class="sub">（三）课后要求</div>
+    <ul>
+      <li>记好老师布置的任务</li>
+      <li>垃圾随手带走，养成文明好习惯</li>
+    </ul>
+
+    <div class="sub">（四）学风督导方式</div>
+    <p>学风督导采用线上 + 线下结合的方式：</p>
+    <ul>
+      <li>主要以线上查看课堂监控的方式进行</li>
+      <li>结合辅导员现场随机抽查</li>
+      <li><strong>全覆盖：</strong>随机抽查 + 重点检查</li>
+      <li><strong>全时段：</strong>检查覆盖全天的所有课程时段</li>
+    </ul>
+    <figure>
+      <img src="assets/meeting1/compressed/image5.jpg" alt="学风建设—课堂纪律要求" loading="lazy" onclick="showLightbox(this)">
+      <figcaption>学风建设—课堂纪律要求</figcaption>
+    </figure>
+  </div>
+
+  <!-- 五、总结与要求 -->
+  <div class="section">
+    <h2><span class="n">五</span>总结与要求</h2>
+    <p>本次班会围绕请假规范、安全管理、考勤纪律和学风建设四个方面进行了全面强调。希望全体同学：</p>
+    <ol>
+      <li>严格遵守请假流程，有特殊情况及时与辅导员沟通</li>
+      <li>时刻注意人身和财产安全，遵守校园交通规定</li>
+      <li>按时上课，不迟到、不早退、不旷课</li>
+      <li>端正学习态度，遵守课堂纪律，营造良好班风学风</li>
+    </ol>
+    <p style="text-align:right;margin-top:16px;color:var(--text-2)">人工智能学院2026级计算机科学与技术3班<br>2026 年 9 月</p>
+  </div>
+
+  <!-- 附：签到情况 -->
+  <div class="section">
+    <h2><span class="n">附</span>第一次班会签到情况</h2>
+    <p>本次班会实到 <strong>30 人</strong>。签到详情如下：</p>
+    <figure>
+      <img src="assets/meeting1/compressed/image6.jpg" alt="2026年9月13日第一次班会签到情况" loading="lazy" onclick="showLightbox(this)">
+      <figcaption>2026年9月13日第一次班会签到情况（实到30人）</figcaption>
+    </figure>
+  </div>
+
+  <div class="footer">
+    <p>人工智能学院 · 2026级计算机科学与技术3班 · 班会记录</p>
+    <p style="margin-top:4px">记录整理：黄锦浩 · 存档时间：2026-09-13</p>
+  </div>
+
+</div>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('show')">
+  <span class="close">×</span>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<script>
+function showLightbox(el){
+  document.getElementById('lightboxImg').src=el.src;
+  document.getElementById('lightbox').classList.add('show');
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') document.getElementById('lightbox').classList.remove('show');
+});
+</script>
+</body>
+</html>
