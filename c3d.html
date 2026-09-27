@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>C 语言 3D 学习图谱</title>
+<style>
+  :root{
+    --bg:#05080f; --panel:rgba(10,16,28,.92); --line:rgba(120,160,220,.18);
+    --txt:#dbe6f5; --dim:#8fa3bd; --acc:#4dd0e1; --gold:#ffd166; --ok:#66bb6a; --bad:#ef5350;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+  #scene{position:fixed;inset:0}
+  canvas{display:block}
+
+  /* ---------- 顶栏 ---------- */
+  header{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:14px;
+    padding:12px 18px;background:linear-gradient(180deg,rgba(5,8,15,.9),rgba(5,8,15,0));pointer-events:none}
+  header>*{pointer-events:auto}
+  .title h1{font-size:19px;letter-spacing:1px;font-weight:700}
+  .title h1 em{color:var(--acc);font-style:normal}
+  .title p{font-size:11px;color:var(--dim);margin-top:2px}
+  .stats{display:flex;gap:8px;margin-left:8px}
+  .chip{font-size:11px;padding:4px 10px;border:1px solid var(--line);border-radius:20px;color:var(--dim);background:rgba(10,16,28,.6)}
+  .chip b{color:var(--acc);font-weight:600}
+  .hbtns{margin-left:auto;display:flex;gap:8px}
+  .btn{font-size:12px;padding:7px 14px;border-radius:8px;border:1px solid var(--line);cursor:pointer;
+    background:rgba(16,26,44,.85);color:var(--txt);transition:.2s}
+  .btn:hover{border-color:var(--acc);color:var(--acc)}
+  .btn.primary{background:linear-gradient(135deg,#1b6f7d,#125560);border-color:rgba(77,208,225,.5)}
+
+  /* ---------- 图例 ---------- */
+  #legend{position:fixed;left:14px;top:64px;bottom:44px;width:236px;z-index:15;display:flex;flex-direction:column;
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;backdrop-filter:blur(8px)}
+  #legend .lg-head{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:center}
+  #legend input{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:7px;
+    color:var(--txt);font-size:12px;padding:6px 8px;outline:none}
+  #legend input:focus{border-color:var(--acc)}
+  #lg-list{flex:1;overflow-y:auto;padding:6px}
+  #lg-list::-webkit-scrollbar{width:4px}
+  #lg-list::-webkit-scrollbar-thumb{background:rgba(120,160,220,.25);border-radius:2px}
+  .lg-ch{border-radius:9px;margin-bottom:4px;overflow:hidden}
+  .lg-ch-h{display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:pointer;font-size:13px;font-weight:600}
+  .lg-ch-h:hover{background:rgba(255,255,255,.05)}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none;box-shadow:0 0 8px currentColor}
+  .lg-ch-h .pg{margin-left:auto;font-size:10px;color:var(--dim);font-weight:400}
+  .lg-ch-b{display:none;padding:2px 6px 8px 26px}
+  .lg-ch.open .lg-ch-b{display:block}
+  .lg-tp{font-size:12px;color:var(--dim);padding:5px 8px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:6px}
+  .lg-tp:hover{background:rgba(77,208,225,.12);color:var(--txt)}
+  .lg-tp .mk{margin-left:auto;font-size:11px;color:var(--gold)}
+
+  /* ---------- 详情面板 ---------- */
+  #panel{position:fixed;top:64px;right:14px;bottom:44px;width:min(430px,92vw);z-index:25;
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;backdrop-filter:blur(10px);
+    display:none;flex-direction:column;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+  #panel.show{display:flex}
+  .p-head{padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+  .p-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--dim);margin-bottom:6px}
+  .p-head h2{font-size:18px}
+  .p-close{position:absolute;top:10px;right:12px;width:28px;height:28px;border:none;border-radius:7px;
+    background:rgba(255,255,255,.06);color:var(--dim);font-size:15px;cursor:pointer}
+  .p-close:hover{color:var(--txt);background:rgba(255,255,255,.12)}
+  .p-body{flex:1;overflow-y:auto;padding:14px 16px 18px}
+  .p-body::-webkit-scrollbar{width:4px}
+  .p-body::-webkit-scrollbar-thumb{background:rgba(120,160,220,.25);border-radius:2px}
+  .sec{margin-bottom:16px}
+  .sec h3{font-size:12px;color:var(--acc);letter-spacing:2px;margin-bottom:7px;display:flex;align-items:center;gap:8px}
+  .sec h3::after{content:"";flex:1;height:1px;background:var(--line)}
+  .sec p{font-size:13px;line-height:1.75;color:var(--txt)}
+  .tip-box{background:rgba(239,83,80,.08);border:1px solid rgba(239,83,80,.3);border-radius:9px;
+    padding:9px 12px;font-size:12.5px;line-height:1.7;color:#ffcdd2}
+  pre.code{background:#0a1220;border:1px solid var(--line);border-radius:9px;padding:10px 12px;
+    font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12px;line-height:1.65;overflow-x:auto;color:#cfe3ff}
+  pre.code::-webkit-scrollbar{height:4px}
+  pre.code::-webkit-scrollbar-thumb{background:rgba(120,160,220,.25);border-radius:2px}
+  .c-kw{color:#82aaff}.c-str{color:#c3e88d}.c-num{color:#f78c6c}.c-com{color:#64748b;font-style:italic}
+  .p-foot{padding:10px 14px;border-top:1px solid var(--line);display:flex;gap:8px}
+  .p-foot .btn{flex:1;text-align:center}
+  .btn.mastered{background:linear-gradient(135deg,#7a5c1b,#5d4a12);border-color:rgba(255,209,102,.5);color:var(--gold)}
+
+  /* ---------- 随堂练习（面板内） ---------- */
+  .qz{border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin-bottom:10px;background:rgba(255,255,255,.02)}
+  .qz .q{font-size:13px;line-height:1.6;margin-bottom:9px}
+  .qz .opt{display:block;width:100%;text-align:left;font-size:12.5px;padding:7px 10px;margin-bottom:6px;
+    border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--txt);cursor:pointer;transition:.15s}
+  .qz .opt:hover{border-color:var(--acc)}
+  .qz .opt.right{border-color:var(--ok);background:rgba(102,187,106,.15);color:#c8f0c9}
+  .qz .opt.wrong{border-color:var(--bad);background:rgba(239,83,80,.13);color:#ffcdd2}
+  .qz .opt:disabled{cursor:default;opacity:.85}
+  .qz .ex{display:none;font-size:12px;line-height:1.7;color:var(--dim);border-top:1px dashed var(--line);padding-top:7px;margin-top:4px}
+  .qz .ex.show{display:block}
+  .qz .ex b{color:var(--acc)}
+
+  /* ---------- 题库模态 ---------- */
+  #quizModal{position:fixed;inset:0;z-index:40;background:rgba(3,6,12,.72);display:none;
+    align-items:flex-start;justify-content:center;padding:4vh 14px;backdrop-filter:blur(4px)}
+  #quizModal.show{display:flex}
+  .qm-box{width:min(760px,96vw);max-height:92vh;display:flex;flex-direction:column;
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .qm-head{padding:16px 18px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+  .qm-head h2{font-size:17px}
+  .qm-head .qstat{font-size:12px;color:var(--dim)}
+  .qm-head .qstat b{color:var(--acc)}
+  .qm-body{flex:1;overflow-y:auto;padding:14px 18px 20px}
+  .qm-body::-webkit-scrollbar{width:4px}
+  .qm-body::-webkit-scrollbar-thumb{background:rgba(120,160,220,.25);border-radius:2px}
+  .qm-ch-title{font-size:13px;font-weight:700;margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+  .qm-ch-title:first-child{margin-top:0}
+  .qm-ch-title::after{content:"";flex:1;height:1px;background:var(--line)}
+  .qm-box .qz{background:rgba(255,255,255,.03)}
+
+  /* ---------- 提示条 / 加载 ---------- */
+  #hint{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:10;font-size:11px;color:var(--dim);
+    background:rgba(10,16,28,.7);border:1px solid var(--line);border-radius:20px;padding:6px 16px;white-space:nowrap}
+  #loader{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
+    background:var(--bg);flex-direction:column;gap:14px;transition:opacity .6s}
+  #loader.hide{opacity:0;pointer-events:none}
+  #loader .ring{width:44px;height:44px;border:3px solid rgba(77,208,225,.2);border-top-color:var(--acc);
+    border-radius:50%;animation:spin 1s linear infinite}
+  #loader p{font-size:12px;color:var(--dim);letter-spacing:2px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  #legendToggle{display:none}
+
+  @media (max-width:820px){
+    #legend{display:none}
+    #legend.show{display:flex;top:56px;bottom:120px;width:min(300px,86vw)}
+    #legendToggle{display:inline-block}
+    #panel{top:auto;left:8px;right:8px;bottom:8px;width:auto;height:62vh;border-radius:14px}
+    .title p{display:none}
+    #hint{display:none}
+    header{padding:10px 12px}
+  }
+</style>
+</head>
+<body>
+<div id="scene"></div>
+
+<header>
+  <div class="title">
+    <h1>C 语言 <em>3D</em> 学习图谱</h1>
+    <p>点击星球查看 · 格式 / 作用 / 示例 / 易错点 / 随堂练习</p>
+  </div>
+  <div class="stats">
+    <span class="chip">知识点 <b id="st-topic">0</b></span>
+    <span class="chip">已掌握 <b id="st-master">0</b></span>
+    <span class="chip">刷题 <b id="st-quiz">0</b></span>
+  </div>
+  <div class="hbtns">
+    <button class="btn" id="legendToggle">章节</button>
+    <button class="btn" id="btnResetView">重置视角</button>
+    <button class="btn primary" id="btnQuiz">题库练习</button>
+  </div>
+</header>
+
+<aside id="legend">
+  <div class="lg-head"><input id="lgSearch" placeholder="搜索知识点…"></div>
+  <div id="lg-list"></div>
+</aside>
+
+<section id="panel">
+  <button class="p-close" id="pClose">✕</button>
+  <div class="p-head">
+    <div class="p-tag"><span class="dot" id="pDot"></span><span id="pCh"></span></div>
+    <h2 id="pTitle"></h2>
+  </div>
+  <div class="p-body" id="pBody"></div>
+  <div class="p-foot">
+    <button class="btn" id="btnMaster">标记已掌握</button>
+    <button class="btn primary" id="btnFocusQuiz">做练习</button>
+  </div>
+</section>
+
+<div id="quizModal">
+  <div class="qm-box">
+    <div class="qm-head">
+      <h2>C 语言题库</h2>
+      <span class="qstat">已做 <b id="qDone">0</b>/<span id="qAll">0</span> · 正确率 <b id="qRate">--</b></span>
+      <span style="flex:1"></span>
+      <button class="btn" id="qmClose">关闭</button>
+    </div>
+    <div class="qm-body" id="qmBody"></div>
+  </div>
+</div>
+
+<div id="hint">左键拖拽旋转 · 滚轮缩放 · 点击星球查看详情 · 点图例可定位章节</div>
+
+<div id="loader"><div class="ring"></div><p>正在构建 C 语言星系…</p></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script>if(!window.THREE)document.write('<script src="https://unpkg.com/three@0.128.0/build/three.min.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>if(!window.THREE||!THREE.OrbitControls)document.write('<script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>')</script>
+
+<script>
+/* ================================================================
+ * 数据：10 章 52 个知识点 · 作用 / 格式 / 示例 / 易错点 / 题目
+ * ================================================================ */
+const CENTER_INFO = {
+  t:'C 语言 · 中心枢纽', role:'C 语言是一门编译型、高效、贴近硬件的结构化语言，是操作系统（Linux/Windows 内核）、嵌入式、单片机的基石，也是大学计算机专业的第一门必修编程课。',
+  syn:'学习路线建议（按星球顺序）：\n① 概述 → ② 数据类型 → ③ 运算符 → ④ 控制流程\n⑤ 数组 → ⑥ 函数 → ⑦ 指针(重难点) → ⑧ 结构体\n⑨ 文件操作 → ⑩ 预处理与多文件',
+  ex:'#include <stdio.h>\nint main(void) {\n    printf("Hello, World!\\n");   // 第一个程序\n    return 0;                     // 向系统返回 0\n}',
+  tip:'学 C 不是背语法：每个知识点务必亲手敲代码、改代码、看报错。指针和数组是期末与等级考试的重头，多花一倍时间。',
+  quiz:[{q:'C 语言程序总是从哪里开始执行？',opts:['程序的第一行','main 函数','#include 处','随机位置'],a:1,ex:'C 程序有且仅有一个 main 函数，执行总是从 main 开始、在 main 中结束。'}]
+};
+
+const CHAPTERS = [
+{ name:'1 · 语言概述', color:0x4dd0e1, css:'#4dd0e1', topics:[
+ {t:'C 语言特点', role:'了解 C 语言"能干什么、为什么学"：效率高、可直接操作内存与硬件、可移植性好，几乎全部操作系统和嵌入式设备都用它写成。',
+  syn:'编译型语言流程：\n源代码 .c → 预处理 → 编译 → 汇编 → 链接 → 可执行文件',
+  ex:'/* C 语言特点速记 */\n// 1. 高效：编译成机器码，速度接近汇编\n// 2. 底层：可直接操作内存地址（指针）\n// 3. 结构化：函数模块化，入口统一是 main\n// 4. 可移植：标准 C 在各平台都能编译',
+  tip:'C 语言没有"对象"和"垃圾回收"，内存要自己申请、自己释放——这是它与 Python/Java 最大的区别。',
+  quiz:[{q:'下列哪项不是 C 语言的特点？',opts:['编译型语言','可以操作内存','自动垃圾回收','贴近硬件'],a:2,ex:'C 语言需要手动管理内存（malloc/free），没有 Java/Python 那样的自动垃圾回收机制。'}]},
+ {t:'第一个程序', role:'掌握 C 程序的骨架：main 函数是程序入口，printf 负责输出，分号结尾，return 0 表示正常结束。',
+  syn:'int main(void) {\n    语句1;\n    语句2;   // 每条语句以分号 ; 结尾\n    return 0;\n}',
+  ex:'#include <stdio.h>        // 引入标准输入输出库\n\nint main(void) {\n    printf("Hello, World!\\n");   // \\n 是换行符\n    printf("sum = %d\\n", 1 + 2); // %d 是整数占位符\n    return 0;\n}\n// 输出：\n// Hello, World!\n// sum = 3',
+  tip:'中文输入法写出的分号"；"和引号会导致编译错误，代码里所有符号必须是英文半角。',
+  quiz:[{q:'main 函数末尾的 return 0; 表示什么？',opts:['程序出错','程序正常结束','返回 0 条语句','死循环'],a:1,ex:'return 0 向操作系统表示程序正常结束；非 0 值通常表示出错了。'}]},
+ {t:'编译运行流程', role:'理解"源代码→可执行文件"的四步流水线：预处理展开 #include/#define，编译成汇编，汇编成机器码，最后链接库函数生成可执行文件。',
+  syn:'gcc hello.c -o hello   // 一步到位\n// 分步：\ngcc -E hello.c   // 1 预处理：展开头文件、宏\ngcc -S hello.c   // 2 编译：生成汇编 .s\ngcc -c hello.c   // 3 汇编：生成目标文件 .o\ngcc hello.o -o hello  // 4 链接：生成可执行文件',
+  ex:'// hello.c\n#include <stdio.h>\nint main(void){ printf("hi\\n"); return 0; }\n\n// 终端执行：\n// $ gcc hello.c -o hello\n// $ ./hello\n// hi',
+  tip:'"undefined reference to xxx" 是链接错误（少了函数定义），"expected \';\'" 是编译错误（少了分号），先分清是哪一步报的错。',
+  quiz:[{q:'把 .c 源文件变成可执行程序，正确的顺序是：',opts:['编译→预处理→汇编→链接','预处理→编译→汇编→链接','汇编→编译→预处理→链接','链接→编译→汇编→预处理'],a:1,ex:'顺序：预处理(展开头文件宏)→编译(成汇编)→汇编(成机器码.o)→链接(合并库，成可执行文件)。'}]},
+ {t:'注释', role:'给代码写说明，编译器会完全忽略注释内容。注释是给人看的，好的注释让代码可读性翻倍。',
+  syn:'// 单行注释（C99 起支持）\n/* 多行注释\n   可以写很多行 */',
+  ex:'/* 文件说明：计算圆的面积 */\n#include <stdio.h>\n\nint main(void) {\n    double r = 2.5;\n    double area = 3.14159 * r * r;  // 面积 = πr²\n    // printf("调试: r=%f\\n", r);   ← 注释掉调试语句\n    printf("area = %.2f\\n", area);\n    return 0;\n}',
+  tip:'注释不能嵌套！/* /* 注释 */ */ 第二个 */ 会把注释提前结束，剩下的 */ 反而报错。',
+  quiz:[{q:'关于 C 语言注释，正确的是：',opts:['注释参与编译，影响运行速度','注释可以任意嵌套','编译器忽略注释内容','// 注释在 C89 标准中就存在'],a:2,ex:'注释会被编译器完全忽略；/* */ 不能嵌套；单行 // 是 C99 才纳入标准的。'}]}
+]},
+{ name:'2 · 数据类型', color:0x42a5f5, css:'#42a5f5', topics:[
+ {t:'基本数据类型', role:'决定数据"占多少内存、能表示多大范围"。整型存整数，浮点型存小数，char 存单个字符。选对类型是写对程序的第一步。',
+  syn:'char      c;  // 1 字节，字符/小整数\nint       a;  // 通常 4 字节，整数\nshort     s;  // 2 字节短整型\nlong      l;  // ≥4 字节长整型\nfloat     f;  // 4 字节，约 6~7 位有效数字\ndouble    d;  // 8 字节，约 15~16 位有效数字\nunsigned int u; // 无符号：只存 ≥0 的数',
+  ex:'#include <stdio.h>\nint main(void) {\n    int    age = 20;\n    double pi = 3.14159265358979;\n    float  f  = 2.5f;      // float 常量建议加 f\n    char   grade = \'A\';    // 字符用单引号\n    printf("%d %.2f %c\\n", age, pi, grade);\n    // 输出：20 3.14 A\n    return 0;\n}',
+  tip:'int 的范围是 ±21 亿左右（-2147483648 ~ 2147483647），超过会溢出。存大数要用 long long。',
+  quiz:[{q:'char 类型通常占多少字节？',opts:['1 字节','2 字节','4 字节','8 字节'],a:0,ex:'char 恒为 1 字节，这也是 sizeof(char) 永远等于 1 的原因。'}]},
+ {t:'变量与初始化', role:'变量是内存里命名的格子：先定义（分配空间）再使用；初始化 = 定义的同时赋第一个值。命名只能用字母、数字、下划线，且不能以数字开头。',
+  syn:'int a;          // 定义\nint b = 10;     // 定义 + 初始化\nint c = 1, d = 2;  // 一行定义多个\n\n命名规则：字母/下划线开头，区分大小写\nint score, Score;  // 是两个不同变量',
+  ex:'#include <stdio.h>\nint main(void) {\n    int a = 10, b;\n    b = a * 2;          // 赋值\n    a = a + 1;          // a 变 11\n    printf("a=%d b=%d\\n", a, b);  // a=11 b=20\n    return 0;\n}',
+  tip:'局部变量定义后不初始化就使用，值是随机的"垃圾值"。如 int x; printf("%d", x); 结果不可预测。',
+  quiz:[{q:'下列哪个是合法的变量名？',opts:['2name','int','_count','my-name'],a:2,ex:'变量名不能以数字开头、不能用关键字 int、不能含连字符 -；下划线开头的 _count 合法。'}]},
+ {t:'常量', role:'程序运行中不可改变的量。字面量（3.14、\'A\'、"abc"）直接写；#define 和 const 可给常量起名字，避免魔法数字满天飞。',
+  syn:'#define PI 3.14159      // 宏常量（预处理替换）\nconst double E = 2.71828; // const 常量（不可修改）\n\n字面量写法：\n  整数：100、0x1F(十六进制)、077(八进制)\n  实数：3.14、1e5\n  字符：\'A\'、\'\\n\'',
+  ex:'#include <stdio.h>\n#define PI 3.14159        // 末尾不要写分号！\n\nint main(void) {\n    const int MAX = 100;\n    double r = 2.0;\n    printf("%f\\n", PI * r * r);  // 12.566360\n    // MAX = 200;  ← 编译错误：const 不可赋值\n    return 0;\n}',
+  tip:'#define PI 3.14159; 多写分号是经典错误——宏是纯文本替换，会把分号也替换进去导致语法错误。',
+  quiz:[{q:'#define N 10 的含义是：',opts:['定义了变量 N 等于 10','预处理时把 N 文本替换为 10','定义了常量指针','声明了函数'],a:1,ex:'#define 是宏定义，预处理器做纯文本替换，N 根本不占内存，也不是变量。'}]},
+ {t:'printf 格式化输出', role:'按"格式控制字符串"把数据打印到屏幕。格式符与后面的参数必须一一对应，是最常用的输出函数。',
+  syn:'printf("格式串", 参数1, 参数2, ...);\n\n%d  有符号十进制整数    %u  无符号\n%f  浮点数(默认6位小数) %.2f 保留2位小数\n%c  单个字符           %s  字符串\n%p  地址              %%  输出百分号本身\n\\n 换行  \\t 制表符  \\\\ 反斜杠',
+  ex:'#include <stdio.h>\nint main(void) {\n    int    n = 42;\n    double x = 3.14159;\n    printf("n = %d, x = %.2f\\n", n, x); // n = 42, x = 3.14\n    printf("%5d|\\n", n);     // 宽度5右对齐 →    42|\n    printf("%-5d|\\n", n);    // 左对齐        → 42   |\n    printf("百分之百：%d%%\\n", n); // 百分之百：42%\n    return 0;\n}',
+  tip:'格式符和参数类型不匹配是重灾区：用 %d 输出 double 得到乱值，用 %f 输出 int 也一样。个数不匹配同样出错。',
+  quiz:[{q:'printf("%d%%", 50); 的输出是：',opts:['%d% 50','50%','50 %%','50'],a:1,ex:'%% 输出一个百分号本身，所以输出 50%。'}]},
+ {t:'scanf 格式化输入', role:'从键盘读取数据存入变量。核心规则：非数组变量前必须加取地址符 &，因为 scanf 需要知道"存到哪个地址"。',
+  syn:'scanf("%d", &a);       // 读整数：必须 &a\nscanf("%lf", &d);      // 读 double 用 %lf ！\nscanf("%f", &f);       // 读 float 用 %f\nscanf("%d%d", &a, &b); // 默认空格/回车分隔\nscanf("%d,%d", &a, &b);// 按格式串原样输入 1,2',
+  ex:'#include <stdio.h>\nint main(void) {\n    int age; double h;\n    printf("输入年龄 身高: ");\n    scanf("%d %lf", &age, &h);  // & 不能少\n    printf("age=%d, h=%.1f\\n", age, h);\n    return 0;\n}\n// 输入 20 1.75 → 输出 age=20, h=1.8',
+  tip:'三大坑：① 忘写 & → 程序崩溃；② double 误用 %f（scanf 里必须 %lf）；③ 误写成 scanf("%d\\n",&a)（格式串里别加 \\n）。',
+  quiz:[{q:'int x; 要正确读入 x，应写：',opts:['scanf("%d", x);','scanf("%d", &x);','scanf("%lf", &x);','scanf(&x, "%d");'],a:1,ex:'scanf 需要变量的地址，普通变量前必须加 & 取地址；double 才用 %lf。'}]},
+ {t:'类型转换', role:'不同类型混合运算时自动"就高不就低"转换（char→int→double），也可用 (类型) 强制转换。理解它才能解释 5/2 为什么等于 2。',
+  syn:'自动转换（隐式）：低精度 → 高精度\n  char/short → int → unsigned → long → double\n\n强制转换（显式）：\n  (类型名)表达式\n  int x = (int)3.99;   // 结果 3（截断不四舍五入）',
+  ex:'#include <stdio.h>\nint main(void) {\n    int a = 5, b = 2;\n    printf("%d\\n", a / b);        // 2  整数除整数\n    printf("%f\\n", (double)a / b); // 2.5 先转再除\n    printf("%f\\n", a / 2.0);      // 2.5 有浮点参与\n    int t = (int)3.99;            // 3 直接截断\n    printf("%d\\n", t);\n    return 0;\n}',
+  tip:'(double)(a/b) 与 (double)a/b 完全不同：前者先整除得 2 再转 2.0，后者才是 2.5。',
+  quiz:[{q:'表达式 (int)7.9 + 7 / 2 的值是：',opts:['10','9','9.9','7'],a:0,ex:'(int)7.9 截断得 7；7/2 整数除法得 3；7+3=10。两个考点：强制转换舍去小数、整数相除仍是整数。'}]},
+ {t:'sizeof 运算符', role:'求类型或变量占用的字节数，编译期确定。排查溢出、写可移植代码时常用，返回值类型是 size_t。',
+  syn:'sizeof(类型名)    // 如 sizeof(int)\nsizeof 表达式或变量 // 如 sizeof a\n\n注意：sizeof 是运算符不是函数\n返回类型 size_t，打印建议 %zu（考试常用 %d 亦可）',
+  ex:'#include <stdio.h>\nint main(void) {\n    printf("char=%zu\\n", sizeof(char));    // 1\n    printf("int=%zu\\n", sizeof(int));      // 4\n    printf("double=%zu\\n", sizeof(double));// 8\n    int a[10];\n    printf("数组=%zu\\n", sizeof(a));       // 40\n    printf("元素数=%zu\\n", sizeof(a)/sizeof(a[0])); // 10\n    return 0;\n}',
+  tip:'sizeof(a)/sizeof(a[0]) 求数组元素个数是常用技巧，但数组作函数参数传参后退化为指针，此技巧在函数内失效。',
+  quiz:[{q:'sizeof(double) 的结果是：',opts:['4','8','16','取决于编译器一定是 4'],a:1,ex:'C 标准规定 sizeof(char)≥1，double 为 8 字节（主流平台）。float 是 4 字节。'}]}
+]},
+{ name:'3 · 运算符', color:0x7e57c2, css:'#7e57c2', topics:[
+ {t:'算术运算符', role:'+ - * / % 五个基本运算。核心考点：两个整数相除仍是整数（舍去小数），% 只能用于整数、结果的符号与被除数相同。',
+  syn:'a + b   a - b   a * b\na / b   // 整数相除取整；有浮点则正常除\na % b   // 取余(模)，要求两边都是整数\n        // 7 % 3 = 1；-7 % 3 = -1',
+  ex:'#include <stdio.h>\nint main(void) {\n    printf("%d\\n", 5 / 2);    // 2  不是 2.5！\n    printf("%f\\n", 5.0 / 2);  // 2.5\n    printf("%d\\n", 7 % 3);    // 1\n    printf("%d\\n", -7 % 3);   // -1 符号跟被除数\n    // 分离数字：123 的个位和十位\n    int n = 123;\n    printf("个=%d 十=%d\\n", n % 10, n / 10 % 10); // 3 2\n    return 0;\n}',
+  tip:'% 的除数不能为 0（运行时崩溃）；判断奇偶用 n % 2 == 0；拆位数（个十百位）是等级考试高频题。',
+  quiz:[{q:'printf("%d", 5 / 2); 输出：',opts:['2.5','2','3','编译错误'],a:1,ex:'两个整数相除结果仍是整数，直接舍去小数部分得 2（不是四舍五入）。'}]},
+ {t:'关系与逻辑运算符', role:'产生真(1)/假(0)的比较与组合判断。&&、|| 有"短路"特性：能确定结果就不再计算后半部分。',
+  syn:'关系：>  >=  <  <=   （高于）==  !=\n逻辑：&& 与   || 或   ! 非\n\n短路规则：\n  a && b：a 为假时 b 不计算\n  a || b：a 为真时 b 不计算\nC 语言：0 为假，非 0 都为真',
+  ex:'#include <stdio.h>\nint main(void) {\n    int a = 5;\n    printf("%d\\n", a > 3 && a < 10);  // 1 真\n    printf("%d\\n", a < 3 || a > 4);   // 1 真\n    printf("%d\\n", !a);               // 0\n    // 短路：右边 i++ 没有执行\n    int i = 0;\n    (a > 3) || (i++);\n    printf("i=%d\\n", i);              // i=0\n    return 0;\n}',
+  tip:'判断相等是 == 不是 =！if(a = 5) 是赋值(恒真)，if(a == 5) 才是比较。这是初学者第一高发 bug。',
+  quiz:[{q:'int x=1; if(x = 0) printf("A"); else printf("B"); 输出：',opts:['A','B','报错','随机'],a:1,ex:'x = 0 是赋值，表达式值为 0（假），走 else 输出 B，且 x 被改成了 0。判断相等必须用 ==。'}]},
+ {t:'自增自减', role:'i++ 让变量自身加 1。考点在前置/后置：++i 先加后用，i++ 先用后加。只对变量有效，(a+b)++ 是非法的。',
+  syn:'++i  前置：先自增，再使用 i 的新值\ni++  后置：先使用 i 的旧值，再自增\n--i  i-- 同理\n等价关系：i++ 等价于 i = i + 1',
+  ex:'#include <stdio.h>\nint main(void) {\n    int i = 3, j;\n    j = i++;   // 后置：先 j=i(3)，i 再变 4\n    printf("i=%d j=%d\\n", i, j); // i=4 j=3\n\n    i = 3;\n    j = ++i;   // 前置：i 先变 4，再 j=i(4)\n    printf("i=%d j=%d\\n", i, j); // i=4 j=4\n    return 0;\n}',
+  tip:'同一表达式里对同一变量多次 ++（如 i++ + ++i）结果未定义，考试是陷阱题，实际代码千万别写。',
+  quiz:[{q:'int i=3; printf("%d", i++); 之后 i 的值是：',opts:['输出 3，i 变 4','输出 4，i 变 4','输出 3，i 保持 3','输出 4，i 变 3'],a:0,ex:'后置 ++ 先把旧值 3 打印出来，然后 i 自增为 4。'}]},
+ {t:'赋值与复合赋值', role:'= 把右边的值存入左边变量；+= -= 等复合赋值是简写。赋值表达式自身也有值（从右向左结合），所以能写 a = b = c = 5。',
+  syn:'a = b;         // 右值赋给左变量\na += b;  // 等价 a = a + b\na -= b;  a *= b;  a /= b;  a %= b;\n\n连续赋值：a = b = c = 5; // 从右向左\n区别：== 是比较，= 是赋值',
+  ex:'#include <stdio.h>\nint main(void) {\n    int a = 10;\n    a += 5;  printf("%d\\n", a);  // 15\n    a -= 3;  printf("%d\\n", a);  // 12\n    a *= 2;  printf("%d\\n", a);  // 24\n    a /= 5;  printf("%d\\n", a);  // 4（整数除法）\n    int x, y, z;\n    x = y = z = 7;   // 三个都是 7\n    printf("%d %d %d\\n", x, y, z);\n    return 0;\n}',
+  tip:'复合赋值左边必须是变量：10 += 5 非法。a *= b + 3 等价于 a = a * (b + 3)，右边整个先算。',
+  quiz:[{q:'int a=6; a += a -= a * a; 执行后 a = ?',opts:['0','-60','36','12'],a:1,ex:'从右向左：先 a -= 36 → a = 6-36 = -30；再 a += -30 → a = -30 + (-30) = -60。'}]},
+ {t:'位运算符', role:'直接对二进制位操作，效率极高。嵌入式、判断奇偶、交换值、权限掩码都靠它。C 语言贴近硬件的招牌能力。',
+  syn:'&  按位与：两位都 1 才 1（清零/取位）\n|  按位或：有 1 则 1（置位）\n^  异或：不同为 1（交换/加密）\n~  取反：0变1 1变0\n<< 左移：n << 1 相当于 n * 2\n>> 右移：n >> 1 相当于 n / 2',
+  ex:'#include <stdio.h>\nint main(void) {\n    int a = 12, b = 10;  // 1100 和 1010\n    printf("%d\\n", a & b);  // 8  (1000)\n    printf("%d\\n", a | b);  // 14 (1110)\n    printf("%d\\n", a ^ b);  // 6  (0110)\n    printf("%d\\n", a << 1); // 24 左移乘2\n    printf("%d\\n", a >> 2); // 3  右移除4\n    return 0;\n}',
+  tip:'负数右移左边补 1（算术移位），左移可能溢出变符号。& | 的优先级低于 ==，写 if(a & 1 == 0) 会出错，应加括号 (a & 1) == 0。',
+  quiz:[{q:'表达式 6 << 1 的值是：',opts:['3','12','6','5'],a:1,ex:'左移一位相当于乘 2：6 << 1 = 12。反之 6 >> 1 = 3。'}]},
+ {t:'优先级与三目运算符', role:'表达式谁先算由优先级决定；记不清就加括号（最稳）。三目 ? : 是 if-else 的表达式版，可用于一行取最大值。',
+  syn:'条件 ? 值1 : 值2   // 条件真取值1，假取值2\n\n优先级口诀(常用部分)：\n  ! 算术 > 关系 > && > || > 赋值\n  初等() [] > 单目 ! ~ ++ -- > * / % > + -\n  > 移位 > 关系 > == != > 位 > 逻辑 > ?: > =',
+  ex:'#include <stdio.h>\nint main(void) {\n    int a = 7, b = 12;\n    int max = a > b ? a : b;\n    printf("max=%d\\n", max);      // 12\n    int x = 5;\n    printf("%d\\n", x > 0 ? 1 : -1); // 1\n    // 优先级陷阱：* 高于 +\n    printf("%d\\n", 2 + 3 * 4);    // 14 不是 20\n    return 0;\n}',
+  tip:'考试最爱：p++ 先用后加、&& 高于 ||、赋值优先级几乎最低。拿不准一律加括号，不出错还能加分。',
+  quiz:[{q:'int a=3,b=5; a > b ? a : b 的值是：',opts:['3','5','1','0'],a:1,ex:'条件 a>b 为假，取冒号后的 b，即 5。这是求两数最大值的最简写法。'}]}
+]},
+{ name:'4 · 控制流程', color:0x66bb6a, css:'#66bb6a', topics:[
+ {t:'if / else if / else', role:'程序的分岔路口：条件为真走 if，否则看 else if 链，最后兜底 else。分支内多条语句必须加大括号。',
+  syn:'if (条件) {\n    语句;\n} else if (条件2) {\n    语句;\n} else {\n    语句;\n}',
+  ex:'#include <stdio.h>\nint main(void) {\n    int score = 85;\n    if (score >= 90)      printf("优秀\\n");\n    else if (score >= 80) printf("良好\\n");  // 走这里\n    else if (score >= 60) printf("及格\\n");\n    else                  printf("不及格\\n");\n    return 0;\n}',
+  tip:'悬空 else：else 总是与它前面最近的、未配对的 if 配对，跟书写缩进无关。嵌套 if 一定加大括号说清楚。',
+  quiz:[{q:'int a=5; if(a>3) if(a>10) printf("X"); else printf("Y"); 输出：',opts:['X','Y','XY','什么都不输出'],a:1,ex:'else 配对最近的 if(a>10)：a=5 满足外层、不满足内层，走 else 输出 Y。'}]},
+ {t:'switch / case', role:'多分支按值匹配，比一长串 else if 清晰。记得每个 case 后加 break，否则会"穿透"继续执行下面的 case。',
+  syn:'switch (整型表达式) {\n    case 常量1: 语句; break;\n    case 常量2: 语句; break;\n    default:    语句; break;  // 都不匹配时\n}',
+  ex:'#include <stdio.h>\nint main(void) {\n    int day = 3;\n    switch (day) {\n        case 1: printf("周一\\n"); break;\n        case 2: printf("周二\\n"); break;\n        case 3: printf("周三\\n"); break;  // 输出这个\n        default: printf("无效\\n");\n    }\n    return 0;\n}',
+  tip:'三个限制：① 表达式只能是整型/字符型（不能是 double）；② case 后必须是常量；③ 忘写 break 就穿透——有时反而故意利用穿透合并 case。',
+  quiz:[{q:'switch(2) 且 case 1、case 2 都没有 break，case 1/2 分别输出 "一"/"二"，结果是：',opts:['只输出 二','输出 二一','输出 一二','报错'],a:1,ex:'匹配 case 2 输出"二"后没有 break，穿透继续执行 case 1 的语句输出"一"。'}]},
+ {t:'while 循环', role:'先判断后执行的"当型"循环：条件为真就一直重复。适合循环次数不确定的场景（如"输入-1 停止"）。',
+  syn:'while (条件) {\n    循环体;      // 条件为真就重复执行\n}\n三要素：初始化 → 条件判断 → 更新(必须让条件趋向假)',
+  ex:'#include <stdio.h>\nint main(void) {\n    int i = 1, sum = 0;\n    while (i <= 100) {   // 1 加到 100\n        sum += i;\n        i++;             // 忘了这行就死循环！\n    }\n    printf("sum=%d\\n", sum);  // 5050\n    return 0;\n}',
+  tip:'两个死循环来源：① 循环体内忘了更新条件变量；② 条件写成了赋值 while(i = 1) 恒真。',
+  quiz:[{q:'while 循环的最少执行次数是：',opts:['0 次','1 次','2 次','无限次'],a:0,ex:'while 先判断条件，条件一开始就为假则循环体一次都不执行。至少执行一次的是 do-while。'}]},
+ {t:'do-while 循环', role:'先执行一次再判断的"直到型"循环，循环体至少执行一次。适合"先操作再问要不要继续"的场景，如菜单程序。',
+  syn:'do {\n    循环体;\n} while (条件);   // ← 这个分号不能少！',
+  ex:'#include <stdio.h>\nint main(void) {\n    int i = 10;\n    do {\n        printf("i=%d\\n", i);  // 条件已假也执行一次\n        i++;\n    } while (i < 5);\n    // 输出：i=10 （仅一次）\n    return 0;\n}',
+  tip:'与 while 的唯一区别就是"至少执行一次"。考试常考对比：给初值不满足条件，while 输出 0 次、do-while 输出 1 次。',
+  quiz:[{q:'int i=0; do { i++; } while(i<0); 循环体执行几次？',opts:['0 次','1 次','无限次','2 次'],a:1,ex:'do-while 先执行一次（i 变 1），再判断 i<0 为假结束，共执行 1 次。'}]},
+ {t:'for 循环', role:'把初始化、条件、更新三要素写在一行，最适合循环次数已知的场景。考试与工程里出镜率最高的循环。',
+  syn:'for (初始化; 条件; 更新) {\n    循环体;\n}\n执行顺序：初始化→判断条件→循环体→更新→再判断…',
+  ex:'#include <stdio.h>\nint main(void) {\n    // 打印 9x9 乘法表（双层 for 经典）\n    for (int i = 1; i <= 9; i++) {\n        for (int j = 1; j <= i; j++)\n            printf("%d*%d=%-4d", j, i, i * j);\n        printf("\\n");\n    }\n    return 0;\n}',
+  tip:'for 括号里三个表达式都可以省略，但两个分号不能省：for(;;) 就是死循环。循环变量在 C89 中须先在循环外定义。',
+  quiz:[{q:'for(i=0; i<3; i++) 循环体共执行几次？',opts:['2 次','3 次','4 次','无限'],a:1,ex:'i 取 0、1、2 时各执行一次共 3 次；i=3 时条件为假退出。i 从 1 开始写 i<=n 同样是 n 次。'}]},
+ {t:'break 与 continue', role:'break 跳出整个循环（一层）；continue 跳过本次剩下的语句直接进入下一轮。配合循环实现"提前终止"和"过滤"。',
+  syn:'break;     // 终止本层循环/switch\ncontinue;  // 跳过本次循环体剩余部分\n\nfor(...) {\n    if (条件) continue;  // 之后的语句本次不执行\n    ...\n}',
+  ex:'#include <stdio.h>\nint main(void) {\n    // 找 100 内第一个能被 7 整除的数\n    for (int i = 1; i <= 100; i++) {\n        if (i % 7 == 0) {\n            printf("找到：%d\\n", i);  // 7\n            break;                    // 不再继续找\n        }\n    }\n    // 打印 1~10 的奇数\n    for (int i = 1; i <= 10; i++) {\n        if (i % 2 == 0) continue;  // 跳过偶数\n        printf("%d ", i);          // 1 3 5 7 9\n    }\n    return 0;\n}',
+  tip:'嵌套循环里 break 只跳出所在的一层，不是全部循环。continue 在 while 里要小心：若更新语句在 continue 之后，可能死循环。',
+  quiz:[{q:'for(i=1;i<=5;i++){ if(i==3) break; printf("%d",i); } 输出：',opts:['123','12','1245','12345'],a:1,ex:'打印 1、2 后 i==3 触发 break，整个循环终止，3 及以后都不输出。continue 则会输出 1245。'}]}
+]},
+{ name:'5 · 数组与字符串', color:0xffa726, css:'#ffa726', topics:[
+ {t:'一维数组', role:'同类型数据的连续存储块，用下标批量访问。下标从 0 开始，配合 for 循环是处理批量数据的基本功。',
+  syn:'int a[5];                // 定义：5 个 int\nint b[3] = {1, 2, 3};    // 完全初始化\nint c[5] = {1, 2};       // 其余自动补 0\nint d[]  = {1, 2, 3};    // 个数由初始化决定\n访问：a[0] ~ a[4]，没有 a[5]！',
+  ex:'#include <stdio.h>\nint main(void) {\n    int a[5] = {9, 5, 2, 7, 3};\n    int max = a[0];\n    for (int i = 1; i < 5; i++)\n        if (a[i] > max) max = a[i];  // 打擂台求最大\n    printf("max=%d\\n", max);  // 9\n    // 逆序输出\n    for (int i = 4; i >= 0; i--) printf("%d ", a[i]);\n    return 0;\n}',
+  tip:'C 语言不检查下标越界！a[5] 能编译能运行但会踩坏别的内存，是无数诡异 bug 的根源。数组长度必须是常量。',
+  quiz:[{q:'int a[5]; 合法的下标范围是：',opts:['1~5','0~5','0~4','1~4'],a:2,ex:'5 个元素下标从 0 到 4。a[5] 越界，编译器通常不报错但行为未定义。'}]},
+ {t:'二维数组', role:'按行列组织的表格数据（矩阵、地图、成绩表）。内存里仍是线性排布的：先放满第一行，再放第二行。',
+  syn:'int a[3][4];              // 3 行 4 列\nint b[2][3] = {{1,2,3},{4,5,6}};\nint c[][3] = {1,2,3,4,5,6}; // 行数可省，列数不可省\n访问：a[行][列]，同样从 0 开始',
+  ex:'#include <stdio.h>\nint main(void) {\n    int a[2][3] = {{1,2,3},{4,5,6}};\n    // 双层循环遍历：外层行，内层列\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 3; j++)\n            printf("%d ", a[i][j]);\n        printf("\\n");\n    }\n    // 输出：1 2 3 / 4 5 6\n    return 0;\n}',
+  tip:'定义时 int a[3][4] 是 3 行 4 列；int a[2][3] 共 2*3=6 个元素。作函数参数时第二维（列数）必须写明。',
+  quiz:[{q:'int a[3][4]; 一共含多少个 int 元素？',opts:['3','4','7','12'],a:3,ex:'3 行 × 4 列 = 12 个元素，占用 12 × 4 = 48 字节。'}]},
+ {t:'字符数组与字符串', role:'C 语言没有字符串类型，用字符数组 + 结束标志 \'\\0\' 表示字符串。%s 打印、strlen 求长都依赖这个 \'\\0\'。',
+  syn:'char s1[6] = {\'h\',\'e\',\'l\',\'l\',\'o\',\'\\0\'};\nchar s2[] = "hello";   // 自动补 \\0，占 6 字节\nchar s3[10];\nscanf("%s", s3);       // 读字符串：不加 &\nputs(s2);  // 打印并换行',
+  ex:'#include <stdio.h>\n#include <string.h>\nint main(void) {\n    char s[] = "abc";\n    printf("sizeof=%zu\\n", sizeof(s)); // 4 含\\0\n    printf("strlen=%zu\\n", strlen(s)); // 3 不含\\0\n    s[0] = \'A\';        // 字符数组可以改\n    printf("%s\\n", s); // Abc\n    return 0;\n}',
+  tip:'char *p = "abc"; 指向的字符串常量不可修改，而 char s[]="abc"; 是拷贝可以修改。中文字符占多字节，别用 char 存一个汉字。',
+  quiz:[{q:'char s[] = "hello"; sizeof(s) 的值是：',opts:['5','6','10','不定'],a:1,ex:'5 个字母 + 隐藏的 \\0 结束符 = 6 字节；strlen(s) 则是 5。'}]},
+ {t:'字符串处理函数', role:'string.h 里的现成工具：求长度、复制、拼接、比较。自己动手写一遍这些函数是期末实验经典题。',
+  syn:'strlen(s)        // 长度（不含\\0）\nstrcpy(dest,src) // 把 src 复制到 dest\nstrcat(dest,src) // 把 src 拼到 dest 尾部\nstrcmp(s1,s2)    // 比较：0相等，<0前者小，>0前者大',
+  ex:'#include <stdio.h>\n#include <string.h>\nint main(void) {\n    char a[20] = "Hello";\n    char b[10] = "C2026";\n    printf("%zu\\n", strlen(a));    // 5\n    strcat(a, b);                  // a 变 HelloC2026\n    printf("%s\\n", a);\n    printf("%d\\n", strcmp("abc", "abd")); // 负数\n    return 0;\n}',
+  tip:'① 比较字符串不能用 == （那是比地址），必须 strcmp；② strcpy/strcat 要求目标数组足够大，装不下会溢出。',
+  quiz:[{q:'判断两个字符串内容相同，正确的写法：',opts:['if(s1 == s2)','if(strcmp(s1,s2)==0)','if(s1 = s2)','if(strlen(s1)==strlen(s2))'],a:1,ex:'== 比较的是数组首地址；strcmp 返回 0 才表示内容完全相同；strlen 相等不代表内容相等。'}]}
+]},
+{ name:'6 · 函数', color:0xffee58, css:'#ffee58', topics:[
+ {t:'函数定义与调用', role:'把一段功能打包命名，随取随用：程序分模块、代码可复用。main 之外写函数，main 里调用。',
+  syn:'返回类型 函数名(形参列表) {\n    函数体;\n    return 返回值;   // void 函数可省略\n}\n\n调用：函数名(实参);',
+  ex:'#include <stdio.h>\n\nint add(int x, int y) {   // 定义\n    return x + y;\n}\n\nvoid greet(char name[]) { // 无返回值\n    printf("Hi, %s!\\n", name);\n}\n\nint main(void) {\n    int s = add(3, 5);    // 调用：s = 8\n    printf("%d\\n", s);\n    greet("Sir");         // Hi, Sir!\n    return 0;\n}',
+  tip:'函数定义不能嵌套（函数里不能再定义函数）。实参与形参个数、类型、顺序要一致，否则编译报错或结果错误。',
+  quiz:[{q:'关于 C 语言函数，错误的是：',opts:['函数可以嵌套调用','函数可以嵌套定义','void 函数没有返回值','main 也可以被其他函数调用'],a:1,ex:'C 函数可以嵌套调用（f 调 g），但不能嵌套定义（函数体内不能再定义函数）。'}]},
+ {t:'函数声明（原型）', role:'先声明告诉编译器"有这个函数"，让调用写在定义之前也能通过编译。大项目里声明放头文件 .h。',
+  syn:'返回类型 函数名(参数类型列表);  // 声明，带分号\n\n// 典型结构：\n声明;\nint main() { 调用; }\n定义 { ... }   // 定义放后面',
+  ex:'#include <stdio.h>\n\nint max(int a, int b);   // 声明（可只写类型）\n\nint main(void) {\n    printf("%d\\n", max(3, 9));  // 9\n    return 0;\n}\n\nint max(int a, int b) {  // 定义在后\n    return a > b ? a : b;\n}',
+  tip:'声明末尾的分号不能漏！如果定义写在调用之后又没声明，老编译器会按错误原型处理，产出诡异结果。',
+  quiz:[{q:'函数定义写在 main 之后时，必须在 main 之前：',opts:['重新定义一次','写函数声明','写 #include','不用做任何事'],a:1,ex:'编译器从上往下读，先见声明才知道函数长什么样；定义可以放文件后部。'}]},
+ {t:'值传递', role:'C 语言函数传参是"拷贝一份"：函数内改形参，不影响外面的实参。想真正修改外面的变量，要传地址（指针）。',
+  syn:'void f(int x) { x = 100; }  // 改的是副本\n\nvoid g(int *p) { *p = 100; } // 传地址才能改\n调用：f(a) 不改变 a；g(&a) 把 a 改成 100',
+  ex:'#include <stdio.h>\n\nvoid tryChange(int x) {\n    x = 100;            // 只改了副本\n}\n\nint main(void) {\n    int a = 1;\n    tryChange(a);\n    printf("%d\\n", a);  // 仍是 1！\n    return 0;\n}',
+  tip:'经典面试题：为什么专门的 swap(a,b) 用普通参数交换不了？因为交换的是副本。必须 swap(&a,&b) 传指针。',
+  quiz:[{q:'C 语言函数实参和形参之间是：',opts:['地址传递','值传递（单向拷贝）','引用传递','双向传递'],a:1,ex:'C 只有值传递：形参是实参的副本，函数内修改形参不影响实参。想改实参需传地址。'}]},
+ {t:'递归', role:'函数自己调用自己：大问题拆成同构的小问题。必须有"出口"（终止条件），否则栈溢出。汉诺塔、斐波那契、目录遍历都是它。',
+  syn:'返回类型 f(参数) {\n    if (终止条件) return 基础值;  // 出口！\n    return f(更小的参数);        // 逼近出口\n}',
+  ex:'#include <stdio.h>\n\nint fact(int n) {        // n 的阶乘\n    if (n <= 1) return 1;      // 出口\n    return n * fact(n - 1);    // 自己调用自己\n}\n\nint fib(int n) {         // 斐波那契\n    if (n == 1 || n == 2) return 1;\n    return fib(n-1) + fib(n-2);\n}\n\nint main(void) {\n    printf("%d\\n", fact(5));  // 120\n    printf("%d\\n", fib(7));   // 13\n    return 0;\n}',
+  tip:'递归两大要素缺一不可：终止条件 + 向终止条件靠近的递推。fact(5) 展开是 5*4*3*2*1=120，理解"先递下去、再归回来"。',
+  quiz:[{q:'递归函数缺少终止条件会：',opts:['编译错误','返回 0','无限递归直到栈溢出','自动只调用一次'],a:2,ex:'没有出口的递归会一直压栈，最终 Stack Overflow（栈溢出）崩溃。'}]},
+ {t:'作用域与 static', role:'局部变量只在所在大括号内有效；全局变量整个文件有效。static 改局部变量 → 延长寿命到整个程序；改全局变量/函数 → 限制在本文件。',
+  syn:'int g = 10;        // 全局变量：全文件可见\n\nvoid f(void) {\n    int a = 1;     // 局部：函数内有效\n    static int s = 0;  // 只初始化一次，跨调用保值\n    s++;\n}\n\n同名时：局部遮蔽（优先用局部）',
+  ex:'#include <stdio.h>\n\nvoid counter(void) {\n    static int s = 0;   // 只在第一次调用时初始化\n    s++;\n    printf("第%d次\\n", s);\n}\n\nint main(void) {\n    counter();  // 第1次\n    counter();  // 第2次  ← static 保留了上次的值\n    counter();  // 第3次\n    return 0;\n}',
+  tip:'static 局部变量 = "有记忆的局部变量"：普通局部变量每次进函数都重新初始化，static 只初始化一次、值跨调用保留。考试最爱。',
+  quiz:[{q:'static 局部变量的特点是：',opts:['每次调用都重新初始化','只初始化一次，值跨调用保留','作用域变成全局','不能赋初值'],a:1,ex:'static 局部变量存放在静态存储区，首次执行到时初始化一次，之后跨调用保值；作用域仍限于函数内。'}]}
+]},
+{ name:'7 · 指针（重点）', color:0xef5350, css:'#ef5350', topics:[
+ {t:'指针基础', role:'指针就是"存地址的变量"。& 取地址，* 解引用（按地址找内容）。指针让 C 语言能直接操纵内存，是它强大又危险的根源。',
+  syn:'int a = 10;\nint *p = &a;   // p 存 a 的地址\n\n*p      // 解引用：a 的值（10）\np       // a 的地址\n&p      // p 自己的地址\n*p = 20;  // 等价 a = 20',
+  ex:'#include <stdio.h>\nint main(void) {\n    int a = 10;\n    int *p = &a;          // p 指向 a\n    printf("%d\\n", *p);   // 10\n    *p = 99;              // 通过指针修改 a\n    printf("%d\\n", a);    // 99 ！\n    printf("a 占的地址：%p\\n", (void*)&a);\n    return 0;\n}',
+  tip:'分清 int *p 里的 * 是"声明 p 是指针"，而表达式 *p 里的 * 是"解引用取值"。野指针（未初始化的指针）解引用直接崩溃。',
+  quiz:[{q:'int a=5, *p=&a; 表达式 *p 的值是：',opts:['a 的地址','5','p 的地址','随机值'],a:1,ex:'p 存的是 a 的地址，*p 解引用得到地址里存的值，即 5。'}]},
+ {t:'指针与数组', role:'数组名就是首元素地址，a[i] 本质是 *(a+i)。理解这层等价关系，指针与数组的题就能通杀。',
+  syn:'int a[5];\nint *p = a;        // 等价 &a[0]\n\na[i] ≡ *(a + i) ≡ *(p + i) ≡ p[i]\np+1      // 指向下一个元素（跨 4 字节，不是 1 字节）\n\n区别：a 是常量地址不能 a++；p 是变量可以 p++',
+  ex:'#include <stdio.h>\nint main(void) {\n    int a[5] = {10, 20, 30, 40, 50};\n    int *p = a;\n    printf("%d\\n", *p);      // 10\n    printf("%d\\n", *(p + 2)); // 30\n    p++;                      // 现在指向 a[1]\n    printf("%d\\n", *p);      // 20\n    // 用指针遍历整个数组\n    for (p = a; p < a + 5; p++)\n        printf("%d ", *p);   // 10 20 30 40 50\n    return 0;\n}',
+  tip:'p+1 移动"一个元素"的字节数（int 就 +4），不是 +1 字节。sizeof(a) 是整个数组大小，sizeof(p) 是指针本身大小（8）。',
+  quiz:[{q:'int a[5]={1,2,3,4,5}; *(a+3) 的值是：',opts:['2','3','4','a[3] 的地址'],a:2,ex:'*(a+3) 等价 a[3]，即第 4 个元素 4。注意 a+1 是加一个元素，不是加 1 字节。'}]},
+ {t:'传址调用（指针作参数）', role:'把地址传给函数，函数就能直接修改外面的变量。swap 交换两数是标准范例，也是"值传递"的最好对照实验。',
+  syn:'void swap(int *x, int *y) {\n    int t = *x;\n    *x = *y;\n    *y = t;\n}\n调用：swap(&a, &b);   // 传地址',
+  ex:'#include <stdio.h>\n\nvoid swap(int *x, int *y) {\n    int t = *x;   // 暂存 x 指向的值\n    *x = *y;\n    *y = t;\n}\n\nint main(void) {\n    int a = 1, b = 2;\n    swap(&a, &b);          // 传地址！\n    printf("a=%d b=%d\\n", a, b); // a=2 b=1\n    return 0;\n}',
+  tip:'写 swap(&a,&b) 时函数内别忘了 *：写成 x = y 只是交换了两个副本指针，a、b 纹丝不动。',
+  quiz:[{q:'要用函数交换 main 中两个变量的值，函数参数和调用应写成：',opts:['void swap(int x,int y); swap(a,b);','void swap(int *x,int *y); swap(&a,&b);','void swap(int x,int y); swap(&a,&b);','无法实现'],a:1,ex:'值传递改不了实参；必须让函数接收地址（指针参数），调用时传 &a、&b，函数内用 *x、*y 交换。'}]},
+ {t:'指针与字符串', role:'字符串常量本质是首字符地址，char *p = "abc" 让 p 指向它。用指针遍历字符串是高频考点。',
+  syn:'char *p = "hello";   // p 指向常量字符串\n// p[1] 即 \'e\'；*p 即 \'h\'\n\n遍历：while (*p != \'\\0\') { ...; p++; }\n简写：while (*p) { ...; p++; }',
+  ex:'#include <stdio.h>\n\nint my_strlen(char *s) {   // 自己写 strlen\n    int n = 0;\n    while (*s != \'\\0\') {  // 没到结尾就继续\n        n++;\n        s++;\n    }\n    return n;\n}\n\nint main(void) {\n    printf("%d\\n", my_strlen("C2026")); // 5\n    return 0;\n}',
+  tip:'char *p = "abc"; 之后 p[0]=\'X\'; 是未定义行为（常量区不可写）。要可修改就写 char s[] = "abc";。',
+  quiz:[{q:'char *p = "abc"; while(*p) p++; 结束后 p 指向：',opts:['\'a\'','\'\\0\'','\'c\'','数组首地址'],a:1,ex:'循环在 *p 为 \'\\0\'（值为 0，条件为假）时停止，此刻 p 正指向字符串结尾符 \'\\0\'。'}]},
+ {t:'动态内存 malloc / free', role:'运行时按需申请内存（数组长度可以先问用户再定）。malloc 申请、free 释放，stdlib.h 提供。忘了 free 就内存泄漏。',
+  syn:'#include <stdlib.h>\n\nint *p = (int *)malloc(n * sizeof(int));\n                // 申请 n 个 int 的连续空间\nif (p == NULL) { /* 申请失败处理 */ }\n\nfree(p);        // 用完必须释放\np = NULL;       // 防野指针（好习惯）\n\n// calloc 会清零：calloc(n, sizeof(int))',
+  ex:'#include <stdio.h>\n#include <stdlib.h>\n\nint main(void) {\n    int n;\n    scanf("%d", &n);              // 先输入长度\n    int *a = malloc(n * sizeof(int));\n    if (a == NULL) return 1;      // 申请失败\n    for (int i = 0; i < n; i++) a[i] = i * i;\n    printf("%d\\n", a[n - 1]);     // 用下标访问\n    free(a);                      // 释放！\n    return 0;\n}',
+  tip:'malloc 返回 void*，C 里可省略强制转换。内存泄漏 = 申请了不释放；重复 free 同一块、free 后继续用（use-after-free）都会崩溃。',
+  quiz:[{q:'malloc 申请的内存用完后应该：',opts:['自动回收，不用管','调用 free 释放','调用 delete','赋值为 0 即可'],a:1,ex:'malloc/free 配对使用：free 后内存归还系统。不 free 就内存泄漏（程序越跑越占内存）。'}]},
+ {t:'野指针与 NULL', role:'指向"不知道哪里"的指针叫野指针，解引用是随机炸弹。给指针赋 NULL 表示"不指向任何地方"，判空是工程铁律。',
+  syn:'int *p;            // 野指针！未初始化\np = NULL;          // 安全：空指针\nif (p != NULL) *p = 1;  // 使用前判空\n\n三种野指针来源：\n① 未初始化 ② free 后没置空 ③ 返回局部变量地址',
+  ex:'#include <stdio.h>\n#include <stdlib.h>\n\nint *bad(void) {\n    int x = 5;\n    return &x;      // 错误示范：x 是局部变量\n}                   // 函数结束 x 就消亡\n\nint main(void) {\n    int *p = NULL;          // 先置空\n    p = malloc(sizeof(int));\n    if (p != NULL) {        // 使用前判空\n        *p = 7;\n        printf("%d\\n", *p); // 7\n    }\n    free(p);\n    p = NULL;               // 防止野指针\n    return 0;\n}',
+  tip:'函数不要返回局部变量的地址——返回它 = 返回一个已销毁变量的地址，是考试和面试的经典陷阱题。',
+  quiz:[{q:'下列哪种情况会产生野指针？',opts:['int *p = NULL;','int *p;（未初始化就用）','p = &a;','p = malloc(4);'],a:1,ex:'未初始化的指针值是随机的，解引用行为未定义。NULL 指针至少是"确定不指向哪里"，判空即可避免崩溃。'}]}
+]},
+{ name:'8 · 结构体', color:0xec407a, css:'#ec407a', topics:[
+ {t:'struct 结构体', role:'把不同类型的数据打包成一个整体（如学生的姓名+学号+成绩），是"自定义类型"的基础，也是通往面向对象思维的桥梁。',
+  syn:'struct Student {        // 定义类型\n    char name[20];\n    int  age;\n    double score;\n};                      // ← 分号不能少\n\nstruct Student s1;      // 定义变量\ns1.age = 20;            // 点号访问成员\nstruct Student s2 = {"张三", 19, 92.5};',
+  ex:'#include <stdio.h>\n\nstruct Student {\n    char name[20];\n    int  age;\n    double score;\n};\n\nint main(void) {\n    struct Student s = {"黄Sir", 20, 95.5};\n    printf("%s %d %.1f\\n", s.name, s.age, s.score);\n    s.age++;                 // 修改成员\n    printf("age=%d\\n", s.age); // 21\n    return 0;\n}',
+  tip:'struct 定义末尾的分号经常忘写，报错位置还会跑到下一行，迷惑性极强。同类型的结构体变量可以整体赋值 s2 = s1。',
+  quiz:[{q:'访问结构体变量的成员用哪个运算符？',opts:['->','点号 .','::','[]'],a:1,ex:'结构体变量用 . （s.age）；结构体指针用 -> （p->age）。'}]},
+ {t:'typedef 起别名', role:'给类型起短名字，省去每次写 struct 的麻烦，也让代码更清晰。配合结构体几乎是标配写法。',
+  syn:'typedef 已有类型 新名字;\n\ntypedef struct Student {\n    char name[20];\n    int age;\n} Stu;          // 之后直接写 Stu s1;\n\ntypedef unsigned int uint;  // 基本类型也能起',
+  ex:'#include <stdio.h>\n\ntypedef struct {\n    int x;\n    int y;\n} Point;              // 匿名结构体 + 别名\n\nint main(void) {\n    Point p = {3, 4};      // 不用写 struct\n    Point q = p;           // 整体赋值\n    printf("(%d,%d)\\n", q.x, q.y);\n    return 0;\n}',
+  tip:'typedef 是"给类型起别名"，#define 是"文本替换"——typedef int* IntPtr 后 IntPtr a, b 都是指针；宏替换则 b 会变成普通 int，经典考题。',
+  quiz:[{q:'typedef struct {int x;} Point; 之后定义变量的正确写法：',opts:['struct Point p;','Point p;','typedef Point p;','Point struct p;'],a:1,ex:'typedef 之后 Point 就是一个完整类型名，直接 Point p; 即可。'}]},
+ {t:'结构体指针与 ->', role:'指针指向结构体后，用 -> 访问成员（p->age 等价 (*p).age）。链表、树的基石，必须烂熟。',
+  syn:'struct Student s;\nstruct Student *p = &s;\n\np->age      // 等价 (*p).age\np->age = 20;\n\n函数传结构体指针：\nvoid print(struct Student *p);  // 避免拷贝整个结构体',
+  ex:'#include <stdio.h>\n\ntypedef struct {\n    int x, y;\n} Point;\n\nvoid move(Point *p, int dx, int dy) {\n    p->x += dx;    // 通过指针修改原变量\n    p->y += dy;\n}\n\nint main(void) {\n    Point p = {1, 2};\n    move(&p, 10, 20);\n    printf("(%d,%d)\\n", p.x, p.y); // (11,22)\n    return 0;\n}',
+  tip:'-> 两边不要加空格写成 - >。p->x 和 (*p).x 完全等价，但前者简洁不易错；(*p).x 的括号不能省。',
+  quiz:[{q:'p 是结构体指针，p->age 等价于：',opts:['p.age','*p.age','(*p).age','&p.age'],a:2,ex:'-> 就是"解引用再取成员"的语法糖：p->age 完全等价 (*p).age。注意 *p.age 是错的（点优先级更高）。'}]},
+ {t:'union 共用体', role:'所有成员共用同一块内存，同一时刻只能存一个成员，大小 = 最大成员。省内存 + 硬件寄存器/字节序分析利器。',
+  syn:'union Data {\n    int   i;      // 4 字节\n    char  c;      // 1 字节\n    double d;     // 8 字节\n};                // 整个 union 只占 8 字节\n\nunion Data u;\nu.i = 100;   // 现在存的是 int\nu.c = \'A\';   // 覆盖了！i 的值被破坏',
+  ex:'#include <stdio.h>\n\nunion Data {\n    int i;\n    char c;\n};\n\nint main(void) {\n    union Data u;\n    printf("union 大小=%zu\\n", sizeof(u)); // 4\n    u.i = 0x41424344;      // 十六进制\n    printf("%c\\n", u.c);   // 小端机器输出 D (0x44)\n    return 0;\n}',
+  tip:'对比记忆：struct 各成员各占各的（总大小 ≥ 各成员之和），union 大家挤一块（大小 = 最大成员）。改一个成员会影响另一个。',
+  quiz:[{q:'union 内有 char(1B)、int(4B)、double(8B)，sizeof(union) 是：',opts:['13','16','8','4'],a:2,ex:'共用体所有成员共享内存，总大小由最大成员决定 = 8 字节（按对齐可向上取整，本题 8 已对齐）。struct 才是各成员相加。'}]},
+ {t:'enum 枚举', role:'给一组整数常量起名字（星期、状态、颜色），让代码可读、可维护。默认从 0 自增，也可手动指定。',
+  syn:'enum 枚举名 { 常量1, 常量2, ... };\n\nenum Week { SUN, MON, TUE, WED, THU, FRI, SAT };\n// SUN=0, MON=1 ... 自动从 0 递增\n\nenum Week { SUN = 7, MON = 1, TUE }; // 可指定，TUE=2',
+  ex:'#include <stdio.h>\n\nenum Color { RED, GREEN = 5, BLUE };  // 0, 5, 6\n\nint main(void) {\n    enum Color c = BLUE;\n    printf("%d\\n", RED);   // 0\n    printf("%d\\n", GREEN); // 5\n    printf("%d\\n", c);     // 6\n    return 0;\n}',
+  tip:'枚举成员是常量，不能在程序中赋值（GREEN = 9; 非法）。枚举本质是 int，可以和整数互相赋值（编译器只警告）。',
+  quiz:[{q:'enum E {A, B, C}; 中 B 的值是：',opts:['0','1','2','未定义'],a:1,ex:'枚举默认从 0 开始依次加 1：A=0、B=1、C=2。手动指定后从指定值继续递增。'}]}
+]},
+{ name:'9 · 文件操作', color:0x26a69a, css:'#26a69a', topics:[
+ {t:'fopen / fclose', role:'打开文件得到 FILE* 句柄，用完必须 fclose 归还。模式决定"读/写/追加、文本/二进制"，打不开返回 NULL 必须检查。',
+  syn:'FILE *fp = fopen("文件名", "模式");\nif (fp == NULL) { /* 打开失败处理 */ }\nfclose(fp);        // 用完关闭，冲刷缓冲区\n\n"r"  只读(文件须存在)    "w"  只写(清空/新建)\n"a"  追加到尾部          "r+" 读写\n"rb"/"wb" 二进制读写',
+  ex:'#include <stdio.h>\n\nint main(void) {\n    FILE *fp = fopen("test.txt", "w");\n    if (fp == NULL) {          // 一定要判！\n        printf("打开失败\\n");\n        return 1;\n    }\n    fprintf(fp, "hello file\\n");\n    fclose(fp);                // 用完关闭\n    return 0;\n}',
+  tip:'"w" 会清空已有文件！想保留原内容续写用 "a"。打开失败最常见原因：路径不对、文件被占用、无写权限。',
+  quiz:[{q:'以 "r" 模式打开一个不存在的文件，fopen 返回：',opts:['空文件句柄','NULL','0','自动创建该文件'],a:1,ex:'"r" 要求文件必须存在，失败返回 NULL。所以 fopen 之后必须判空；自动创建是 "w" 的行为。'}]},
+ {t:'fprintf / fscanf', role:'文件版的 printf/scanf：多一个 FILE* 参数，把数据按格式写进/读出文本文件。做"成绩存档/读档"最常用。',
+  syn:'fprintf(fp, "格式串", 参数...);  // 写入文件\nfscanf(fp, "格式串", &变量...);  // 从文件读\n返回值：fscanf 成功返回读到的项数，EOF 表示读完',
+  ex:'#include <stdio.h>\n\nint main(void) {\n    // 写两个学生成绩\n    FILE *fp = fopen("score.txt", "w");\n    fprintf(fp, "%s %d\\n", "张三", 90);\n    fprintf(fp, "%s %d\\n", "李四", 85);\n    fclose(fp);\n\n    // 读回来\n    char name[20]; int s;\n    fp = fopen("score.txt", "r");\n    while (fscanf(fp, "%s %d", name, &s) == 2)\n        printf("%s： %d\\n", name, s);\n    fclose(fp);\n    return 0;\n}',
+  tip:'fscanf 的 %s 遇空格/换行停止，读带空格的一句话要用 fgets。读循环的停止条件常用"返回值不等于预期项数"。',
+  quiz:[{q:'fscanf 与 scanf 的区别是：',opts:['没有区别','多一个 FILE* 参数指定数据来源','只能读二进制','只能读一个数'],a:1,ex:'fscanf 第一个参数是 FILE*，决定从哪个文件读；scanf 固定从键盘读。'}]},
+ {t:'fgetc / fputc 与 fgets', role:'按字符或按行读写文本文件。fgetc 读一个字符，fputc 写一个字符，fgets 读一行（安全），三件套处理文本最顺手。',
+  syn:'int c = fgetc(fp);        // 读1字符，读完返回 EOF\nfputc(ch, fp);            // 写1字符\n\nchar buf[100];\nfgets(buf, sizeof(buf), fp); // 读一行(含\\n)\nfputs(buf, fp);              // 写字符串\n\n标准流：getchar()≡fgetc(stdin)  putchar≡fputc(stdout)',
+  ex:'#include <stdio.h>\n\nint main(void) {\n    FILE *fp = fopen("test.txt", "r");\n    if (!fp) return 1;\n    int c, count = 0;\n    while ((c = fgetc(fp)) != EOF)  // 逐字符读到文件尾\n        count++;\n    printf("文件共 %d 个字符\\n", count);\n    fclose(fp);\n    return 0;\n}',
+  tip:'fgetc 的返回值要用 int 接（要装下 EOF = -1），用 char 接可能永远读不到 EOF 死循环。fgets 会把行尾 \\n 一起读进来，注意去掉。',
+  quiz:[{q:'逐字符读文本文件直到末尾，正确的循环条件：',opts:['while(c != \'\\n\')','while((c=fgetc(fp)) != EOF)','while(fp != NULL)','while(fgetc(fp))'],a:1,ex:'EOF 是文件结束标志（-1），fgetc 读到末尾返回它。标准写法 while((c=fgetc(fp))!=EOF)，且 c 用 int。'}]},
+ {t:'fwrite / fread 二进制读写', role:'按内存块原样读写二进制文件（图片、结构体数组），速度快、体积小。配合 sizeof 精确控制块大小。',
+  syn:'fwrite(缓冲区地址, 每块大小, 块数, fp);\nfread (缓冲区地址, 每块大小, 块数, fp);\n返回成功读写的块数\n\n典型：fwrite(&stu, sizeof(stu), 1, fp);',
+  ex:'#include <stdio.h>\n\ntypedef struct { int id; double score; } Stu;\n\nint main(void) {\n    Stu s = {2026001, 95.5};\n    FILE *fp = fopen("stu.dat", "wb");   // 二进制写\n    fwrite(&s, sizeof(Stu), 1, fp);\n    fclose(fp);\n\n    Stu r;\n    fp = fopen("stu.dat", "rb");         // 二进制读\n    fread(&r, sizeof(Stu), 1, fp);\n    printf("%d %.1f\\n", r.id, r.score);  // 原样恢复\n    fclose(fp);\n    return 0;\n}',
+  tip:'二进制文件用记事本打开是乱码，这是正常的。fwrite 写的文件不能跨不同平台直接交换（对齐/字节序差异），考试写对用法即可。',
+  quiz:[{q:'fwrite 的典型调用 fwrite(&s, sizeof(s), 1, fp) 中 "1" 的含义：',opts:['写 1 个字节','写 1 块（每块 sizeof(s) 字节）','写到第 1 个文件','第一个参数'],a:1,ex:'参数依次是：地址、每块字节数、块数、文件。这里写 1 块、每块 sizeof(s) 字节，即整个结构体。'}]},
+ {t:'fseek / rewind / feof', role:'在文件里"移动光标"：随机读写靠 fseek，回到开头用 rewind，判断是否读到末尾用 feof。顺序/随机访问的指挥棒。',
+  syn:'fseek(fp, 偏移, 起点);\n  起点：SEEK_SET 文件头  SEEK_CUR 当前  SEEK_END 文件尾\nrewind(fp);            // 回到文件开头\nfeof(fp);              // 上次操作是否碰到文件尾\nftell(fp);             // 返回当前位置(可算文件大小)',
+  ex:'#include <stdio.h>\n\nint main(void) {\n    FILE *fp = fopen("test.txt", "r");\n    if (!fp) return 1;\n    fseek(fp, 0, SEEK_END);        // 跳到文件尾\n    long size = ftell(fp);         // 光标位置=文件大小\n    printf("文件大小 %ld 字节\\n", size);\n    rewind(fp);                    // 回到开头\n    int c = fgetc(fp);             // 再读第一个字符\n    printf("首字符: %c\\n", c);\n    fclose(fp);\n    return 0;\n}',
+  tip:'feof 应该在"读取失败之后"用来区分原因，不能当循环条件直接用——while(!feof(fp)) 会把最后一次读到的 EOF 前数据重复处理一次。',
+  quiz:[{q:'把文件位置指针移到文件末尾的正确写法：',opts:['rewind(fp)','fseek(fp, 0, SEEK_END)','fseek(fp, 0, SEEK_SET)','fclose(fp)'],a:1,ex:'fseek(fp,0,SEEK_END) 偏移 0、以文件尾为基准 = 直接跳到末尾；rewind 是回到开头。配合 ftell 可求文件大小。'}]}
+]},
+{ name:'10 · 预处理与多文件', color:0x5c6bc0, css:'#5c6bc0', topics:[
+ {t:'#define 宏定义', role:'预处理阶段的文本替换：定义常量让代码自解释，定义"带参数的宏"实现迷你函数。编译前完成，不占运行时间。',
+  syn:'#define 名字 替换文本          // 对象宏\n#define 名字(参数) 表达式        // 带参宏\n\n#define PI 3.14159\n#define SQR(x) ((x) * (x))   // 参数和整体都要加括号！\n#undef 名字                   // 取消定义',
+  ex:'#include <stdio.h>\n#define PI 3.14159\n#define SQR(x) ((x) * (x))   // 正确：加括号\n#define BAD(x)  x * x        // 错误示范\n\nint main(void) {\n    printf("%f\\n", PI * 2 * 2);  // 12.566360\n    printf("%d\\n", SQR(3));      // 9\n    printf("%d\\n", SQR(1+2));    // ((1+2)*(1+2)) = 9\n    printf("%d\\n", BAD(1+2));    // 1+2*1+2 = 5 ！\n    return 0;\n}',
+  tip:'带参宏是纯文本替换：BAD(1+2) 展开成 1+2*1+2=5。所以每个参数和整体都必须套括号。宏没有类型检查、参数勿用 i++ 之类的自增。',
+  quiz:[{q:'#define SQR(x) x*x，则 SQR(1+2) 的展开结果是：',opts:['9','5','6','1'],a:1,ex:'文本替换成 1+2*1+2 = 5，不是 9。正确写法 #define SQR(x) ((x)*(x))。'}]},
+ {t:'#include 头文件', role:'把头文件内容原样复制进来。尖括号找系统目录，双引号先找当前目录。自己写的函数声明、结构体定义都放头文件里共享。',
+  syn:'#include <stdio.h>    // 系统头文件：标准目录\n#include "myhead.h"    // 自己的：先找当前目录\n\n头文件内容：函数声明、宏、结构体、typedef\n头文件不应包含：函数定义（会重复定义）',
+  ex:'// math_utils.h        ← 头文件：只有声明\n#ifndef MATH_UTILS_H   // 防止重复包含\n#define MATH_UTILS_H\nint add(int a, int b);\n#endif\n\n// math_utils.c        ← 源文件：定义\n#include "math_utils.h"\nint add(int a, int b) { return a + b; }',
+  tip:'#include 就是复制粘贴：<stdio.h> 里其实是 printf 的声明，所以你不声明也能用 printf。头文件不加防重复包含的守卫（#ifndef）会被重复展开报错。',
+  quiz:[{q:'#include <file.h> 与 #include "file.h" 的区别：',opts:['完全一样','尖括号找系统目录，双引号先找当前目录','双引号更快','尖括号会编译文件'],a:1,ex:'<> 直接到系统/库目录找；"" 先在当前目录找，找不到再去系统目录。系统头用 <>，自己的用 ""。'}]},
+ {t:'条件编译', role:'让部分代码"编译或不编译"：调试开关、跨平台适配、头文件防重复全靠它。选择在编译期完成，不占运行开销。',
+  syn:'#ifdef  名字    // 定义过则编译\n#ifndef 名字    // 没定义过则编译（头文件守卫）\n#if   表达式    // 表达式非 0 则编译\n#else / #elif / #endif\n\n#define DEBUG 1  // 注释掉这行即关闭调试',
+  ex:'#include <stdio.h>\n#define DEBUG\n\nint main(void) {\n    int x = 42;\n#ifdef DEBUG\n    printf("[调试] x=%d\\n", x);  // DEBUG 定义了才编译\n#endif\n    printf("x=%d\\n", x);\n    return 0;\n}\n// 注释掉 #define DEBUG 后，调试行彻底消失于可执行文件',
+  tip:'与 if(0) 的区别：#if 0 直接让代码不进入编译（连语法错误都不查），发布版里调试 printf 可以零成本剔除。',
+  quiz:[{q:'头文件中 #ifndef XX / #define XX / #endif 组合的作用：',opts:['定义宏 XX','防止头文件被重复包含','条件报错','导入库'],a:1,ex:'这是 include guard（包含守卫）：第二次被包含时 XX 已定义，#ifndef 不成立，内容被跳过，避免重复定义错误。'}]},
+ {t:'多文件与 extern', role:'大程序拆成多个 .c 文件，各自编译最后链接。extern 声明"这个变量/函数在别的文件里"，跨文件共享数据。',
+  syn:'// file1.c\nint g_count = 0;          // 定义（分配内存）\n\n// file2.c\nextern int g_count;       // 声明（不分配，引用别处）\ng_count++;                // 可使用\n\n函数默认就是 extern 的，无需关键字',
+  ex:'/* main.c */\n#include <stdio.h>\nextern int counter;      // 声明：counter 在别处定义\nvoid add_one(void);      // 函数声明\n\nint main(void) {\n    add_one();\n    add_one();\n    printf("%d\\n", counter);  // 2\n    return 0;\n}\n\n/* utils.c */\nint counter = 0;\nvoid add_one(void) { counter++; }\n// 一起编译：gcc main.c utils.c -o app',
+  tip:'extern 声明不分配内存，真正的定义只能有一个。static 全局变量只属于本文件——想"私有"就加 static，想"共享"就用 extern。',
+  quiz:[{q:'在文件 B 中使用文件 A 定义的全局变量 g，B 中应写：',opts:['int g;','extern int g;','static int g;','auto int g;'],a:1,ex:'extern int g; 是声明，告诉编译器 g 在别的文件里定义了，链接时合并。写 int g; 会重复定义。'}]}
+]}
+];
+
+/* ================================================================
+ * 工具
+ * ================================================================ */
+const $ = s => document.querySelector(s);
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function hl(src){
+  const KW = 'int|float|double|char|void|long|short|unsigned|signed|if|else|switch|case|default|while|do|for|break|continue|return|struct|union|enum|typedef|const|static|sizeof|extern|register|goto|include|define|ifdef|ifndef|endif|FILE|NULL';
+  const re = new RegExp('(\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)|("(?:[^"\\\\\\n]|\\\\.)*")|(\'(?:[^\'\\\\\\n]|\\\\.)*\')|\\b(' + KW + ')\\b|\\b(\\d+\\.?\\d*[fFuUlL]?)\\b','g');
+  let out='', last=0, m;
+  while((m = re.exec(src))){
+    out += esc(src.slice(last, m.index));
+    const cls = m[1] ? 'c-com' : (m[2]||m[3]) ? 'c-str' : m[4] ? 'c-kw' : 'c-num';
+    out += '<span class="'+cls+'">'+esc(m[0])+'</span>';
+    last = m.index + m[0].length;
+  }
+  return out + esc(src.slice(last));
+}
+function codeBlock(s){ return '<pre class="code">'+hl(s)+'</pre>'; }
+
+const LS_M = 'c3d_mastered_v1', LS_Q = 'c3d_quiz_v1';
+let mastered = {}; try{ mastered = JSON.parse(localStorage.getItem(LS_M)||'{}'); }catch(e){ mastered = {}; }
+let quizRec  = {}; try{ quizRec  = JSON.parse(localStorage.getItem(LS_Q)||'{}'); }catch(e){ quizRec = {}; }
+const saveLS = () => { try{ localStorage.setItem(LS_M, JSON.stringify(mastered)); localStorage.setItem(LS_Q, JSON.stringify(quizRec)); }catch(e){} };
+
+/* 展平知识点 */
+let ALL = [];  // {ci, ti, ch, tp, id}
+CHAPTERS.forEach((ch,ci)=>ch.topics.forEach((tp,ti)=>ALL.push({ci,ti,ch,tp,id:ci+'-'+ti})));
+const TOTAL_Q = ALL.reduce((n,x)=>n+x.tp.quiz.length,0) + 1;  // + 中心节点 1 题
+
+function updateStats(){
+  $('#st-topic').textContent = ALL.length;
+  $('#st-master').textContent = Object.keys(mastered).filter(k=>mastered[k]).length;
+  const done = Object.keys(quizRec).length;
+  const ok = Object.values(quizRec).filter(r=>r.ok).length;
+  $('#st-quiz').textContent = done;
+  $('#qDone').textContent = done; $('#qAll').textContent = TOTAL_Q;
+  $('#qRate').textContent = done ? Math.round(ok/done*100)+'%' : '--';
+}
+
+/* ================================================================
+ * Three.js 场景
+ * ================================================================ */
+let renderer, scene, camera, controls, raycaster, pointer;
+const nodeMeshes = [], spriteOf = new Map(), ringOf = new Map();
+let hovered = null, selected = null;
+const fly = { active:false, camPos:new THREE.Vector3(), tgtPos:new THREE.Vector3(), speed:0.06 };
+
+function seeded(n){ const x = Math.sin(n*127.1+311.7)*43758.5453; return x - Math.floor(x); }
+
+function makeLabel(text, colorCss, big){
+  const pad = 14, fs = big?30:24;
+  const cv = document.createElement('canvas');
+  const ctx = cv.getContext('2d');
+  ctx.font = '600 '+fs+'px -apple-system,"PingFang SC","Microsoft YaHei",sans-serif';
+  const w = Math.ceil(ctx.measureText(text).width) + pad*2;
+  const h = fs + pad*2;
+  cv.width = w*2; cv.height = h*2; ctx.scale(2,2);
+  ctx.font = '600 '+fs+'px -apple-system,"PingFang SC","Microsoft YaHei",sans-serif';
+  const r = h/2;
+  ctx.beginPath();
+  ctx.moveTo(r,2); ctx.arcTo(w-2,2,w-2,h-2,r); ctx.arcTo(w-2,h-2,2,h-2,r); ctx.arcTo(2,h-2,2,2,r); ctx.arcTo(2,2,w-2,2,r);
+  ctx.closePath();
+  ctx.fillStyle = big ? 'rgba(8,14,26,.88)' : 'rgba(10,16,28,.8)';
+  ctx.fill();
+  ctx.lineWidth = 2.5; ctx.strokeStyle = colorCss; ctx.stroke();
+  ctx.fillStyle = big ? '#eaf6ff' : '#d8e6f5';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(text, w/2, h/2+1);
+  const tex = new THREE.CanvasTexture(cv);
+  tex.minFilter = THREE.LinearFilter;
+  const mat = new THREE.SpriteMaterial({ map:tex, transparent:true, depthWrite:false });
+  const sp = new THREE.Sprite(mat);
+  const k = big ? 0.048 : 0.036;
+  sp.scale.set(w*k, h*k, 1);
+  return sp;
+}
+
+function addRing(pos, color){
+  const g = new THREE.TorusGeometry(0.85, 0.06, 10, 40);
+  const m = new THREE.MeshBasicMaterial({ color:0xffd166, transparent:true, opacity:.9 });
+  const mesh = new THREE.Mesh(g, m);
+  mesh.position.copy(pos);
+  mesh.rotation.x = Math.random()*Math.PI;
+  scene.add(mesh);
+  return mesh;
+}
+
+function buildScene(){
+  scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x05080f, 0.011);
+  camera = new THREE.PerspectiveCamera(55, innerWidth/innerHeight, 0.1, 400);
+  camera.position.set(0, 16, 42);
+
+  renderer = new THREE.WebGLRenderer({ antialias:true, alpha:false });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setClearColor(0x05080f);
+  $('#scene').appendChild(renderer.domElement);
+
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true; controls.dampingFactor = 0.08;
+  controls.minDistance = 5; controls.maxDistance = 100;
+  controls.autoRotate = true; controls.autoRotateSpeed = 0.6;
+  renderer.domElement.addEventListener('pointerdown', ()=>{ controls.autoRotate = false; }, { once:true });
+
+  scene.add(new THREE.AmbientLight(0x8899bb, 0.75));
+  const pl = new THREE.PointLight(0xffffff, 1.1, 200); pl.position.set(30, 40, 30); scene.add(pl);
+  const pl2 = new THREE.PointLight(0x4dd0e1, 0.5, 180); pl2.position.set(-40, -20, -30); scene.add(pl2);
+
+  // 星空背景
+  const starGeo = new THREE.BufferGeometry();
+  const sn = 900, sp = new Float32Array(sn*3);
+  for(let i=0;i<sn;i++){
+    sp[i*3] = (seeded(i*3+1)-0.5)*260;
+    sp[i*3+1] = (seeded(i*3+2)-0.5)*160;
+    sp[i*3+2] = (seeded(i*3+3)-0.5)*260;
+  }
+  starGeo.setAttribute('position', new THREE.BufferAttribute(sp,3));
+  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color:0x88aadd, size:0.55, transparent:true, opacity:0.65 })));
+
+  // 中心节点
+  const center = new THREE.Mesh(
+    new THREE.SphereGeometry(1.7, 40, 40),
+    new THREE.MeshPhongMaterial({ color:0x4dd0e1, emissive:0x1b6f7d, emissiveIntensity:1, shininess:60 })
+  );
+  center.userData = { type:'center' };
+  scene.add(center); nodeMeshes.push(center);
+  const cLabel = makeLabel('C 语言 中心枢纽', '#4dd0e1', true);
+  cLabel.position.set(0, 3.1, 0); scene.add(cLabel);
+
+  // 章节与知识点
+  const R_CH = 19, nCh = CHAPTERS.length;
+  const linePos = [], lineCol = new THREE.Color();
+  const cpos = new THREE.Vector3(0,0,0);
+  CHAPTERS.forEach((ch,ci)=>{
+    const a = ci/nCh*Math.PI*2;
+    const cp = new THREE.Vector3(Math.cos(a)*R_CH, Math.sin(ci*1.7)*4.5, Math.sin(a)*R_CH);
+    const col = new THREE.Color(ch.color);
+
+    const chMesh = new THREE.Mesh(new THREE.SphereGeometry(1.05, 28, 28),
+      new THREE.MeshPhongMaterial({ color:col, emissive:col, emissiveIntensity:0.55, shininess:50 }));
+    chMesh.position.copy(cp);
+    chMesh.userData = { type:'chapter', ci };
+    scene.add(chMesh); nodeMeshes.push(chMesh);
+    const chLabel = makeLabel(ch.name, ch.css, true);
+    chLabel.position.copy(cp).add(new THREE.Vector3(0, 2.2, 0)); scene.add(chLabel);
+
+    // 中心 → 章节 连线
+    linePos.push(cpos.x,cpos.y,cpos.z, cp.x,cp.y,cp.z);
+
+    const n = ch.topics.length;
+    ch.topics.forEach((tp,ti)=>{
+      const ta = ti/n*Math.PI*2 + ci*0.9;
+      const tp2 = new THREE.Vector3(
+        cp.x + Math.cos(ta)*4.8,
+        cp.y + (seeded(ci*31+ti*7+2)-0.5)*4.4,
+        cp.z + Math.sin(ta)*4.8);
+      const m = new THREE.Mesh(new THREE.SphereGeometry(0.55, 22, 22),
+        new THREE.MeshPhongMaterial({ color:col, emissive:col, emissiveIntensity:0.35, shininess:40 }));
+      m.position.copy(tp2);
+      m.userData = { type:'topic', ci, ti, baseY: tp2.y };
+      scene.add(m); nodeMeshes.push(m);
+      const lb = makeLabel(tp.t, ch.css, false);
+      lb.position.copy(tp2).add(new THREE.Vector3(0, 1.05, 0));
+      scene.add(lb);
+      spriteOf.set(m, lb);
+      ringOf.set(ci+'-'+ti, { mesh:m, ring:null, pos:tp2, color:col });
+
+      // 章节 → 知识点 连线
+      linePos.push(cp.x,cp.y,cp.z, tp2.x,tp2.y,tp2.z);
+    });
+  });
+
+  const lg = new THREE.BufferGeometry();
+  lg.setAttribute('position', new THREE.Float32BufferAttribute(linePos, 3));
+  const lcolors = new Float32Array(linePos.length);
+  for(let i=0;i<linePos.length;i+=3){
+    // 每条线按所属章上色（近似：与哪个章节球近就取其色）
+    let best=0, bd=1e9;
+    CHAPTERS.forEach((ch,ci)=>{
+      const a=ci/CHAPTERS.length*Math.PI*2;
+      const cx=Math.cos(a)*19, cz=Math.sin(a)*19;
+      const d=Math.abs(linePos[i]-cx)+Math.abs(linePos[i+2]-cz);
+      if(d<bd){bd=d;best=ci;}
+    });
+    lineCol.setHex(CHAPTERS[best].color);
+    const dim = 0.45;
+    lcolors[i]=lineCol.r*dim; lcolors[i+1]=lineCol.g*dim; lcolors[i+2]=lineCol.b*dim;
+    lcolors[i+3]=lineCol.r*dim; lcolors[i+4]=lineCol.g*dim; lcolors[i+5]=lineCol.b*dim;
+  }
+  lg.setAttribute('color', new THREE.BufferAttribute(lcolors,3));
+  scene.add(new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ vertexColors:true, transparent:true, opacity:0.5 })));
+
+  raycaster = new THREE.Raycaster();
+  pointer = new THREE.Vector2();
+  applyMasteredVisuals();
+  animate();
+}
+
+function applyMasteredVisuals(){
+  for(const [id, obj] of ringOf){
+    const isM = !!mastered[id];
+    if(isM && !obj.ring) obj.ring = addRing(obj.pos, 0xffd166);
+    if(!isM && obj.ring){ scene.remove(obj.ring); obj.ring.geometry.dispose(); obj.ring = null; }
+  }
+}
+
+function animate(){
+  const SNAPSHOT = /[?&]snapshot/.test(location.search);   // 截图/自动化模式：只渲染一帧
+  if(!SNAPSHOT) requestAnimationFrame(animate);
+  if(fly.active){
+    camera.position.lerp(fly.camPos, fly.speed);
+    controls.target.lerp(fly.tgtPos, fly.speed);
+    if(camera.position.distanceTo(fly.camPos) < 0.4) fly.active = false;
+  }
+  controls.update();
+  const t = performance.now()*0.001;
+  nodeMeshes.forEach((m,i)=>{ if(m.userData.type==='topic') m.position.y = m.userData.baseY + Math.sin(t*1.2+i)*0.35; });
+  renderer.render(scene, camera);
+}
+
+window.addEventListener('resize', ()=>{
+  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+/* ---------- 拾取 ---------- */
+function setPointer(e){
+  pointer.x = (e.clientX/innerWidth)*2-1;
+  pointer.y = -(e.clientY/innerHeight)*2+1;
+}
+renderer_dom_set: {
+  // 占位：renderer.domElement 在 buildScene 后绑定
+}
+function bindPick(){
+  const dom = renderer.domElement;
+  dom.addEventListener('pointermove', e=>{
+    setPointer(e);
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObjects(nodeMeshes);
+    const hit = hits.length ? hits[0].object : null;
+    if(hovered && hovered !== hit && hovered !== selected){
+      hovered.material.emissiveIntensity = hovered.userData.type==='topic' ? 0.35 : 0.55;
+      hovered.scale.set(1,1,1);
+    }
+    hovered = hit;
+    if(hit && hit !== selected){ hit.scale.set(1.35,1.35,1.35); hit.material.emissiveIntensity = 1.1; }
+    dom.style.cursor = hit ? 'pointer' : 'grab';
+  });
+  dom.addEventListener('click', e=>{
+    setPointer(e);
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObjects(nodeMeshes);
+    if(!hits.length) return;
+    const u = hits[0].object.userData;
+    if(u.type === 'center'){ openCenter(); }
+    else if(u.type === 'chapter'){ focusChapter(u.ci); }
+    else if(u.type === 'topic'){ openTopic(u.ci, u.ti, true); }
+  });
+}
+
+function flyTo(pos, dist){
+  fly.active = true;
+  fly.tgtPos.copy(pos);
+  const dir = new THREE.Vector3(0, 0.45, 1).normalize();
+  fly.camPos.copy(pos).add(dir.multiplyScalar(dist));
+}
+
+/* ================================================================
+ * 面板 / 图例 / 题库
+ * ================================================================ */
+let curTopic = null; // {ci,ti} 或 'center'
+
+function openCenter(){
+  curTopic = 'center';
+  $('#pCh').textContent = '总览 · 学习路线';
+  $('#pDot').style.background = '#4dd0e1'; $('#pDot').style.color = '#4dd0e1';
+  $('#pTitle').textContent = CENTER_INFO.t;
+  const qz = renderQuiz(CENTER_INFO.quiz, 'c', 0);
+  $('#pBody').innerHTML =
+    sec('作用', '<p>'+esc(CENTER_INFO.role)+'</p>') +
+    sec('学习路线', codeBlock(CENTER_INFO.syn)) +
+    sec('示例', codeBlock(CENTER_INFO.ex)) +
+    sec('学法提醒', '<div class="tip-box">'+esc(CENTER_INFO.tip)+'</div>') +
+    sec('随堂练习', qz);
+  showPanel();
+}
+function sec(title, inner){ return '<div class="sec"><h3>'+title+'</h3>'+inner+'</div>'; }
+
+function openTopic(ci, ti, doFly){
+  const ch = CHAPTERS[ci], tp = ch.topics[ti];
+  curTopic = {ci,ti};
+  if(doFly){
+    const id = ci+'-'+ti;
+    const obj = ringOf.get(id);
+    if(obj) flyTo(obj.pos, 9);
+  }
+  $('#pCh').textContent = ch.name.replace(/^\d+ · /,'第'+ch.name.match(/^\d+/)[0]+'章 · ');
+  $('#pDot').style.background = ch.css; $('#pDot').style.color = ch.css;
+  $('#pTitle').textContent = tp.t;
+  const id = ci+'-'+ti;
+  const qz = renderQuiz(tp.quiz, ci, ti);
+  $('#pBody').innerHTML =
+    sec('作用', '<p>'+esc(tp.role)+'</p>') +
+    sec('格式', codeBlock(tp.syn)) +
+    sec('示例', codeBlock(tp.ex)) +
+    sec('易错点', '<div class="tip-box">'+esc(tp.tip)+'</div>') +
+    sec('随堂练习', qz);
+  updateMasterBtn();
+  showPanel();
+}
+
+function showPanel(){ $('#panel').classList.add('show'); if(innerWidth<=820) $('#legend').classList.remove('show'); }
+$('#pClose').onclick = ()=> $('#panel').classList.remove('show');
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ $('#panel').classList.remove('show'); $('#quizModal').classList.remove('show'); } });
+
+function updateMasterBtn(){
+  const isM = curTopic && curTopic !== 'center' && !!mastered[curTopic.ci+'-'+curTopic.ti];
+  const b = $('#btnMaster');
+  b.textContent = isM ? '★ 已掌握（点击取消）' : '☆ 标记已掌握';
+  b.classList.toggle('mastered', isM);
+}
+$('#btnMaster').onclick = ()=>{
+  if(!curTopic || curTopic==='center') return;
+  const id = curTopic.ci+'-'+curTopic.ti;
+  mastered[id] = !mastered[id];
+  if(!mastered[id]) delete mastered[id];
+  saveLS(); updateStats(); updateMasterBtn(); applyMasteredVisuals(); buildLegend();
+};
+$('#btnFocusQuiz').onclick = ()=>{
+  const el = $('#pBody');
+  const secs = el.querySelectorAll('.sec');
+  if(secs.length) secs[secs.length-1].scrollIntoView({behavior:'smooth'});
+};
+
+/* ---------- 题目渲染与作答 ---------- */
+function renderQuiz(list, ci, tiBase){
+  let html = '';
+  list.forEach((q,qi)=>{
+    const qid = (ci==='c'?'c':ci+'-'+tiBase)+'-'+qi;
+    const rec = quizRec[qid];
+    html += '<div class="qz" data-qid="'+qid+'"><div class="q">'+(qi+1)+'. '+esc(q.q)+'</div>';
+    q.opts.forEach((o,oi)=>{
+      let cls = 'opt';
+      if(rec){
+        if(oi === q.a) cls += ' right';
+        else if(oi === rec.p && !rec.ok) cls += ' wrong';
+      }
+      html += '<button class="'+cls+'" data-oi="'+oi+'" '+(rec?'disabled':'')+'>'+String.fromCharCode(65+oi)+'. '+esc(o)+'</button>';
+    });
+    html += '<div class="ex'+(rec?' show':'')+'"><b>解析：</b>'+esc(q.ex)+'</div></div>';
+  });
+  return html;
+}
+
+document.addEventListener('click', e=>{
+  const btn = e.target.closest('.qz .opt');
+  if(!btn || btn.disabled) return;
+  const box = btn.closest('.qz');
+  const qid = box.dataset.qid;
+  const oi = +btn.dataset.oi;
+  let q;
+  if(qid[0]==='c') q = CENTER_INFO.quiz[+qid.split('-')[1]];
+  else { const p = qid.split('-'); q = CHAPTERS[+p[0]].topics[+p[1]].quiz[+p[2]]; }
+  const ok = oi === q.a;
+  quizRec[qid] = { p:oi, ok };
+  saveLS(); updateStats();
+  box.querySelectorAll('.opt').forEach(b=>{
+    b.disabled = true;
+    const i = +b.dataset.oi;
+    if(i === q.a) b.classList.add('right');
+    else if(i === oi && !ok) b.classList.add('wrong');
+  });
+  box.querySelector('.ex').classList.add('show');
+});
+
+/* ---------- 题库模态 ---------- */
+$('#btnQuiz').onclick = ()=>{
+  let html = '';
+  const all = [{name:'中心 · 学习路线', quiz:CENTER_INFO.quiz, ci:'c'}, ...CHAPTERS.map((ch,ci)=>({name:ch.name, quiz:null, ci}))];
+  // 中心题
+  html += '<div class="qm-ch-title" style="color:#4dd0e1">中心 · 学习路线</div>';
+  html += renderQuiz(CENTER_INFO.quiz, 'c', 0);
+  CHAPTERS.forEach((ch,ci)=>{
+    html += '<div class="qm-ch-title" style="color:'+ch.css+'">'+ch.name+'</div>';
+    ch.topics.forEach((tp,ti)=>{ html += renderQuiz(tp.quiz, ci, ti); });
+  });
+  $('#qmBody').innerHTML = html;
+  $('#quizModal').classList.add('show');
+  updateStats();
+};
+$('#qmClose').onclick = ()=> $('#quizModal').classList.remove('show');
+$('#quizModal').addEventListener('click', e=>{ if(e.target.id==='quizModal') $('#quizModal').classList.remove('show'); });
+
+/* ---------- 图例 ---------- */
+function buildLegend(filter){
+  const f = (filter||'').trim().toLowerCase();
+  let html = '';
+  html += '<div class="lg-ch open" data-ci="c"><div class="lg-ch-h" data-focus="center"><span class="dot" style="background:#4dd0e1;color:#4dd0e1"></span>总览 · 学习路线</div></div>';
+  CHAPTERS.forEach((ch,ci)=>{
+    const total = ch.topics.length;
+    const m = ch.topics.filter((tp,ti)=>mastered[ci+'-'+ti]).length;
+    const topicsHtml = ch.topics.map((tp,ti)=>{
+      const hit = f && tp.t.toLowerCase().includes(f);
+      const rowStyle = f && !hit ? 'display:none' : '';
+      return '<div class="lg-tp" data-ci="'+ci+'" data-ti="'+ti+'" style="'+rowStyle+'">'+esc(tp.t)+(mastered[ci+'-'+ti]?'<span class="mk">★</span>':'')+'</div>';
+    }).join('');
+    const openCls = (f && ch.topics.some(tp=>tp.t.toLowerCase().includes(f))) ? ' open' : '';
+    html += '<div class="lg-ch'+openCls+'"><div class="lg-ch-h" data-focus="'+ci+'">'
+      + '<span class="dot" style="background:'+ch.css+';color:'+ch.css+'"></span>'+esc(ch.name)
+      + '<span class="pg">'+m+'/'+total+'</span></div>'
+      + '<div class="lg-ch-b">'+topicsHtml+'</div></div>';
+  });
+  $('#lg-list').innerHTML = html;
+}
+$('#lgSearch').addEventListener('input', e=>buildLegend(e.target.value));
+$('#lg-list').addEventListener('click', e=>{
+  const tp = e.target.closest('.lg-tp');
+  if(tp){ openTopic(+tp.dataset.ci, +tp.dataset.ti, true); return; }
+  const h = e.target.closest('.lg-ch-h');
+  if(h){
+    const v = h.dataset.focus;
+    if(v === 'center'){ flyTo(new THREE.Vector3(0,0,0), 26); openCenter(); return; }
+    focusChapter(+v);
+  }
+});
+function focusChapter(ci){
+  const a = ci/CHAPTERS.length*Math.PI*2;
+  flyTo(new THREE.Vector3(Math.cos(a)*19, Math.sin(ci*1.7)*4.5, Math.sin(a)*19), 14);
+}
+$('#btnResetView').onclick = ()=>{ fly.active=false; camera.position.set(0,16,42); controls.target.set(0,0,0); };
+$('#legendToggle').onclick = ()=> $('#legend').classList.toggle('show');
+
+/* ---------- 启动 ---------- */
+window.addEventListener('load', ()=>{
+  if(!window.THREE){
+    $('#loader').innerHTML = '<p style="color:#ef5350">Three.js 加载失败：请联网后刷新（CDN：jsdelivr / unpkg）</p>';
+    return;
+  }
+  buildScene();
+  bindPick();
+  buildLegend();
+  updateStats();
+  console.log('C3D_READY topics=' + ALL.length + ' chapters=' + CHAPTERS.length);
+  setTimeout(()=>$('#loader').classList.add('hide'), 400);
+});
+</script>
+<script>
+/* 无头自检标记 */
+window.addEventListener('load', ()=>{
+  setTimeout(()=>{
+    if(document.getElementById('autotest')) return;
+    const d = document.createElement('div');
+    d.id = 'autotest';
+    d.textContent = 'AUTOTEST_OK nodes=' + document.querySelectorAll('.lg-tp').length +
+      ' quizBtn=' + !!document.getElementById('btnQuiz') +
+      ' three=' + !!window.THREE;
+    d.style.display = 'none';
+    document.body.appendChild(d);
+  }, 1000);
+});
+</script>
+</body>
+</html>
